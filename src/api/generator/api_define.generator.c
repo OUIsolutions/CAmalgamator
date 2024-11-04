@@ -29,7 +29,7 @@ int  private_CAmalgamator_generate_amalgamation(
                     CAmalgamation_pop();
         #endif
         UniversalGarbage_free(garbage);
-        return CAMALGAMATOR_ERROR;
+        return CAMALGAMATOR_FILE_NOT_FOUND;
     }
 
     #ifdef CAMALGAMATOR_DEBUG
@@ -339,8 +339,8 @@ int  private_CAmalgamator_generate_amalgamation(
             #endif
             continue;
         }
-        UniversalGarbage_free(garbage);
     }
+    UniversalGarbage_free(garbage);
 
     #ifdef CAMALGAMATOR_DEBUG
                         CAmalgamation_pop();

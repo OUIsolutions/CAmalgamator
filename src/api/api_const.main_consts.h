@@ -3,7 +3,7 @@
 //mannaged by silver chain
 #include "../imports/imports.api_globals.h"
 //silver_chain_scope_end
-#define  CAMALGAMATOR_ERROR 1
+#define  CAMALGAMATOR_FILE_NOT_FOUND 1
 #define  CAMALGAMATOR_OK 0
 enum{
     PRIVATE_CAMALGAMATOR_NORMAL_STATE,

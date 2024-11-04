@@ -8,8 +8,8 @@
 
 
 int main(){
-    CAmalgamator_max_plotage = 20;
-
+    //CAmalgamator_max_plotage = 20;
+    CAmalgamator_min_plotage = 0;
     #ifdef CAMALGAMATOR_DEBUG
                 CAmalgamation_append("main");
     #endif
