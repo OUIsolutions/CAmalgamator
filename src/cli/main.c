@@ -8,7 +8,16 @@
 int main(){
 
     CAmalgamator_plot();
+    CAmalgamation_append("aaa");
     CAmalgamator_plot();
+    CAmalgamation_append("aaa");
+    CAmalgamation_append("aaa");
+    CAmalgamator_plot();
+
+    CAmalgamation_pop();
+    CAmalgamation_pop();
+    CAmalgamation_pop();
+
     CAmalgamator_plot();
 
     return 0;

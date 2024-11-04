@@ -13,11 +13,16 @@ void CAmalgamator_start(){
 }
 
 void CAmalgamation_append(const char *func_name){
-    newCxpathJsonArray();
+    CAmalgamator_start();
     CxpathJson_set_str(internal_stack_json,func_name, "['$append','func_name']");
     stack_json = newCxpathJsonArray();
     CxpathJson_set_xpathJson_getting_onwership(internal_stack_json, stack_json,"[-1,'itens']");
+}
 
+void CAmalgamation_pop(){
+    CAmalgamator_start();
+    int last =  CxpathJson_get_size(internal_stack_json,"[]");
+    CxpathJson_destroy(internal_stack_json,"[%d]",last-1);
 }
 
 void CAmalgamator_plot(){
@@ -36,6 +41,7 @@ void CAmalgamator_plot(){
     sprintf(path,"%s/%d.json",CAMALGAMATION_PLOTAGE_FOLDER,CAmalgamation_total_plotage);
     dtw_write_string_file_content(path,content);
     free(content);
+
     CAmalgamation_total_plotage+=1;
 }
 
