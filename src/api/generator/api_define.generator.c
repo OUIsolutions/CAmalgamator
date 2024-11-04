@@ -12,12 +12,24 @@ int  private_CAmalgamator_generate_amalgamation(
     const char*filename,
     DtwStringArray *already_included_sha_list
 ){
+    #ifdef CAMALGAMATOR_DEBUG
+        CAmalgamation_append("private_CAmalgamator_generate_amalgamation");
+    #endif
+
     UniversalGarbage *garbage = newUniversalGarbage();
     bool is_binary;
     long size;
     char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
     UniversalGarbage_add_simple(garbage, content);
+    if(content){
 
+        #ifdef CAMALGAMATOR_DEBUG
+                    CAmalgamation_pop();
+                    CAmalgamator_plot_json();
+        #endif
+        return CAMALGAMATOR_ERROR;
+
+    }
 
     char *sha_content = dtw_generate_sha_from_any(content,size);
     UniversalGarbage_add_simple(garbage, sha_content);
@@ -26,6 +38,11 @@ int  private_CAmalgamator_generate_amalgamation(
     if(is_already_included){
 
         UniversalGarbage_free(garbage);
+
+        #ifdef CAMALGAMATOR_DEBUG
+            CAmalgamation_pop();
+            CAmalgamator_plot_json();
+        #endif
         return CAMALGAMATOR_OK;
     }
 
@@ -158,5 +175,9 @@ int  private_CAmalgamator_generate_amalgamation(
         UniversalGarbage_free(garbage);
     }
 
+    #ifdef CAMALGAMATOR_DEBUG
+                CAmalgamation_pop();
+                CAmalgamator_plot_json();
+    #endif
     return CAMALGAMATOR_OK;
 }
