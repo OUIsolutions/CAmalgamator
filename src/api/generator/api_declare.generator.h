@@ -7,7 +7,5 @@
 int private_CAmalgamator_generate_amalgamation(
     CTextStack * final,
     const char*filename,
-    DtwStringArray *already_included_sha_list,
-    CHashObject *old_stack
-
+    DtwStringArray *already_included_sha_list
 );
