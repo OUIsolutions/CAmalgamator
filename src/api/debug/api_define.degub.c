@@ -32,13 +32,13 @@ void CAmalgamation_pop(){
 
 }
 
-void CAmalgamator_plot_json(int line){
+void CAmalgamator_plot_json(double point){
     dtw_write_long_file_content("plotage.txt",CAmalgamation_total_plotage);
     CAmalgamation_total_plotage+=1;
 
     CAmalgamator_start();
     if(CAmalgamation_total_plotage < CAmalgamator_min_plotage){
-   
+
         return;
     }
 
@@ -49,7 +49,7 @@ void CAmalgamator_plot_json(int line){
 
     char *content = CHash_dump_to_json_string(CAmalgamation_internal_stack_json);
     char path[sizeof(CAMALGAMATION_PLOTAGE_FOLDER) + 200] = {0};
-    sprintf(path,"%s/%d:%s:%d.json",CAMALGAMATION_PLOTAGE_FOLDER,CAmalgamation_total_plotage,CAmalgamation_func_name,line);
+    sprintf(path,"%s/%d:%s:%lf.json",CAMALGAMATION_PLOTAGE_FOLDER,CAmalgamation_total_plotage,CAmalgamation_func_name,point);
     dtw_write_string_file_content(path,content);
 
     free(content);

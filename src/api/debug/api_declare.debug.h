@@ -11,6 +11,6 @@ void CAmalgamation_append(const char *func_name);
 
 void CAmalgamation_pop();
 
-void CAmalgamator_plot_json(int line);
+void CAmalgamator_plot_json(double point);
 
 CHashArray * convert_string_array_to_chash_object(DtwStringArray *itens);

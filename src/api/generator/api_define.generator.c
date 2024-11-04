@@ -51,6 +51,11 @@ int  private_CAmalgamator_generate_amalgamation(
         CAmalgamator_plot_json(4);
     #endif
 
+    DtwPath *path = newDtwPath(filename);
+    UniversalGarbage_add(garbage,DtwPath_free, path);
+
+    char *dir = DtwPath_get_dir(path);
+
     if(is_already_included){
 
         UniversalGarbage_free(garbage);
@@ -85,7 +90,7 @@ int  private_CAmalgamator_generate_amalgamation(
         CAmalgamator_plot_json(7);
     #endif
     for(int i =0; i < size;i++){
-        
+
         char current_char = content[i];
         #ifdef  CAMALGAMATOR_DEBUG
             char formmated_char[10] = {0};
@@ -308,26 +313,34 @@ int  private_CAmalgamator_generate_amalgamation(
 
             if(current_char == '"'){
 
-                int error = private_CAmalgamator_generate_amalgamation(final,str_file->rendered_text,already_included_sha_list);
+                char *new_path = dtw_concat_path(dir, str_file->rendered_text);
+                #ifdef  CAMALGAMATOR_DEBUG
+                    CHashObject_set_string(CAmalgamation_stack_json,"new_path", (const char*)new_path);
+                    CAmalgamator_plot_json(32);
+                #endif
+                int error = private_CAmalgamator_generate_amalgamation(final,new_path,already_included_sha_list);
+                free(path);
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_long(CAmalgamation_stack_json,"error", error);
-                    CAmalgamator_plot_json(32);
+                    CAmalgamator_plot_json(33);
                 #endif
                 if(error){
                     UniversalGarbage_free(garbage);
                     return error;
                 }
 
+
+
                 CTextStack_restart(str_file);
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_string(CAmalgamation_stack_json,"str_file", str_file->rendered_text);
-                    CAmalgamator_plot_json(33);
+                    CAmalgamator_plot_json(34);
                 #endif
-                
+
                 state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_long(CAmalgamation_stack_json,"state", state);
-                    CAmalgamator_plot_json(34);
+                    CAmalgamator_plot_json(35);
                 #endif
                 continue;
             }
@@ -335,7 +348,7 @@ int  private_CAmalgamator_generate_amalgamation(
             CTextStack_format(str_file,"%c", current_char);
             #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_string(CAmalgamation_stack_json,"str_file", str_file->rendered_text);
-                    CAmalgamator_plot_json(35);
+                    CAmalgamator_plot_json(36);
             #endif
             continue;
         }
