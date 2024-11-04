@@ -1,10 +1,17 @@
 
+#define  CAMALGAMATOR_DEBUG
 //silver_chain_scope_start
 //mannaged by silver chain
 #include "../imports/imports.api_define.h"
 //silver_chain_scope_end
 
 int main(){
+
+    CAmalgamator_plot();
+    CAmalgamator_plot();
+    CAmalgamator_plot();
+
+    return 0;
     CTextStack *final = newCTextStack_string_empty();
     DtwStringArray *already_included = newDtwStringArray();
     const char *filnemae = "doTheWorld_test/one.c";

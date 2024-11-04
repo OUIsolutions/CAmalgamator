@@ -1,5 +1,6 @@
 # Prerequisites
 *.d
+amalgamation_plotage
 dependencies
 doTheWorld_test
 SilverChain
