@@ -31,9 +31,13 @@ int main(){
             CAmalgamator_plot_json(2);
      #endif
     dtw_write_string_file_content("saida.c", final->rendered_text);
+
     #ifdef CAMALGAMATOR_DEBUG
                 CAmalgamation_pop();
                 CAmalgamator_plot_json(2);
+                CAmalgamator_free();
      #endif
+     DtwStringArray_free(already_included);
+     CTextStack_free(final);
      return 0;
 }

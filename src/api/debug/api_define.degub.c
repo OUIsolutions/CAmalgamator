@@ -2,6 +2,7 @@
 //silver_chain_scope_start
 //mannaged by silver chain
 #include "../../imports/imports.api_declare.h"
+#include <time.h>
 //silver_chain_scope_end
 #ifdef CAMALGAMATOR_DEBUG
 
@@ -64,5 +65,11 @@ CHashArray * convert_string_array_to_chash_object(DtwStringArray *itens){
         CHashArray_append_string(created,itens->strings[i]);
     }
     return created;
+}
+void CAmalgamator_free(){
+    if(CAmalgamation_internal_stack_json){
+        CHash_free(CAmalgamation_internal_stack_json);
+        CAmalgamation_internal_stack_json = NULL;
+    }
 }
 #endif

@@ -22,11 +22,6 @@ int  private_CAmalgamator_generate_amalgamation(
         CAmalgamator_plot_json(1);
     #endif
 
-
-
-
-
-
     UniversalGarbage *garbage = newUniversalGarbage();
     bool is_binary;
     long size;
@@ -326,6 +321,7 @@ int  private_CAmalgamator_generate_amalgamation(
                     CAmalgamator_plot_json(32);
                 #endif
                 int error = private_CAmalgamator_generate_amalgamation(final,new_path,already_included_sha_list);
+                free(new_path);
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_long(CAmalgamation_stack_json,"error", error);
                     CAmalgamator_plot_json(33);
