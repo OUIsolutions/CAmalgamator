@@ -3,5 +3,6 @@
 #define camalgamator_api_define
 #include "../api/debug/api_define.degub.c"
 #include "../api/generator/api_define.generator.c"
+#include "../api/generator_plot/api_define.generator_plot.c"
 #include "../api/point_verifiers/api_define.point_verifiers.c"
 #endif
