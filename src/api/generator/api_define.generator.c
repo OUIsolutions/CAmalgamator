@@ -274,7 +274,7 @@ int  private_CAmalgamator_generate_amalgamation(
 
             if(current_char == '"'){
 
-                int error = private_CAmalgamator_generate_amalgamation(final,str_file->rendered_text,already_included_sha_list,old_stack);
+                int error = private_CAmalgamator_generate_amalgamation(final,str_file->rendered_text,already_included_sha_list);
                 if(error){
                     UniversalGarbage_free(garbage);
                     return error;

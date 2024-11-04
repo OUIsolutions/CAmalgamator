@@ -5,7 +5,11 @@
 #include "../imports/imports.api_define.h"
 //silver_chain_scope_end
 
+
+
 int main(){
+    CAmalgamator_max_plotage = 20;
+
     #ifdef CAMALGAMATOR_DEBUG
                 CAmalgamation_append("main");
     #endif
@@ -21,7 +25,7 @@ int main(){
     #endif
     CAmalgamator_plot_json(1);
 
-    private_CAmalgamator_generate_amalgamation(final,filnemae,already_included,CAmalgamation_stack_json);
+    private_CAmalgamator_generate_amalgamation(final,filnemae,already_included);
     #ifdef CAMALGAMATOR_DEBUG
             CAmalgamator_plot_json(2);
      #endif
