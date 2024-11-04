@@ -3,6 +3,7 @@
 dependencies
 doTheWorld_test
 SilverChain
+vgcore.*
 # Object files
 *.o
 *.ko
