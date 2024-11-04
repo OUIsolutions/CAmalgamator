@@ -3,6 +3,7 @@
 //mannaged by silver chain
 #include "../../imports/imports.api_declare.h"
 //silver_chain_scope_end
+#ifdef CAMALGAMATOR_DEBUG
 
 void CAmalgamator_start(){
     if(CAmalgamation_internal_stack_json == NULL){
@@ -27,7 +28,8 @@ void CAmalgamation_pop(){
     CAmalgamator_start();
     CHashArray_remove(CAmalgamation_internal_stack_json, -1);
     if(CHash_get_size(CAmalgamation_internal_stack_json)){
-        CAmalgamation_stack_json = CHashArray_get(CAmalgamation_internal_stack_json,-1);
+        CHashObject *last  = CHashArray_get(CAmalgamation_internal_stack_json,-1);
+        CAmalgamation_stack_json = CHashObject_get(last, "func_name");
     }
 
 }
@@ -63,3 +65,4 @@ CHashArray * convert_string_array_to_chash_object(DtwStringArray *itens){
     }
     return created;
 }
+#endif

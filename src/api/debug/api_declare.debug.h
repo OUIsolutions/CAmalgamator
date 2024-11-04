@@ -3,7 +3,7 @@
 //mannaged by silver chain
 #include "../../imports/imports.api_const.h"
 //silver_chain_scope_end
-#define  CAMALGAMATOR_DEBUG
+#ifdef CAMALGAMATOR_DEBUG
 
 void CAmalgamator_start();
 
@@ -14,3 +14,4 @@ void CAmalgamation_pop();
 void CAmalgamator_plot_json(double point);
 
 CHashArray * convert_string_array_to_chash_object(DtwStringArray *itens);
+#endif

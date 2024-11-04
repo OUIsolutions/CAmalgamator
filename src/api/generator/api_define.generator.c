@@ -14,10 +14,19 @@ int  private_CAmalgamator_generate_amalgamation(
     const char*filename,
     DtwStringArray *already_included_sha_list
 ){
+
     #ifdef CAMALGAMATOR_DEBUG
         CAmalgamation_append("private_CAmalgamator_generate_amalgamation");
+        CHashObject_set_string(CAmalgamation_stack_json, "final",final->rendered_text);
+        CHashObject_set_string(CAmalgamation_stack_json,"filename",filename);
+        CHashObject_set_any(CAmalgamation_stack_json, "already_included", convert_string_array_to_chash_object(already_included_sha_list));
         CAmalgamator_plot_json(1);
     #endif
+
+
+
+
+
 
     UniversalGarbage *garbage = newUniversalGarbage();
     bool is_binary;
@@ -37,6 +46,7 @@ int  private_CAmalgamator_generate_amalgamation(
             CAmalgamator_plot_json(2);
     #endif
 
+
     char *sha_content = dtw_generate_sha_from_any(content,size);
     #ifdef CAMALGAMATOR_DEBUG
         CHashObject_set_string(CAmalgamation_stack_json,"sha",sha_content);
@@ -51,29 +61,27 @@ int  private_CAmalgamator_generate_amalgamation(
         CAmalgamator_plot_json(4);
     #endif
 
-    DtwPath *path = newDtwPath(filename);
-    UniversalGarbage_add(garbage,DtwPath_free, path);
-
-    char *dir = DtwPath_get_dir(path);
 
     if(is_already_included){
+            UniversalGarbage_free(garbage);
+            #ifdef CAMALGAMATOR_DEBUG
+                        CAmalgamation_pop();
+            #endif
+            return CAMALGAMATOR_OK;
+        }
 
-        UniversalGarbage_free(garbage);
-
-        #ifdef CAMALGAMATOR_DEBUG
-                    CAmalgamation_pop();
-        #endif
-        return CAMALGAMATOR_OK;
-    }
 
     DtwStringArray_append(already_included_sha_list, sha_content);
     #ifdef CAMALGAMATOR_DEBUG
         CHashObject_set_any(CAmalgamation_stack_json, "already_included", convert_string_array_to_chash_object(already_included_sha_list));
         CAmalgamator_plot_json(5);
-
     #endif
 
+    DtwPath *current_path = newDtwPath(filename);
+    UniversalGarbage_add(garbage,DtwPath_free, current_path);
 
+
+    char *dir = DtwPath_get_dir(current_path);
 
     CTextStack *str_file = newCTextStack_string_empty();
     UniversalGarbage_add(garbage,CTextStack_free,str_file);
@@ -298,7 +306,7 @@ int  private_CAmalgamator_generate_amalgamation(
             if(current_char == '<'){
                 state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
                 //aborts inclusion
-                CTextStack_format(final,"#include < ");
+                CTextStack_text(final,"#include <");
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_long(CAmalgamation_stack_json,"state", state);
                     CHashObject_set_string(CAmalgamation_stack_json,"final", final->rendered_text);
@@ -319,7 +327,6 @@ int  private_CAmalgamator_generate_amalgamation(
                     CAmalgamator_plot_json(32);
                 #endif
                 int error = private_CAmalgamator_generate_amalgamation(final,new_path,already_included_sha_list);
-                free(path);
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_long(CAmalgamation_stack_json,"error", error);
                     CAmalgamator_plot_json(33);

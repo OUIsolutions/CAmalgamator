@@ -1,5 +1,5 @@
 
-#define  CAMALGAMATOR_DEBUG
+//#define  CAMALGAMATOR_DEBUG
 //silver_chain_scope_start
 //mannaged by silver chain
 #include "../imports/imports.api_define.h"
@@ -8,8 +8,8 @@
 
 
 int main(){
-    CAmalgamator_max_plotage = -1;
-    CAmalgamator_min_plotage = 3913-10;
+    //CAmalgamator_max_plotage = -1;
+    //CAmalgamator_min_plotage = 0;
     #ifdef CAMALGAMATOR_DEBUG
                 CAmalgamation_append("main");
     #endif
@@ -22,8 +22,9 @@ int main(){
         CHashObject_set_string(CAmalgamation_stack_json,"final", final->rendered_text);
         CHashObject_set_string(CAmalgamation_stack_json,"fiename", filnemae);
         CHashObject_set_any(CAmalgamation_stack_json, "already_included", convert_string_array_to_chash_object(already_included));
+        CAmalgamator_plot_json(1);
+
     #endif
-    CAmalgamator_plot_json(1);
 
     private_CAmalgamator_generate_amalgamation(final,filnemae,already_included);
     #ifdef CAMALGAMATOR_DEBUG
