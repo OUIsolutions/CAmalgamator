@@ -22,6 +22,9 @@ int main(){
     CAmalgamator_plot_json();
 
     private_CAmalgamator_generate_amalgamation(final,filnemae,already_included,CAmalgamation_stack_json);
+    #ifdef CAMALGAMATOR_DEBUG
+            CAmalgamator_plot_json();
+     #endif
     dtw_write_string_file_content("saida.c", final->rendered_text);
     #ifdef CAMALGAMATOR_DEBUG
                 CAmalgamation_pop();
