@@ -5,25 +5,8 @@
 //silver_chain_scope_end
 
 
-bool private_CAmalgamator_is_include_at_point(char *content,int content_size,int point){
-    if(point + PRIVATE_CAMALGAMATOR_INCLUDE_SIZE >= content_size){
-        return false;
-    }
-    #define PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point,char)\
-        if(content[point] != char){\
-        return false;\
-    }\
 
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point,'#')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+1,'i')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+2,'n')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+3,'c')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+4,'l')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+5,'u')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+6,'d')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+7,'e')
-    return true;
-}
+
 int  private_CAmalgamator_generate_amalgamation(
     CTextStack * final,
     const char*filename,
@@ -46,15 +29,29 @@ int  private_CAmalgamator_generate_amalgamation(
     for(int i =0; i < size;i++){
 
 
-        bool is_include_point = state == PRIVATE_CAMALGAMATOR_COLECTING_CHAR_STATE &&
+        bool is_include_point =
+        state == PRIVATE_CAMALGAMATOR_COLECTING_CHAR_STATE &&
         private_CAmalgamator_is_include_at_point(content,size,i);
+
         if(is_include_point){
             state = PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START;
             continue;
         }
         char current_char = content[i];
 
-        bool normal_code =state =  PRIVATE_CAMALGAMATOR_COLECTING_CHAR_STATE;
+        bool is_multiline_coment_start =
+        state == PRIVATE_CAMALGAMATOR_COLECTING_CHAR_STATE &&
+        private_CAmalgamator_is_start_multiline_coment_at_point(content,size,i);
+
+        if(is_multiline_coment_start){
+            state = PRIVATE_CAMALGAMATOR_INSIDE_MULTILINE_COMENT;
+        }
+
+        bool is_multiline_coment_end =
+        state == PRIVATE_CAMALGAMATOR_COLECTING_CHAR_STATE &&
+        private_CAmalgamator_is_end_multiline_coment_at_point(content,size,i);
+
+        bool normal_code =state = PRIVATE_CAMALGAMATOR_COLECTING_CHAR_STATE;
         if(normal_code){
             CTextStack_format(final,"%c", current_char);
             continue;
