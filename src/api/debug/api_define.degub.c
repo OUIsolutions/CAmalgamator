@@ -32,7 +32,7 @@ void CAmalgamation_pop(){
 
 }
 
-void CAmalgamator_plot_json(){
+void CAmalgamator_plot_json(int line){
 
     CAmalgamator_start();
     if(CAmalgamation_total_plotage < CAmalgamator_min_plotage){
@@ -45,7 +45,7 @@ void CAmalgamator_plot_json(){
 
     char *content = CHash_dump_to_json_string(CAmalgamation_internal_stack_json);
     char path[sizeof(CAMALGAMATION_PLOTAGE_FOLDER) + 10] = {0};
-    sprintf(path,"%s/%d.json",CAMALGAMATION_PLOTAGE_FOLDER,CAmalgamation_total_plotage);
+    sprintf(path,"%s/%d:%d.json",CAMALGAMATION_PLOTAGE_FOLDER,CAmalgamation_total_plotage,line);
     dtw_write_string_file_content(path,content);
 
     free(content);
