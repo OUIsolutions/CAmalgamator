@@ -2,7 +2,7 @@
 //silver_chain_scope_start
 //mannaged by silver chain
 #include "../../imports/imports.api_declare.h"
-#include <time.h>
+
 //silver_chain_scope_end
 
 
@@ -79,21 +79,40 @@ int  private_CAmalgamator_generate_amalgamation(
 
 
     int state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
-
-    #ifdef CAMALGAMATOR_DEBUG
+    #ifdef  CAMALGAMATOR_DEBUG
+        CHashObject_set_long(CAmalgamation_stack_json,"state",state);
         CAmalgamator_plot_json();
     #endif
 
     for(int i =0; i < size;i++){
 
         char current_char = content[i];
+        #ifdef  CAMALGAMATOR_DEBUG
+            char formmated_char[10] = {0};
+            sprintf(formmated_char,"%c", current_char);
+            CHashObject_set_string(CAmalgamation_stack_json,"current_char",formmated_char);
+            CAmalgamator_plot_json();
+        #endif
+
 
         if(state == PRIVATE_CAMALGAMATOR_NORMAL_STATE){
 
             bool is_multiline_coment_start = private_CAmalgamator_is_start_multiline_coment_at_point(content,size,i);
+            #ifdef  CAMALGAMATOR_DEBUG
+                CHashObject_set_bool(CAmalgamation_stack_json,"is_multiline_coment_start",is_multiline_coment_start);
+                CAmalgamator_plot_json();
+            #endif
+
+
             if(is_multiline_coment_start){
                 state = PRIVATE_CAMALGAMATOR_INSIDE_MULTILINE_COMENT;
                 CTextStack_format(final,"%c",current_char);
+                #ifdef  CAMALGAMATOR_DEBUG
+                    CHashObject_set_long(CAmalgamation_stack_json,"state",state);
+                    CHashObject_set_string(old_stack,"final", final->rendered_text);
+                    CAmalgamator_plot_json();
+                #endif
+
                 continue;
             }
 
@@ -101,6 +120,11 @@ int  private_CAmalgamator_generate_amalgamation(
             if(is_inline_coment_start){
                 state = PRIVATE_CAMALGAMATOR_INSIDE_INLINE_COMENT;
                 CTextStack_format(final,"%c",current_char);
+                #ifdef  CAMALGAMATOR_DEBUG
+                    CHashObject_set_long(CAmalgamation_stack_json,"state",state);
+                    CHashObject_set_string(old_stack,"final", final->rendered_text);
+                    CAmalgamator_plot_json();
+                #endif
                 continue;
             }
 
@@ -108,6 +132,11 @@ int  private_CAmalgamator_generate_amalgamation(
             if(is_str_start){
                 state = PRIVATE_CAMALGAMATOR_INSIDE_NORMAL_STRING;
                 CTextStack_format(final,"%c",current_char);
+                #ifdef  CAMALGAMATOR_DEBUG
+                    CHashObject_set_long(CAmalgamation_stack_json,"state",state);
+                    CHashObject_set_string(old_stack,"final", final->rendered_text);
+                    CAmalgamator_plot_json();
+                #endif
                 continue;
             }
 
@@ -115,16 +144,29 @@ int  private_CAmalgamator_generate_amalgamation(
             if(is_char_start){
                 state = PRIVATE_CAMALGAMATOR_INSIDE_CHAR;
                 CTextStack_format(final,"%c",current_char);
+                #ifdef  CAMALGAMATOR_DEBUG
+                    CHashObject_set_long(CAmalgamation_stack_json,"state",state);
+                    CHashObject_set_string(old_stack,"final", final->rendered_text);
+                    CAmalgamator_plot_json();
+                #endif
                 continue;
             }
 
             bool is_include = private_CAmalgamator_is_include_at_point(content,size,i);
             if(is_include){
                 state =PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START;
+                #ifdef  CAMALGAMATOR_DEBUG
+                    CHashObject_set_long(CAmalgamation_stack_json,"state",state);
+                    CAmalgamator_plot_json();
+                #endif
                 continue;; // we dont format include here
             }
 
             CTextStack_format(final,"%c",current_char);
+            #ifdef  CAMALGAMATOR_DEBUG
+                CHashObject_set_string(old_stack,"final", final->rendered_text);
+                CAmalgamator_plot_json();
+            #endif
             continue;
         }
 
