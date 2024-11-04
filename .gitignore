@@ -4,6 +4,7 @@ amalgamation_plotage
 dependencies
 doTheWorld_test
 SilverChain
+plotage.txt
 vgcore.*
 # Object files
 *.o

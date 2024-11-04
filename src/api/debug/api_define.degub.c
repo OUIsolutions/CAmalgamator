@@ -33,9 +33,12 @@ void CAmalgamation_pop(){
 }
 
 void CAmalgamator_plot_json(int line){
+    dtw_write_long_file_content("plotage.txt",CAmalgamation_total_plotage);
+    CAmalgamation_total_plotage+=1;
 
     CAmalgamator_start();
     if(CAmalgamation_total_plotage < CAmalgamator_min_plotage){
+   
         return;
     }
 
@@ -50,7 +53,6 @@ void CAmalgamator_plot_json(int line){
     dtw_write_string_file_content(path,content);
 
     free(content);
-    CAmalgamation_total_plotage+=1;
 }
 
 
