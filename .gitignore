@@ -1,6 +1,7 @@
 # Prerequisites
 *.d
 dependencies
+SilverChain
 # Object files
 *.o
 *.ko
