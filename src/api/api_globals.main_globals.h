@@ -4,10 +4,9 @@
 #include "../imports/imports.api_dependencies.h"
 //silver_chain_scope_end
 
-
 #ifdef CAMALGAMATOR_DEBUG
-CxpathJson *internal_stack_json;
-CxpathJson *stack_json;
+CHashArray *internal_stack_json;
+CHashObject *stack_json;
 
 int CAmalgamation_total_plotage = 0;
 int CAmalgamator_stack_level = 0;

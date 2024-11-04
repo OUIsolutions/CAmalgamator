@@ -1,3 +1,4 @@
+#define  CAMALGAMATOR_DEBUG
 
 //silver_chain_scope_start
 //mannaged by silver chain
@@ -8,24 +9,32 @@
 void CAmalgamator_start(){
     if(internal_stack_json == NULL){
         dtw_remove_any(CAMALGAMATION_PLOTAGE_FOLDER);
-        internal_stack_json = newCxpathJsonArray();
+        internal_stack_json = newCHashArrayEmpty();
     }
 }
 
 void CAmalgamation_append(const char *func_name){
     CAmalgamator_start();
-    CxpathJson_set_str(internal_stack_json,func_name, "['$append','func_name']");
-    stack_json = newCxpathJsonArray();
-    CxpathJson_set_xpathJson_getting_onwership(internal_stack_json, stack_json,"[-1,'itens']");
+
+    stack_json = newCHashObjectEmpty();
+    CHashArray_append(internal_stack_json,
+        newCHashObject(
+                "func_name",newCHashString(func_name),
+                "itens",stack_json
+            )
+    );
 }
 
 void CAmalgamation_pop(){
     CAmalgamator_start();
-    int last =  CxpathJson_get_size(internal_stack_json,"[]");
-    CxpathJson_destroy(internal_stack_json,"[%d]",last-1);
+    CHashArray_remove(internal_stack_json, -1);
+    if(CHash_get_size(internal_stack_json)){
+        stack_json = CHashArray_get(internal_stack_json,-1);
+    }
+
 }
 
-void CAmalgamator_plot(){
+void CAmalgamator_plot_json(){
 
     CAmalgamator_start();
     if(CAmalgamation_total_plotage < CAmalgamator_min_plotage){
@@ -36,7 +45,7 @@ void CAmalgamator_plot(){
         return;
     }
 
-    char *content = CxpathJson_dump_to_string(internal_stack_json,true);
+    char *content = CHash_dump_to_json_string(internal_stack_json);
     char path[sizeof(CAMALGAMATION_PLOTAGE_FOLDER) + 10] = {0};
     sprintf(path,"%s/%d.json",CAMALGAMATION_PLOTAGE_FOLDER,CAmalgamation_total_plotage);
     dtw_write_string_file_content(path,content);

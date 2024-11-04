@@ -9,14 +9,22 @@ int main(){
 
     CAmalgamator_plot();
     CAmalgamation_append("aaa");
+    CHashObject_set_string(stack_json,"a","aaa");
+
+
     CAmalgamator_plot();
     CAmalgamation_append("aaa");
+    CHashObject_set_string(stack_json,"a","aaa");
+
     CAmalgamation_append("aaa");
     CAmalgamator_plot();
 
     CAmalgamation_pop();
     CAmalgamation_pop();
     CAmalgamation_pop();
+
+    CAmalgamator_plot();
+
 
     CAmalgamator_plot();
 
