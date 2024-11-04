@@ -10,7 +10,8 @@
 int  private_CAmalgamator_generate_amalgamation(
     CTextStack * final,
     const char*filename,
-    DtwStringArray *already_included_sha_list
+    DtwStringArray *already_included_sha_list,
+    CHashObject *old_stack
 ){
     #ifdef CAMALGAMATOR_DEBUG
         CAmalgamation_append("private_CAmalgamator_generate_amalgamation");
@@ -21,31 +22,44 @@ int  private_CAmalgamator_generate_amalgamation(
     long size;
     char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
     UniversalGarbage_add_simple(garbage, content);
-    if(content){
-
+    if(!content){
         #ifdef CAMALGAMATOR_DEBUG
-                    CAmalgamation_pop();
                     CAmalgamator_plot_json();
+                    CAmalgamation_pop();
         #endif
+        UniversalGarbage_free(garbage);
         return CAMALGAMATOR_ERROR;
-
     }
 
-    char *sha_content = dtw_generate_sha_from_any(content,size);
-    UniversalGarbage_add_simple(garbage, sha_content);
+    #ifdef CAMALGAMATOR_DEBUG
+        CHashObject_set_string(CAmalgamation_stack_json,"content",content);
+    #endif
 
+
+    char *sha_content = dtw_generate_sha_from_any(content,size);
+
+    #ifdef CAMALGAMATOR_DEBUG
+        CHashObject_set_string(CAmalgamation_stack_json,"sha",sha_content);
+    #endif
+    UniversalGarbage_add_simple(garbage, sha_content);
     bool is_already_included =DtwStringArray_find_position(already_included_sha_list,sha_content) != -1;
+    #ifdef CAMALGAMATOR_DEBUG
+        CHashObject_set_bool(CAmalgamation_stack_json,"already_included",is_already_included);
+    #endif
+
+    CAmalgamator_plot_json();
+
     if(is_already_included){
 
         UniversalGarbage_free(garbage);
 
+
         #ifdef CAMALGAMATOR_DEBUG
-            CAmalgamation_pop();
-            CAmalgamator_plot_json();
+                CAmalgamation_pop();
         #endif
         return CAMALGAMATOR_OK;
     }
-
+    return 0;
     DtwStringArray_append(already_included_sha_list, sha_content);
 
     CTextStack *str_file = newCTextStack_string_empty();
@@ -158,7 +172,7 @@ int  private_CAmalgamator_generate_amalgamation(
 
             if(current_char == '"'){
 
-                int error = private_CAmalgamator_generate_amalgamation(final,str_file->rendered_text,already_included_sha_list);
+                int error = private_CAmalgamator_generate_amalgamation(final,str_file->rendered_text,already_included_sha_list,old_stack);
                 if(error){
                     UniversalGarbage_free(garbage);
                     return error;
@@ -176,8 +190,8 @@ int  private_CAmalgamator_generate_amalgamation(
     }
 
     #ifdef CAMALGAMATOR_DEBUG
-                CAmalgamation_pop();
-                CAmalgamator_plot_json();
+                        CAmalgamator_plot_json();
+                        CAmalgamation_pop();
     #endif
     return CAMALGAMATOR_OK;
 }

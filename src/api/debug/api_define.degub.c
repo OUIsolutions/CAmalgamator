@@ -1,35 +1,33 @@
-#define  CAMALGAMATOR_DEBUG
 
 //silver_chain_scope_start
 //mannaged by silver chain
 #include "../../imports/imports.api_declare.h"
 //silver_chain_scope_end
-#ifdef CAMALGAMATOR_DEBUG
 
 void CAmalgamator_start(){
-    if(internal_stack_json == NULL){
+    if(CAmalgamation_internal_stack_json == NULL){
         dtw_remove_any(CAMALGAMATION_PLOTAGE_FOLDER);
-        internal_stack_json = newCHashArrayEmpty();
+        CAmalgamation_internal_stack_json = newCHashArrayEmpty();
     }
 }
 
 void CAmalgamation_append(const char *func_name){
     CAmalgamator_start();
 
-    stack_json = newCHashObjectEmpty();
-    CHashArray_append(internal_stack_json,
+    CAmalgamation_stack_json = newCHashObjectEmpty();
+    CHashArray_append(CAmalgamation_internal_stack_json,
         newCHashObject(
                 "func_name",newCHashString(func_name),
-                "itens",stack_json
+                "itens",CAmalgamation_stack_json
             )
     );
 }
 
 void CAmalgamation_pop(){
     CAmalgamator_start();
-    CHashArray_remove(internal_stack_json, -1);
-    if(CHash_get_size(internal_stack_json)){
-        stack_json = CHashArray_get(internal_stack_json,-1);
+    CHashArray_remove(CAmalgamation_internal_stack_json, -1);
+    if(CHash_get_size(CAmalgamation_internal_stack_json)){
+        CAmalgamation_stack_json = CHashArray_get(CAmalgamation_internal_stack_json,-1);
     }
 
 }
@@ -45,13 +43,20 @@ void CAmalgamator_plot_json(){
         return;
     }
 
-    char *content = CHash_dump_to_json_string(internal_stack_json);
+    char *content = CHash_dump_to_json_string(CAmalgamation_internal_stack_json);
     char path[sizeof(CAMALGAMATION_PLOTAGE_FOLDER) + 10] = {0};
     sprintf(path,"%s/%d.json",CAMALGAMATION_PLOTAGE_FOLDER,CAmalgamation_total_plotage);
     dtw_write_string_file_content(path,content);
-    free(content);
 
+    free(content);
     CAmalgamation_total_plotage+=1;
 }
 
-#endif
+
+CHashArray * convert_string_array_to_chash_object(DtwStringArray *itens){
+    CHashArray * created = newCHashArrayEmpty();
+    for(int i=0; i< itens->size; i++){
+        CHashArray_append_string(created,itens->strings[i]);
+    }
+    return created;
+}
