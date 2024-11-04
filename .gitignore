@@ -1,6 +1,7 @@
 # Prerequisites
 *.d
 dependencies
+doTheWorld_test
 SilverChain
 # Object files
 *.o
