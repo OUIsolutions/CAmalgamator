@@ -19,16 +19,16 @@ int main(){
         CHashObject_set_string(CAmalgamation_stack_json,"fiename", filnemae);
         CHashObject_set_any(CAmalgamation_stack_json, "already_included", convert_string_array_to_chash_object(already_included));
     #endif
-    CAmalgamator_plot_json();
+    CAmalgamator_plot_json(1);
 
     private_CAmalgamator_generate_amalgamation(final,filnemae,already_included,CAmalgamation_stack_json);
     #ifdef CAMALGAMATOR_DEBUG
-            CAmalgamator_plot_json();
+            CAmalgamator_plot_json(2);
      #endif
     dtw_write_string_file_content("saida.c", final->rendered_text);
     #ifdef CAMALGAMATOR_DEBUG
                 CAmalgamation_pop();
-                CAmalgamator_plot_json();
+                CAmalgamator_plot_json(2);
      #endif
      return 0;
 }

@@ -13,7 +13,7 @@ void CAmalgamator_start(){
 
 void CAmalgamation_append(const char *func_name){
     CAmalgamator_start();
-
+    CAmalgamation_func_name  = func_name;
     CAmalgamation_stack_json = newCHashObjectEmpty();
     CHashArray_append(CAmalgamation_internal_stack_json,
         newCHashObject(
@@ -43,9 +43,10 @@ void CAmalgamator_plot_json(int line){
         return;
     }
 
+
     char *content = CHash_dump_to_json_string(CAmalgamation_internal_stack_json);
-    char path[sizeof(CAMALGAMATION_PLOTAGE_FOLDER) + 10] = {0};
-    sprintf(path,"%s/%d:%d.json",CAMALGAMATION_PLOTAGE_FOLDER,CAmalgamation_total_plotage,line);
+    char path[sizeof(CAMALGAMATION_PLOTAGE_FOLDER) + 200] = {0};
+    sprintf(path,"%s/%d:%s:%d.json",CAMALGAMATION_PLOTAGE_FOLDER,CAmalgamation_total_plotage,CAmalgamation_func_name,line);
     dtw_write_string_file_content(path,content);
 
     free(content);

@@ -2,7 +2,6 @@
 //silver_chain_scope_start
 //mannaged by silver chain
 #include "../../imports/imports.api_declare.h"
-#include <cstdio>
 
 //silver_chain_scope_end
 
@@ -17,7 +16,7 @@ int  private_CAmalgamator_generate_amalgamation(
 ){
     #ifdef CAMALGAMATOR_DEBUG
         CAmalgamation_append("private_CAmalgamator_generate_amalgamation");
-        CAmalgamator_plot_json(19);
+        CAmalgamator_plot_json(1);
     #endif
 
     UniversalGarbage *garbage = newUniversalGarbage();
@@ -35,13 +34,13 @@ int  private_CAmalgamator_generate_amalgamation(
 
     #ifdef CAMALGAMATOR_DEBUG
             CHashObject_set_string(CAmalgamation_stack_json,"content",content);
-            CAmalgamator_plot_json(37);
+            CAmalgamator_plot_json(2);
     #endif
 
     char *sha_content = dtw_generate_sha_from_any(content,size);
     #ifdef CAMALGAMATOR_DEBUG
         CHashObject_set_string(CAmalgamation_stack_json,"sha",sha_content);
-        CAmalgamator_plot_json(43);
+        CAmalgamator_plot_json(3);
     #endif
 
     UniversalGarbage_add_simple(garbage, sha_content);
@@ -49,7 +48,7 @@ int  private_CAmalgamator_generate_amalgamation(
 
     #ifdef CAMALGAMATOR_DEBUG
         CHashObject_set_bool(CAmalgamation_stack_json,"already_included",is_already_included);
-        CAmalgamator_plot_json(51);
+        CAmalgamator_plot_json(4);
     #endif
 
     if(is_already_included){
@@ -65,7 +64,7 @@ int  private_CAmalgamator_generate_amalgamation(
     DtwStringArray_append(already_included_sha_list, sha_content);
     #ifdef CAMALGAMATOR_DEBUG
         CHashObject_set_any(old_stack, "already_included", convert_string_array_to_chash_object(already_included_sha_list));
-        CAmalgamator_plot_json(67);
+        CAmalgamator_plot_json(5);
 
     #endif
 
@@ -74,7 +73,7 @@ int  private_CAmalgamator_generate_amalgamation(
     UniversalGarbage_add(garbage,CTextStack_free,str_file);
     #ifdef  CAMALGAMATOR_DEBUG
         CHashObject_set_string(CAmalgamation_stack_json,"str_file",str_file->rendered_text);
-        CAmalgamator_plot_json(76);
+        CAmalgamator_plot_json(6);
 
     #endif
 
@@ -82,7 +81,7 @@ int  private_CAmalgamator_generate_amalgamation(
     int state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
     #ifdef  CAMALGAMATOR_DEBUG
         CHashObject_set_long(CAmalgamation_stack_json,"state",state);
-        CAmalgamator_plot_json(84);
+        CAmalgamator_plot_json(7);
     #endif
 
     for(int i =0; i < size;i++){
@@ -92,7 +91,7 @@ int  private_CAmalgamator_generate_amalgamation(
             char formmated_char[10] = {0};
             sprintf(formmated_char,"%c", current_char);
             CHashObject_set_string(CAmalgamation_stack_json,"current_char",formmated_char);
-            CAmalgamator_plot_json(94);
+            CAmalgamator_plot_json(8);
         #endif
 
 
@@ -101,7 +100,7 @@ int  private_CAmalgamator_generate_amalgamation(
             bool is_multiline_coment_start = private_CAmalgamator_is_start_multiline_coment_at_point(content,size,i);
             #ifdef  CAMALGAMATOR_DEBUG
                 CHashObject_set_bool(CAmalgamation_stack_json,"is_multiline_coment_start",is_multiline_coment_start);
-                CAmalgamator_plot_json(103);
+                CAmalgamator_plot_json(9);
             #endif
 
 
@@ -111,7 +110,7 @@ int  private_CAmalgamator_generate_amalgamation(
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_long(CAmalgamation_stack_json,"state",state);
                     CHashObject_set_string(old_stack,"final", final->rendered_text);
-                    CAmalgamator_plot_json(113);
+                    CAmalgamator_plot_json(10);
                 #endif
 
                 continue;
@@ -124,7 +123,7 @@ int  private_CAmalgamator_generate_amalgamation(
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_long(CAmalgamation_stack_json,"state",state);
                     CHashObject_set_string(old_stack,"final", final->rendered_text);
-                    CAmalgamator_plot_json(126);
+                    CAmalgamator_plot_json(11);
                 #endif
                 continue;
             }
@@ -136,7 +135,7 @@ int  private_CAmalgamator_generate_amalgamation(
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_long(CAmalgamation_stack_json,"state",state);
                     CHashObject_set_string(old_stack,"final", final->rendered_text);
-                    CAmalgamator_plot_json(138);
+                    CAmalgamator_plot_json(12);
                 #endif
                 continue;
             }
@@ -148,7 +147,7 @@ int  private_CAmalgamator_generate_amalgamation(
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_long(CAmalgamation_stack_json,"state",state);
                     CHashObject_set_string(old_stack,"final", final->rendered_text);
-                    CAmalgamator_plot_json(150);
+                    CAmalgamator_plot_json(13);
                 #endif
                 continue;
             }
@@ -158,7 +157,7 @@ int  private_CAmalgamator_generate_amalgamation(
                 state =PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START;
                 #ifdef  CAMALGAMATOR_DEBUG
                     CHashObject_set_long(CAmalgamation_stack_json,"state",state);
-                    CAmalgamator_plot_json(160);
+                    CAmalgamator_plot_json(14);
                 #endif
                 continue;; // we dont format include here
             }
@@ -166,7 +165,7 @@ int  private_CAmalgamator_generate_amalgamation(
             CTextStack_format(final,"%c",current_char);
             #ifdef  CAMALGAMATOR_DEBUG
                 CHashObject_set_string(old_stack,"final", final->rendered_text);
-                CAmalgamator_plot_json(168);
+                CAmalgamator_plot_json(15);
             #endif
             continue;
         }
@@ -222,25 +221,28 @@ int  private_CAmalgamator_generate_amalgamation(
             #ifdef  CAMALGAMATOR_DEBUG
                 char formmated_last_char[10] = {0};
                 sprintf(formmated_char,"%c", last_char);
-                CHashObject_set_string(old_stack,"last_char", formmated_last_char);
+                CHashObject_set_string(CAmalgamation_stack_json,"last_char", formmated_last_char);
                 CAmalgamator_plot_json(226);
             #endif
             bool is_str_end = current_char == '"' && last_char != '\\';
             #ifdef  CAMALGAMATOR_DEBUG
-                CHashObject_set_bool(old_stack,"is_str_end", is_str_end);
+                CHashObject_set_bool(CAmalgamation_stack_json,"is_str_end", is_str_end);
                 CAmalgamator_plot_json(231);
             #endif
 
             if(is_str_end){
                 state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
                 #ifdef  CAMALGAMATOR_DEBUG
-                    CHashObject_set_long(old_stack,"state", state);
+                    CHashObject_set_long(CAmalgamation_stack_json,"state", state);
                     CAmalgamator_plot_json(237);
                 #endif
             }
 
             CTextStack_format(final,"%c",current_char);
-
+            #ifdef  CAMALGAMATOR_DEBUG
+                CHashObject_set_string(old_stack,"final", final->rendered_text);
+                CAmalgamator_plot_json(244);
+            #endif
 
             continue;
         }

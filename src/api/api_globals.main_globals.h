@@ -6,7 +6,7 @@
 
 CHashArray *CAmalgamation_internal_stack_json;
 CHashObject *CAmalgamation_stack_json;
-
+const char *CAmalgamation_func_name = "main";
 int CAmalgamation_total_plotage = 0;
 int CAmalgamator_stack_level = 0;
 int CAmalgamator_min_plotage = 0;
