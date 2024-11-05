@@ -11,7 +11,10 @@
 int  private_CAmalgamator_generate_amalgamation(
     CTextStack * final,
     const char*filename,
-    DtwStringArray *already_included_sha_list
+    DtwStringArray *already_included_sha_list,
+    bool (*include_callback)(const char *filename,const  char *path, void *extra_args),
+    bool (*dont_change_callback)(const char *filename,const  char *path, void *extra_args),
+    void *args
 ){
 
 
@@ -40,7 +43,7 @@ int  private_CAmalgamator_generate_amalgamation(
     if(is_already_included){
             UniversalGarbage_free(garbage);
             return CAMALGAMATOR_OK;
-        }
+    }
 
 
     DtwStringArray_append(already_included_sha_list, sha_content);
@@ -61,9 +64,6 @@ int  private_CAmalgamator_generate_amalgamation(
         if(state == PRIVATE_CAMALGAMATOR_NORMAL_STATE){
 
             bool is_multiline_coment_start = private_CAmalgamator_is_start_multiline_coment_at_point(content,size,i);
-
-
-
             if(is_multiline_coment_start){
                 state = PRIVATE_CAMALGAMATOR_INSIDE_MULTILINE_COMENT;
                 CTextStack_format(final,"%c",current_char);
@@ -71,11 +71,9 @@ int  private_CAmalgamator_generate_amalgamation(
             }
 
             bool is_inline_coment_start =  private_CAmalgamator_is_start_inline_coment_at_point(content,size,i);
-
             if(is_inline_coment_start){
                 state = PRIVATE_CAMALGAMATOR_INSIDE_INLINE_COMENT;
                 CTextStack_format(final,"%c",current_char);
-
                 continue;
             }
 
@@ -108,14 +106,13 @@ int  private_CAmalgamator_generate_amalgamation(
             if(is_multiline_coment_end){
                 state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
             }
+
             CTextStack_format(final,"%c",current_char);
             continue;
-
         }
 
         if(state == PRIVATE_CAMALGAMATOR_INSIDE_INLINE_COMENT){
             bool is_inline_comment_end = current_char == '\n';
-
             if(is_inline_comment_end){
                 state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
             }
@@ -132,16 +129,12 @@ int  private_CAmalgamator_generate_amalgamation(
             }
 
             CTextStack_format(final,"%c",current_char);
-
             continue;
         }
 
         if(state == PRIVATE_CAMALGAMATOR_INSIDE_CHAR){
             char last_char = content[i-1];
-
-
             bool is_char_end = current_char == '\''&& last_char != '\'';
-
             if(is_char_end){
                 state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
 
@@ -154,7 +147,6 @@ int  private_CAmalgamator_generate_amalgamation(
         if(state == PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START){
             if (current_char == '"'){
                 state = PRIVATE_CAMALGAMATOR_COLLECTING_FILENAME;
-
                 continue;
             }
             if(current_char == '<'){
@@ -170,7 +162,25 @@ int  private_CAmalgamator_generate_amalgamation(
 
             if(current_char == '"'){
                 char *new_path = dtw_concat_path(dir, str_file->rendered_text);
-                int error = private_CAmalgamator_generate_amalgamation(final,new_path,already_included_sha_list);
+                if(include_callback){
+                    if(!include_callback(filename,new_path,args)){
+                        free(new_path);
+                        CTextStack_restart(str_file);
+                        state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
+                        continue;
+                    }
+                }
+                if(dont_change_callback){
+                    if(dont_change_callback(filename,new_path,args)){
+                        CTextStack_format(str_file,"#include \"%s\"\n",str_file->rendered_text);
+                        free(new_path);
+                        CTextStack_restart(str_file);
+                        state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
+                        continue;
+                    }
+                }
+
+                int error = private_CAmalgamator_generate_amalgamation(final,new_path,already_included_sha_list,include_callback,dont_change_callback,args);
                 free(new_path);
                 if(error){
                     UniversalGarbage_free(garbage);
@@ -181,13 +191,10 @@ int  private_CAmalgamator_generate_amalgamation(
 
                 continue;
             }
-
             CTextStack_format(str_file,"%c", current_char);
-
             continue;
         }
     }
     UniversalGarbage_free(garbage);
-
     return CAMALGAMATOR_OK;
 }
