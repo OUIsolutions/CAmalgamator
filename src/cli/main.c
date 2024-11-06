@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
         UniversalGarbage_free(garbage);
         return 1;
     }
-    long max_size  = amalgamator.ONE_MB;
+    long max_size  = amalgamator.ONE_MB * 10;
     CliFlag *max_bytes = cli.entry.get_flag(entry,"maxbyte",CLI_NOT_CASE_SENSITIVE);
     if(max_bytes->size > 0){
         max_size = cli.flag.get_long(max_bytes,0);
