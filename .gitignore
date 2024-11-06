@@ -1,6 +1,7 @@
 # Prerequisites
 *.d
 release
+CAmalgamator.c
 amalgamation_plotage
 dependencies
 doTheWorld_test
