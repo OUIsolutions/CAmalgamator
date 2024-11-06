@@ -5,17 +5,18 @@
 //silver_chain_scope_end
 
 #define COLLECT_ERROR_ATTIBUTES \
-if(prev_file == NULL){\
-    *filename_errr = strdup(filename);\
+if(include_code == NULL){\
+    *filename_errr = strdup(prev_file);\
 }\
-if(prev_file){\
+if(include_code){\
     *include_code_error = strdup(include_code);\
     *filename_errr = dtw_get_absolute_path(prev_file);\
 }
 
+
 int  private_CAmalgamator_generate_amalgamation(
-    short behavior,
-    const char*filename,
+    const char *prev_file,
+    const char *include_code,
     CTextStack * final,
     DtwStringArray *already_included,
     char **include_code_error,
@@ -23,12 +24,9 @@ int  private_CAmalgamator_generate_amalgamation(
     long max_content_size,
     int recursion_call,
     int max_recursion,
-    const char *prev_file,
-    const char *include_code,
     short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
     void *args
 ){
-
     if(recursion_call >= max_recursion){
       COLLECT_ERROR_ATTIBUTES
         return CAMALGAMATOR_MAX_RECURSION_CALL;
@@ -39,6 +37,42 @@ int  private_CAmalgamator_generate_amalgamation(
         return CAMALGAMATOR_MAX_CONTENT_SIZE;
     }
 
+    short behavior = CAMALGAMATOR_INCLUDE_ONCE;
+    char *filename = (char*)prev_file;
+    UniversalGarbage *garbage = newUniversalGarbage();
+
+    DtwPath *current_path = newDtwPath(prev_file);
+    UniversalGarbage_add(garbage,DtwPath_free, current_path);
+    char *dir = DtwPath_get_dir(current_path);
+
+    if(include_code){
+        filename = dtw_concat_path(dir,include_code);
+
+        UniversalGarbage_add_simple(garbage,filename);
+    }
+
+    bool is_binary;
+    long size;
+    char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
+    UniversalGarbage_add_simple(garbage, content);
+    if(content == NULL || is_binary){
+
+
+        COLLECT_ERROR_ATTIBUTES
+        UniversalGarbage_free(garbage);
+        return CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED;
+    }
+
+    if(generator_handler && include_code){
+         behavior  = generator_handler(filename,include_code, args);
+    }
+
+    if(behavior < 0) {
+        COLLECT_ERROR_ATTIBUTES
+        UniversalGarbage_free(garbage);
+        return behavior;
+    }
+
     if(behavior == CAMALGAMATOR_DONT_INCLUDE){
         return PRIVATE_CAMALGAMATOR_NO_ERRORS;
     }
@@ -46,16 +80,7 @@ int  private_CAmalgamator_generate_amalgamation(
         CTextStack_format(final,"$include \"%s\"\n", include_code);
         return PRIVATE_CAMALGAMATOR_NO_ERRORS;
     }
-    UniversalGarbage *garbage = newUniversalGarbage();
-    bool is_binary;
-    long size;
-    char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
-    UniversalGarbage_add_simple(garbage, content);
-    if(content == NULL || is_binary){
-        COLLECT_ERROR_ATTIBUTES
-        UniversalGarbage_free(garbage);
-        return CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED;
-    }
+
 
     if(behavior == CAMALGAMATOR_INCLUDE_ONCE){
         char *absolute = dtw_get_absolute_path(filename);
@@ -67,11 +92,6 @@ int  private_CAmalgamator_generate_amalgamation(
         }
         DtwStringArray_append(already_included, absolute);
     }
-
-    DtwPath *current_path = newDtwPath(filename);
-    UniversalGarbage_add(garbage,DtwPath_free, current_path);
-
-    char *dir = DtwPath_get_dir(current_path);
 
     CTextStack *new_include_code = newCTextStack_string_empty();
     UniversalGarbage_add(garbage,CTextStack_free,new_include_code);
@@ -179,30 +199,9 @@ int  private_CAmalgamator_generate_amalgamation(
             // so whe have the hle filename stored in
             // new_include_code->rendered_text
             if(current_char == '"'){
-                //default behavior its include only once
-                int current_behavior = CAMALGAMATOR_INCLUDE_ONCE;
-                char *new_path = dtw_concat_path(dir, new_include_code->rendered_text);
-
-                if(dtw_entity_type(new_path) != DTW_FILE_TYPE){
-                    COLLECT_ERROR_ATTIBUTES
-                    free(new_path);
-                    UniversalGarbage_free(garbage);
-                    return CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED;
-                }
-
-                if(generator_handler){
-                     current_behavior  = generator_handler(new_path,new_include_code->rendered_text, args);
-                }
-                if(current_behavior < 0) {
-                    COLLECT_ERROR_ATTIBUTES
-                    free(new_path);
-                    UniversalGarbage_free(garbage);
-                    return current_behavior;
-                }
-
                 int error = private_CAmalgamator_generate_amalgamation(
-                    current_behavior,
-                    new_path,
+                    filename,
+                    new_include_code->rendered_text,
                     final,
                     already_included,
                     include_code_error,
@@ -210,13 +209,9 @@ int  private_CAmalgamator_generate_amalgamation(
                     max_content_size,
                     recursion_call+1,
                     max_recursion,
-                    filename, // its the prev filename
-                    new_include_code->rendered_text,
                     generator_handler,
                     args
                 );
-
-                free(new_path);
                 if(error){
                         UniversalGarbage_free(garbage);
                         return error;

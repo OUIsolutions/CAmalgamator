@@ -18,8 +18,8 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
     char *include_error_name = NULL;
     char *filename_error = NULL;
     int error  = private_CAmalgamator_generate_amalgamation(
-        CAMALGAMATOR_INCLUDE_ONCE,
         filename,
+        NULL, //include code
         final,
         already_included,
         &include_error_name,
@@ -27,8 +27,6 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
         max_content_size,
         0, //recursion size
         max_recursion,
-        NULL, //filename
-        NULL, //include code
         generator_handler,
         args
     );
