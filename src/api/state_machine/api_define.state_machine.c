@@ -12,7 +12,7 @@ int  private_CAmalgamator_generate_amalgamation(
     short behavior,
     const char*filename,
     CTextStack * final,
-    DtwStringArray *already_included_sha_list,
+    DtwStringArray *already_included,
     char **include_code_error,
     char **filename_errr,
     const char *prev_file,
@@ -48,14 +48,14 @@ int  private_CAmalgamator_generate_amalgamation(
     }
 
     if(behavior == CAMALGAMATOR_INCLUDE_ONCE){
-        char *sha_content = dtw_generate_sha_from_any(content,size);
-        UniversalGarbage_add_simple(garbage, sha_content);
-        bool is_already_included =DtwStringArray_find_position(already_included_sha_list,sha_content) != -1;
+        char *absolute = dtw_get_absolute_path(filename);
+        UniversalGarbage_add_simple(garbage, absolute);
+        bool is_already_included =DtwStringArray_find_position(already_included,absolute) != -1;
         if(is_already_included){
                 UniversalGarbage_free(garbage);
                 return PRIVATE_CAMALGAMATOR_NO_ERRORS;
         }
-        DtwStringArray_append(already_included_sha_list, sha_content);
+        DtwStringArray_append(already_included, absolute);
     }
 
     DtwPath *current_path = newDtwPath(filename);
@@ -185,7 +185,7 @@ int  private_CAmalgamator_generate_amalgamation(
                     current_behavior,
                     new_path,
                     final,
-                    already_included_sha_list,
+                    already_included,
                     include_code_error,
                     filename_errr,
                     filename, // its the prev filename

@@ -5,6 +5,7 @@
 #include "../imports/imports.cli_define.h"
 //silver_chain_scope_end
 
+#include <time.h>
 
 
 int main(int argc, char *argv[]){
@@ -64,12 +65,18 @@ int main(int argc, char *argv[]){
         UniversalGarbage_free(garbage);
         return 1;
     }
+      struct timespec inicio, fim;
+      clock_gettime(CLOCK_MONOTONIC, &inicio);
+      CAmalgamatorErrorOrContent *error_or_content = amalgamator.generate_amalgamation(
+          filename,
+          generator_handler,
+          (void*)&behaviors
+      );
+      clock_gettime(CLOCK_MONOTONIC, &fim);
+      // Calcula o tempo decorrido em nanosegundos
+      long tempo_gasto = (fim.tv_sec - inicio.tv_sec) * 1000000000L + (fim.tv_nsec - inicio.tv_nsec);
+      printf("Tempo gasto: %ld ns\n", tempo_gasto);
 
-    CAmalgamatorErrorOrContent *error_or_content = amalgamator.generate_amalgamation(
-        filename,
-        generator_handler,
-        (void*)&behaviors
-    );
 
     UniversalGarbage_add(garbage,amalgamator.free_error_or_string,error_or_content);
     if(error_or_content->error){

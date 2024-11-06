@@ -7,7 +7,7 @@ int  private_CAmalgamator_generate_amalgamation(
     short behavionr,
     const char*filename,
     CTextStack * final,
-    DtwStringArray *already_included_sha_list,
+    DtwStringArray *already_included,
     char **include_code_error,
     char **filename_errr,
     const char *prev_file,
