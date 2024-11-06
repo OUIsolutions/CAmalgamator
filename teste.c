@@ -16146,7 +16146,7 @@ struct CAmalgamatorErrorOrContent{
     char *content;
     int error;
     char *error_msg;
-    char *filename;
+    char *include_name;
 };
 typedef  struct CAmalgamatorErrorOrContent CAmalgamatorErrorOrContent;
 
@@ -16190,7 +16190,7 @@ typedef   struct  CAmalgamatorNamesapce CAmalgamatorNamesapce;
 //silver_chain_scope_end
 
 
-CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int error_code,char *filename,const char *error_msg,...);
+CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int error_code,char *import_name,const char *error_msg,...);
 
 
 CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_ok(char *content);
@@ -16243,7 +16243,7 @@ int  private_CAmalgamator_generate_amalgamation(
     DtwStringArray *already_included_sha_list,
     short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
     void *args,
-    char **error_filename,
+    char **include_code_error,
     const char *include_code
 );
 
@@ -16257,7 +16257,7 @@ int  private_CAmalgamator_generate_amalgamation(
 
 //silver_chain_scope_end
 
-CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int error_code,char *filename,const char *error_msg,...){
+CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int error_code,char *import_name,const char *error_msg,...){
     CAmalgamatorErrorOrContent *self = (CAmalgamatorErrorOrContent*)malloc(sizeof(CAmalgamatorErrorOrContent));
     *self = (CAmalgamatorErrorOrContent){0};
     self->error = error_code;
@@ -16265,7 +16265,7 @@ CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int 
     va_start(args, error_msg);
     self->error_msg = private_dtw_format_vaarg(error_msg,args);
     va_end(args);
-    self->filename = filename;
+    self->include_name = import_name;
     return  self;
 }
 
@@ -16278,8 +16278,8 @@ CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_ok(char *c
 }
 
 void CAmalgamatorErrorOrString_free(CAmalgamatorErrorOrContent *self){
-    if(self->filename){
-        free(self->filename);
+    if(self->include_name){
+        free(self->include_name);
     }
     if(self->content){
         free(self->content);
@@ -16306,7 +16306,7 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
 ){
     CTextStack *final = newCTextStack_string_empty();
     DtwStringArray *already_included = newDtwStringArray();
-    char *filename_error = NULL;
+    char *import_name = NULL;
     int error  = private_CAmalgamator_generate_amalgamation(
         CAMALGAMATOR_INCLUDE_ONCE,
         filename,
@@ -16314,7 +16314,7 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
         already_included,
         generator_handler,
         args,
-        &filename_error,
+        &import_name,
         NULL
     );
 
@@ -16324,9 +16324,9 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
         if(error == CAMALGAMATOR_FILE_NOT_FOUND){
             return Private_new_CAmalgamatorErrorOrString_as_error(
                 CAMALGAMATOR_FILE_NOT_FOUND,
-                filename_error,
-                "file %s not found",
-                filename
+                import_name,
+                "include:'%s' not found",
+                import_name
             );
         }
 
@@ -16438,7 +16438,7 @@ int  private_CAmalgamator_generate_amalgamation(
     DtwStringArray *already_included_sha_list,
     short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
     void *args,
-    char **error_filename,
+    char **include_code_error,
     const char *include_code
 ){
     if(behavionr == CAMALGAMATOR_DONT_INCLUDE){
@@ -16454,7 +16454,7 @@ int  private_CAmalgamator_generate_amalgamation(
     char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
     UniversalGarbage_add_simple(garbage, content);
     if(content == NULL || is_binary){
-        *error_filename = strdup(filename);
+        *include_code_error = strdup(include_code);
         UniversalGarbage_free(garbage);
         return CAMALGAMATOR_FILE_NOT_FOUND;
     }
@@ -16595,7 +16595,7 @@ int  private_CAmalgamator_generate_amalgamation(
                     already_included_sha_list,
                     generator_handler,
                     args,
-                    error_filename,
+                    include_code_error,
                     new_include_code->rendered_text
                 );
                 if(error){
@@ -18625,6 +18625,7 @@ int  collect_flag(CliFlag *flag,DtwStringArray *source){
         dtw.string_array.append(source,current_absolute);
         free(current_absolute);
     }
+    return  amalgamator.NO_ERRORS;
 }
 
 #endif

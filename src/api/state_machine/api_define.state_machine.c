@@ -15,7 +15,7 @@ int  private_CAmalgamator_generate_amalgamation(
     DtwStringArray *already_included_sha_list,
     short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
     void *args,
-    char **error_filename,
+    char **include_code_error,
     const char *include_code
 ){
     if(behavionr == CAMALGAMATOR_DONT_INCLUDE){
@@ -31,7 +31,7 @@ int  private_CAmalgamator_generate_amalgamation(
     char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
     UniversalGarbage_add_simple(garbage, content);
     if(content == NULL || is_binary){
-        *error_filename = strdup(filename);
+        *include_code_error = strdup(include_code);
         UniversalGarbage_free(garbage);
         return CAMALGAMATOR_FILE_NOT_FOUND;
     }
@@ -172,7 +172,7 @@ int  private_CAmalgamator_generate_amalgamation(
                     already_included_sha_list,
                     generator_handler,
                     args,
-                    error_filename,
+                    include_code_error,
                     new_include_code->rendered_text
                 );
                 if(error){

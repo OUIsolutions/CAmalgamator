@@ -13,7 +13,7 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
 ){
     CTextStack *final = newCTextStack_string_empty();
     DtwStringArray *already_included = newDtwStringArray();
-    char *filename_error = NULL;
+    char *import_name = NULL;
     int error  = private_CAmalgamator_generate_amalgamation(
         CAMALGAMATOR_INCLUDE_ONCE,
         filename,
@@ -21,7 +21,7 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
         already_included,
         generator_handler,
         args,
-        &filename_error,
+        &import_name,
         NULL
     );
 
@@ -31,9 +31,9 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
         if(error == CAMALGAMATOR_FILE_NOT_FOUND){
             return Private_new_CAmalgamatorErrorOrString_as_error(
                 CAMALGAMATOR_FILE_NOT_FOUND,
-                filename_error,
-                "file %s not found",
-                filename
+                import_name,
+                "include:'%s' not found",
+                import_name
             );
         }
 

@@ -9,6 +9,6 @@ struct CAmalgamatorErrorOrContent{
     char *content;
     int error;
     char *error_msg;
-    char *filename;
+    char *include_name;
 };
 typedef  struct CAmalgamatorErrorOrContent CAmalgamatorErrorOrContent;
