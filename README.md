@@ -24,8 +24,8 @@ Aditionaly , you can pass flags to help you in the usage
 |------|-------------|---------|
 | --f, --file | The start file (required) | - |
 | --o, --out, output | The dest output(required) | - |
-|  --maxbyte | The max bytes of the final output(optional) | 10mb |
-| --maxmega | The max mebagytes of the final output(optional) | 10mb |
+|  --maxbyte | The max bytes of the final output(optional) | 100mb |
+| --maxmega | The max mebagytes of the final output(optional) | 100mb |
 | --maxreq | The max recursion to be used (optional) | 1000 |
 |--nc, --nochange | The files or dirs you dont want to be changed if ocours a **#include** (optional) | - |
 |--ni, --noinclude | The files or dirs you dont want to be include if ocours a **#include** (the dif betwen no change,  its that it will be hidded) (optional) | - |
@@ -40,3 +40,84 @@ in these case, I want to not include nothing inside dependencies, so i type:
 note that you can pass any  files or dirs  you want in (--noinclude , --nochange,--perpetual )
 
 ## Api Usage
+you also can use the code into your build programs, using the public api,
+for downloading it, just type
+```shel
+curl -L https://github.com/OUIsolutions/CAmalgamator/releases/download/0.001/CAmalgamatorApiOne.h  -o CAmalgamatorApiOne.h
+
+```
+
+```c
+#include "CAmalgamatorApiOne.h"
+CAmalgamatorNamesapce amalgamator;
+
+int main(){
+    amalgamator = newCAmalgamatorNamesapce();
+    const char *entrie  = "src/cli/main.c";
+
+    int max_recursion = 1000;
+    int max_size = amalgamator.ONE_MB * 10;
+    CAmalgamatorErrorOrContent *error_or_content =amalgamator.generate_amalgamation_simple(
+        entrie,
+        max_size,
+        max_recursion
+    );
+    if(error_or_content->error){
+        printf("%s\n",error_or_content->error_msg);
+        amalgamator.free_error_or_string(error_or_content);
+        return 1;
+    }
+    printf("%s",error_or_content->content);
+    amalgamator.free_error_or_string(error_or_content);
+}
+
+```
+## Seleting files, with the generator_callback
+with the generator callback you can determine ,the exact type of file  you want to return
+based on the code return
+
+```c
+#include "CAmalgamatorApiOne.h"
+
+CAmalgamatorNamesapce amalgamator;
+
+
+short generator_callback(const char *filename,const char *include_name,void *args){
+    printf("amalgamated the : %s file with the include %s\n\n",filename,include_name);
+    return amalgamator.INCLUDE_ONCE;
+}
+
+
+int main(){
+    amalgamator = newCAmalgamatorNamesapce();
+    const char *entrie  = "src/cli/main.c";
+
+    int max_recursion = 1000;
+    int max_size = amalgamator.ONE_MB * 10;
+    void *external_args_you_want_to_use = NULL;
+    CAmalgamatorErrorOrContent *error_or_content =amalgamator.generate_amalgamation(
+        entrie,
+        max_size,
+        max_recursion,
+        generator_callback,
+        external_args_you_want_to_use
+    );
+
+    if(error_or_content->error){
+        printf("%s\n",error_or_content->error_msg);
+        amalgamator.free_error_or_string(error_or_content);
+        return 1;
+    }
+    printf("%s",error_or_content->content);
+    amalgamator.free_error_or_string(error_or_content);
+}
+
+```
+
+the code return can be betwen
+| Namespace | Pure Var | Description |
+|------|-------------|---------|
+|amalgamator.DONT_INCLUDE|CAMALGAMATOR_DONT_INCLUDE | dont make the inclusion and hide the text of **#include** |
+|amalgamator.DONT_CHANGE | CAMALGAMATOR_DONT_CHANGE | dont change the **#include**|
+|amalgamator.INCLUDE_ONCE | CAMALGAMATOR_INCLUDE_ONCE| include the content once |
+|amalgamator.INCLUDE_PERPETUAL | CAMALGAMATOR_INCLUDE_PERPETUAL| include the content, every time it founds it  |
