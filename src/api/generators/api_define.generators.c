@@ -6,7 +6,7 @@
 
 
 
-CAmalgamatorErrorOrString * CAmalgamator_generate_amalgamation(
+CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
     const char*filename,
     short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
     void *args
@@ -23,6 +23,6 @@ CAmalgamatorErrorOrString * CAmalgamator_generate_amalgamation(
     return Private_new_CAmalgamatorErrorOrString_as_ok(content);
 }
 
-CAmalgamatorErrorOrString * CAmalgamator_generate_amalgamation_simple(const char*filename){
+CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename){
     return CAmalgamator_generate_amalgamation(filename,NULL,NULL);
 }

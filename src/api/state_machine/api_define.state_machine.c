@@ -13,17 +13,17 @@ int  private_CAmalgamator_generate_amalgamation(
     const char*filename,
     CTextStack * final,
     DtwStringArray *already_included_sha_list,
-    short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
+    short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
     void *args,
     const char *include_code
 ){
 
     if(behavionr == CAMALGAMATOR_DONT_INCLUDE){
-        return PRIVATE_CAMALGAMATOR_OK;
+        return PRIVATE_CAMALGAMATOR_NO_ERRORS;
     }
     if(behavionr == CAMALGAMATOR_DONT_CHANGE){
         CTextStack_format(final,"$include \"%s\"\n", include_code);
-        return PRIVATE_CAMALGAMATOR_OK;
+        return PRIVATE_CAMALGAMATOR_NO_ERRORS;
     }
     UniversalGarbage *garbage = newUniversalGarbage();
     bool is_binary;
@@ -42,7 +42,7 @@ int  private_CAmalgamator_generate_amalgamation(
         bool is_already_included =DtwStringArray_find_position(already_included_sha_list,sha_content) != -1;
         if(is_already_included){
                 UniversalGarbage_free(garbage);
-                return PRIVATE_CAMALGAMATOR_OK;
+                return PRIVATE_CAMALGAMATOR_NO_ERRORS;
         }
         DtwStringArray_append(already_included_sha_list, sha_content);
     }
@@ -162,8 +162,9 @@ int  private_CAmalgamator_generate_amalgamation(
                 int behavior = CAMALGAMATOR_INCLUDE_ONCE;
                 char *new_path = dtw_concat_path(dir, new_include_code->rendered_text);
                 if(generator_handler){
-                    int behavior  = generator_handler(filename,new_path,args);
+                    int behavior  = generator_handler(new_path,new_include_code->rendered_text, args);
                 }
+
                 int error = private_CAmalgamator_generate_amalgamation(
                     behavionr,
                     new_path,
@@ -189,5 +190,5 @@ int  private_CAmalgamator_generate_amalgamation(
         }
     }
     UniversalGarbage_free(garbage);
-    return PRIVATE_CAMALGAMATOR_OK;
+    return PRIVATE_CAMALGAMATOR_NO_ERRORS;
 }

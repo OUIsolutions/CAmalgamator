@@ -5,10 +5,10 @@
 //silver_chain_scope_end
 
 
-struct CAmalgamatorErrorOrString{
-    bool ok;
+struct CAmalgamatorErrorOrContent{
     char *content;
-    int error_code;
+    int error;
+    char *error_msg;
     char *filename;
 };
-typedef  struct CAmalgamatorErrorOrString CAmalgamatorErrorOrString;
+typedef  struct CAmalgamatorErrorOrContent CAmalgamatorErrorOrContent;

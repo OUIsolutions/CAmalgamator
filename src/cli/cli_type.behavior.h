@@ -9,3 +9,4 @@ struct Behaviors{
     DtwStringArray *include_perpetual;
     DtwStringArray *dont_include;
 };
+typedef  struct Behaviors Behaviors ;
