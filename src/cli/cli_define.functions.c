@@ -40,4 +40,5 @@ int  collect_flag(CliFlag *flag,DtwStringArray *source){
         dtw.string_array.append(source,current_absolute);
         free(current_absolute);
     }
+    return  amalgamator.NO_ERRORS;
 }
