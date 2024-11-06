@@ -5,12 +5,12 @@
 //silver_chain_scope_end
 
 struct CAmalgamatorNamesapce{
-    char * (*generate_amalgamation)(
+    CAmalgamatorErrorOrString * (*generate_amalgamation)(
         const char*filename,
         short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
         void *args
     );
-    char * (*generate_amalgamation_simple)(const char*filename);
+    CAmalgamatorErrorOrString * (*generate_amalgamation_simple)(const char*filename);
     short DONT_INCLUDE;
     short DONT_CHANGE;
     short INCLUDE_ONCE;
@@ -18,7 +18,7 @@ struct CAmalgamatorNamesapce{
     short FILE_NOT_FOUND;
     short UNEXPECTED_ERROR;
 
-    void (*free_error)(CAmalgamatorErrorType *self);
+    void (*free_error_or_string)(CAmalgamatorErrorOrString *self);
 
 };
 typedef   struct  CAmalgamatorNamesapce CAmalgamatorNamesapce;

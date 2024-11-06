@@ -6,7 +6,7 @@
 
 
 
-char * CAmalgamator_generate_amalgamation(
+CAmalgamatorErrorOrString * CAmalgamator_generate_amalgamation(
     const char*filename,
     short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
     void *args
@@ -19,9 +19,10 @@ char * CAmalgamator_generate_amalgamation(
         CTextStack_free(final);
         return NULL;
     }
-    return CTextStack_self_transform_in_string_and_self_clear(final);
+    char *content =  CTextStack_self_transform_in_string_and_self_clear(final);
+    return Private_new_CAmalgamatorErrorOrString_as_ok(content);
 }
 
-char * CAmalgamator_generate_amalgamation_simple(const char*filename){
+CAmalgamatorErrorOrString * CAmalgamator_generate_amalgamation_simple(const char*filename){
     return CAmalgamator_generate_amalgamation(filename,NULL,NULL);
 }

@@ -1,7 +1,7 @@
 #include "imports.api_declare.h"
 #ifndef camalgamator_api_define
 #define camalgamator_api_define
-#include "../api/error/api_define.error.c"
+#include "../api/ErrorOrString/api_define.ErrorOrString.c"
 #include "../api/generators/api_define.generators.c"
 #include "../api/namespace/api_define.namespace.c"
 #include "../api/point_verifiers/api_define.point_verifiers.c"
