@@ -39,7 +39,7 @@ in these case, I want to not include nothing inside dependencies, so i type:
 ```
 note that you can pass any  files or dirs  you want in (--noinclude , --nochange,--perpetual )
 
-## Api Usage
+# Api Usage
 you also can use the code into your build programs, using the public api,
 for downloading it, just type
 ```shel
@@ -121,3 +121,22 @@ the code return can be betwen
 |amalgamator.DONT_CHANGE | CAMALGAMATOR_DONT_CHANGE | dont change the **#include**|
 |amalgamator.INCLUDE_ONCE | CAMALGAMATOR_INCLUDE_ONCE| include the content once |
 |amalgamator.INCLUDE_PERPETUAL | CAMALGAMATOR_INCLUDE_PERPETUAL| include the content, every time it founds it  |
+
+# Building from scratch
+if you want to build the code from scracth clone ,the repo on your machine , than run
+```shel
+sh install_dependencies.sh
+```
+than you can build the project with:
+```shel
+sh build.sh
+```
+these will generate the releases in the **release** folder
+
+## SilverChain Usage
+These project uses CilverChain as dependencie to organize the files,
+to use it , download [Silverchain](https://github.com/OUIsolutions/SilverChain) and
+run
+```shel
+sh watch.sh
+```
