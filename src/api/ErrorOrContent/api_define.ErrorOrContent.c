@@ -4,12 +4,15 @@
 #include "../../imports/imports.api_declare.h"
 //silver_chain_scope_end
 
-CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int error_code,const char *error_msg,const char *filename){
+CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int error_code,char *filename,const char *error_msg,...){
     CAmalgamatorErrorOrContent *self = (CAmalgamatorErrorOrContent*)malloc(sizeof(CAmalgamatorErrorOrContent*));
     *self = (CAmalgamatorErrorOrContent){0};
     self->error = error_code;
-    self->error_msg = strdup(error_msg);
-    self->filename = strdup(filename);
+    va_list args;
+    va_start(args, error_msg);
+    self->error_msg = private_dtw_format_vaarg(error_msg,args);
+    va_end(args);
+    self->filename = filename
     return  self;
 }
 

@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
         UniversalGarbage_free(garbage);
         return 1;
     }
-
+    char *filename =  cli.flag.get_str(file,0,CLI_NOT_CASE_SENSITIVE);
     CliFlag *output_flag = cli.entry.get_flag(entry,"o | out | output",CLI_NOT_CASE_SENSITIVE);
     if(output_flag->exist){
         printf("you didint passed the output file\n");
@@ -40,6 +40,7 @@ int main(int argc, char *argv[]){
         UniversalGarbage_free(garbage);
         return 1;
     }
+    char *output_file = cli.flag.get_str(output_flag,0,CLI_NOT_CASE_SENSITIVE);
 
     Behaviors  behaviors = {0};
 
@@ -65,19 +66,18 @@ int main(int argc, char *argv[]){
     }
 
     CAmalgamatorErrorOrContent *error_or_content = amalgamator.generate_amalgamation(
-        cli.flag.get_str(file,0,CLI_NOT_CASE_SENSITIVE),
+        filename,
         generator_handler,
         (void*)&behaviors
     );
 
+    UniversalGarbage_add(garbage,amalgamator.free_error_or_string,error_or_content);
     if(error_or_content->error){
-
+        printf("%s\n",error_or_content->error_msg);
+        UniversalGarbage_free(garbage);
+        return 1;
     }
-
-
-
+    dtw.write_string_file_content(output_file,error_or_content->content);
     UniversalGarbage_free(garbage);
-
-
     return 0;
 }
