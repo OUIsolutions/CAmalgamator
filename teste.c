@@ -1,1668 +1,4 @@
 
-//#define  CAMALGAMATOR_DEBUG
-//silver_chain_scope_start
-//mannaged by silver chain
-#ifndef camalgamator_api_dependencies
-#define camalgamator_api_dependencies
-
-#ifndef  CTEXTENGINE_H
-#ifndef  CTEXTENGINE_H
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <ctype.h>
-
-
-
-#ifndef PRIVATE_CTEXT_CONST
-#define PRIVATE_CTEXT_CONST
-
-
-#define CTEXT_BY_OWNESHIP 1
-#define CTEXT_BY_COPY 2
-#define CTEXT_BY_REFERENCE 3
-
-
-
-
-#define CTEXT_LINE_BREAKER "\n"
-#define CTEXT_SEPARATOR "   "
-
-#define CTEXT_LONG 1
-#define CTEXT_DOUBLE 2
-#define CTEXT_BOOL 3
-#define CTEXT_STRING 4
-
-
-//
-// Created by jurandi on 18-04-2023.
-//
-#define CTEXT_HTML "html"
-#define CTEXT_BODY "body"
-#define CTEXT_DIV "div"
-#define CTEXT_H1 "h1"
-#define CTEXT_H2 "h2"
-#define CTEXT_H3 "h3"
-#define CTEXT_H4 "h4"
-#define CTEXT_H5 "h5"
-#define CTEXT_H6 "h6"
-#define CTEXT_P "p"
-#define CTEXT_SPAN "span"
-#define CTEXT_A "a"
-#define CTEXT_IMG "img"
-#define CTEXT_INPUT "input"
-#define CTEXT_BUTTON "button"
-#define CTEXT_TABLE "table"
-#define CTEXT_TR "tr"
-#define CTEXT_TD "td"
-#define TH "th"
-#define CTEXT_THEAD "thead"
-#define CTEXT_TBODY "tbody"
-#define CTEXT_TFOOT "tfoot"
-#define CTEXT_UL "ul"
-#define CTEXT_LI "li"
-#define CTEXT_OL "ol"
-#define CTEXT_FORM "form"
-#define CTEXT_LABEL "label"
-#define CTEXT_SELECT "select"
-#define CTEXT_OPTION "option"
-#define CTEXT_TEXTAREA "textarea"
-#define CTEXT_SCRIPT "script"
-#define CTEXT_STYLE "style"
-#define CTEXT_META "meta"
-#define CTEXT_LINK "link"
-#define CTEXT_HEAD "head"
-#define CTEXT_BASE "base"
-#define CTEXT_BR "br"
-#define CTEXT_HR "hr"
-#define CTEXT_TITLE "title"
-#define CTEXT_IFRAME "iframe"
-#define CTEXT_NAV "nav"
-#define CTEXT_HEADER "header"
-#define CTEXT_FOOTER "footer"
-#define CTEXT_SECTION "section"
-#define CTEXT_ARTICLE "article"
-#define CTEXT_ASIDE "aside"
-#define CTEXT_DETAILS "details"
-#define CTEXT_SUMMARY "summary"
-#define CTEXT_DIALOG "dialog"
-#define MENU "menu"
-#define MENUITEM "menuitem"
-#define CTEXT_MAIN "main"
-#define CTEXT_CANVAS "canvas"
-#define CTEXT_AUDIO "audio"
-#define CTEXT_VIDEO "video"
-#define CTEXT_SOURCE "source"
-#define CTEXT_TRACK "track"
-#define CTEXT_EMBED "embed"
-#define CTEXT_PARAM "param"
-    
-
-
-
-
-
-#endif
-
-
-
-#ifndef PRIVATE_CTEXT_MACROS
-#define PRIVATE_CTEXT_MACROS
-
-#define CTextScope(s,t)\
-ctext_open(s, t);\
-for(int snaunduwwqwetjsdvda = 0; snaunduwwqwetjsdvda < 1; ctext_close(s, t), ++snaunduwwqwetjsdvda)
-
-#define CTextScope_format(s,t, ...)\
-CTextStack_open_format(s,t,__VA_ARGS__);\
-for(int snaunduwwqwetjsdvda = 0; snaunduwwqwetjsdvda < 1; ctext_close(s, t), ++snaunduwwqwetjsdvda)
-
-
-#endif
-
-
-
-
-
-
-#ifndef PRIVATE_CTEXT_STACK_TYPE_H
-#define PRIVATE_CTEXT_STACK_TYPE_H
-typedef struct CTextStack{
-
-    char *rendered_text;
-    size_t rendered_text_alocation_size;
-    size_t size;
-
-    char *line_breaker;
-    char *separator;
-    int ident_level;
-
-}CTextStack;
-#endif
-
-
-
-#ifndef  PRIVATE_CTEXT_ARRAY_TYPE_H
-#define PRIVATE_CTEXT_ARRAY_TYPE_H
-typedef struct CTextArray{
-
-    CTextStack **stacks;
-    long size;
-
-
-}CTextArray;
-
-#endif
-
-
-
-
-
-
-#ifndef PRIVATE_CTEXT_ARRAY_NAMESPACE_MODULE
-#define PRIVATE_CTEXT_ARRAY_NAMESPACE_MODULE
-typedef struct CTextArrayModule{
-    CTextArray *(*newArray)();
-    void (*append)(CTextArray *self,CTextStack *element);
-    void (*append_string)(CTextArray *self,const char *element);
-    CTextStack * (*join)(CTextArray *self,const char *separator);
-
-    CTextArray * (*map)(CTextArray *self, CTextStack *(caller)(CTextStack* element));
-    CTextArray * (*filter)(CTextArray *self, bool (caller)(CTextStack* element));
-    void  (*foreach)(CTextArray *self, void (*caller)(CTextStack* element));
-    bool (*includes)(CTextArray *self,const char *element);
-    void (*represent)(CTextArray *self);
-    void (*free)(CTextArray *self);
-
-}CTextArrayModule;
-#endif
-
-
-
-
-
-
-
-
-#ifndef  PRIVATE_CTEXT_STACK_NAMESPACE_MODULE
-#define PRIVATE_CTEXT_STACK_NAMESPACE_MODULE
-
-typedef struct CTextStackModule{
-
-    //admnistrative methods
-    CTextStack  *(*newStack)(const char *line_breaker, const char *separator);
-    CTextStack *(*newStack_string)(const char *starter);
-    CTextStack *(*newStack_string_format)(const char *format, ...);
-
-    CTextStack *(*newStack_string_getting_ownership)(const char *starter);
-    CTextStack *(*newStack_string_empty)();
-
-    void (*free)(struct CTextStack *self);
-    struct CTextStack *(*clone)(struct CTextStack *self);
-    void (*represent)(struct CTextStack *self);
-    char *(*self_transform_in_string_and_self_clear)(struct CTextStack *self);
-    void (*restart)(struct CTextStack *self);
-
-    //render methods
-    void (*text)(struct CTextStack *self, const char *element);
-
-    void (*segment_text)(struct CTextStack *self, const char *element);
-
-    void (*format)(struct CTextStack *self, const char *format, ...);
-
-    void (*segment)(struct CTextStack *self);
-
-    void (*segment_format)(struct CTextStack *self, const char *format, ...);
-
-    void (*open_format)(struct CTextStack *self, const char *tag, const char *format,...);
-
-    void (*only_open_format)(struct CTextStack *self, const char *tag, const char *format,...);
-
-    void (*auto_close_format)(struct CTextStack *self, const char *tag, const char *format,...);
-
-    void (*open)(struct CTextStack *self, const char *tag);
-
-    void (*close)(struct CTextStack *self, const char *tag);
-
-
-    //algorithm methods
-    struct CTextStack * (*substr)(struct CTextStack *self, long starter, long end);
-    void  (*self_substr)(struct CTextStack *self, long starter, long end);
-
-
-    struct CTextStack *(*pop)(struct CTextStack *self, long starter, long end);
-    void(*self_pop)(struct CTextStack *self, long starter, long end);
-
-
-
-    struct CTextStack *(*insert_at)(struct CTextStack *self,long point, const char *element);
-    void (*self_insert_at)(struct CTextStack *self,long point, const char *element);
-
-    struct CTextStack *(*replace)(struct CTextStack *self,const char *element, const char *element_to_replace);
-    void (*self_replace)(struct CTextStack *self,const char *element, const char *element_to_replace);
-
-
-    struct CTextStack *(*replace_long)(struct CTextStack *self,const char *element, long element_to_replace);
-    void(*self_replace_long)(struct CTextStack *self,const char *element, long element_to_replace);
-
-
-    struct CTextStack *(*replace_double)(struct CTextStack *self,const char *element, double element_to_replace);
-    void (*self_replace_double)(struct CTextStack *self,const char *element, double element_to_replace);
-
-
-    struct CTextStack * (*lower)(struct CTextStack *self);
-    void(*self_lower)(struct CTextStack *self);
-
-    struct CTextStack * (*upper)(struct CTextStack *self);
-    void(*self_upper)(struct CTextStack *self);
-
-    struct CTextStack *(*captalize)(struct CTextStack *self);
-    void (*self_captalize)(struct CTextStack *self);
-
-    struct CTextStack * (*reverse)(struct CTextStack *self);
-    void(*self_reverse)(struct CTextStack *self);
-
-    struct CTextStack * (*trim)(struct CTextStack *self);
-    void(*self_trim)(struct CTextStack *self);
-
-    bool (*starts_with)(struct CTextStack *self, const char *element);
-    bool (*ends_with)(struct CTextStack *self, const char *element);
-
-    bool (*equal)(struct  CTextStack *self,const char *element);
-    int (*typeof_element)(struct CTextStack *self);
-    bool (*is_a_num)(struct CTextStack *self);
-
-    const char * (*typeof_in_str)(struct CTextStack *self);
-    bool  (*parse_to_bool)(struct CTextStack *self);
-    long  (*parse_to_integer)(struct CTextStack *self);
-    double  (*parse_to_double)(struct CTextStack *self);
-
-    long (*index_of)(struct CTextStack *self, const char *element);
-    long (*index_of_char)(struct CTextStack *self, char element);
-}CTextStackModule;
-
-
-#endif
-
-
-
-#ifndef PRIVATE_CTEXT_NAMESPACE_TYPE
-#define PRIVATE_CTEXT_NAMESPACE_TYPE
-typedef struct CTextNamespace{
-
-    CTextArrayModule array;
-    CTextStackModule stack;
-
-}CTextNamespace;
-#endif
-
-
-
-
-
-
-
-
-
-
-#ifndef PRIVATE_CTEXT_FUNCTION_DECLARATION
-#define PRIVATE_CTEXT_FUNCTION_DECLARATION
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-char * CTextStack_self_transform_in_string_and_self_clear(struct CTextStack *self);
-
-void private_CTextStack_parse_ownership(struct CTextStack *self, struct CTextStack *new_stack);
-
-void CTextStack_restart(struct CTextStack *self);
-
-void CTextStack_represent(struct CTextStack *self);
-
-void CTextStack_free(struct CTextStack *self);
-
- CTextStack * CTextStack_clone(struct CTextStack *self);
-
-
-
-
-
-
-
- CTextStack * CTextStack_substr(struct CTextStack *self, long starter, long end);
-
-
-void CTextStack_self_substr(struct CTextStack *self, long starter, long end);
-
-struct CTextStack *CTextStack_replace(struct CTextStack *self,const char *element, const char *element_to_replace);
-
-void CTextStack_self_replace(struct CTextStack *self,const char *element, const char *element_to_replace);
-
-
-struct CTextStack *CTextStack_replace_long(struct CTextStack *self,const char *element, long element_to_replace);
-
-
-
-void CTextStack_self_replace_long(struct CTextStack *self,const char *element, long element_to_replace);
-
-
-struct CTextStack *CTextStack_replace_double(struct CTextStack *self,const char *element, double element_to_replace);
-
-
-void CTextStack_self_replace_double(struct CTextStack *self,const char *element, double element_to_replace);
-
-
-long CTextStack_index_of(struct  CTextStack *self, const char *element);
-
-long CTextStack_index_of_char(struct  CTextStack *self, char element);
-
-bool CTextStack_starts_with(struct  CTextStack *self, const char *element);
-
-
-bool CTextStack_ends_with(struct  CTextStack *self, const char *element);
-
-
-
-struct CTextStack *CTextStack_lower(struct CTextStack *self);
-
-void CTextStack_self_lower(struct CTextStack *self);
-
-
-struct CTextStack *CTextStack_upper(struct CTextStack *self);
-
-
-CTextStack *CTextStack_captalize(struct CTextStack *self);
-
-void CTextStack_self_captalize(struct CTextStack *self);
-
-
-void CTextStack_self_upper(struct CTextStack *self);
-
-
- CTextStack *CTextStack_reverse(struct CTextStack *self);
-
-void CTextStack_self_reverse(struct CTextStack *self);
-
-
-CTextStack *CTextStack_pop(struct CTextStack *self, long starter, long end);
-
-
-void  CTextStack_self_pop(struct CTextStack *self, long starter, long end);
-
-
-
-CTextStack *CTextStack_insert_at(struct CTextStack *self,long point, const char *element);
-
-
-void CTextStack_self_insert_at(struct CTextStack *self,long point, const char *element);
-
-CTextStack *CTextStack_trim(struct CTextStack *self);
-
-void CTextStack_self_trim(struct CTextStack *self);
-
-bool CTextStack_equal(  CTextStack *self,const char *element);
-
-
-
-
-
- CTextStack * newCTextStack(const char *line_breaker, const char *separator);
-
- CTextStack *newCTextStack_string(const char *starter);
-
-
- CTextStack *newCTextStack_string_format(const char *format, ...);
-
-
- CTextStack *newCTextStack_string_getting_ownership(const char *starter);
-
- CTextStack *newCTextStack_string_empty();
-
-
-
-
-
-int CTextStack_typeof(struct CTextStack *self);
-
-bool CTextStack_is_a_num(struct CTextStack *self);
-
-const char * CTextStack_typeof_in_str(struct CTextStack *self);
-
-bool  CTextStack_parse_to_bool(struct CTextStack *self);
-
-long  CTextStack_parse_to_integer(struct CTextStack *self);
-
-double  CTextStack_parse_to_double(struct CTextStack *self);
-
-
-
-
-
-void private_ctext_text_double_size_if_reachs(struct CTextStack *self);
-
-
-void CTextStack_text(struct CTextStack *self, const char *text);
-
-
-
-void CTextStack_segment_text(struct CTextStack *self, const char *text);
-
-
-void CTextStack_format(struct CTextStack *self, const char *format, ...);
-
-
-void CTextStack_segment_format(struct CTextStack *self, const char *format, ...);
-
-
-
-void CTextStack_segment(struct CTextStack *self);
-
-
-void CTextStack_open_format(struct CTextStack *self, const char *tag, const char *format, ...);
-
-
-
-
-void CTextStack_only_open_format(struct CTextStack *self, const char *tag, const char *format, ...);
-
-
-void CTextStack_auto_close_format(struct CTextStack *self, const char *tag, const char *format, ...);
-
-
-void ctext_open(struct CTextStack *self, const char *tag);
-
-
-
-void ctext_close(struct CTextStack *self, const char *tag);
-
-
-
-
-
-
-
-
-CTextArray * newCTextArray();
-
-
-void CTextArray_append(CTextArray *self,CTextStack *element);
-
-
-void CTextArray_append_string(CTextArray *self,const char *element);
-
-CTextStack * CTextArray_join(CTextArray *self,const char *separator);
-
-CTextArray * CTextArray_split(const char *element,const char *target);
-
-CTextArray * CTextArray_map(CTextArray *self, CTextStack *(caller)(CTextStack* element));
-
-CTextArray * CTextArray_filter(CTextArray *self, bool (caller)(CTextStack* element));
-
-void  CTextArray_foreach(CTextArray *self, void (*caller)(CTextStack* element));
-
-bool CTextArray_includes(CTextArray *self,const char *element);
-
-void  CTextArray_free(CTextArray *self);
-
-void CTextArray_represent(CTextArray *self);
-
-
-
-
-
-CTextStackModule newCTextStackModule();
-
-
-
-
-
-
-
-CTextArrayModule newCTextArrayModule();
-
-
-
-
-
-
-CTextNamespace newCTextNamespace();
-
-
-
-
-
-long private_CText_transform_index(long size, long value);
-
-
-void private_ctext_generate_formated_text(
-    struct CTextStack *stack,
-    const char *format,
-    va_list argptr
-    );
-
-#endif
-
-
-#define  CTEXTENGINE_H
-#ifdef __cplusplus
-}
-#endif
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-char * CTextStack_self_transform_in_string_and_self_clear(struct CTextStack *self){
-    free(self->line_breaker);
-    free(self->separator);
-    char *result = self->rendered_text;
-    free(self);
-    return result;
-}
-
-void private_CTextStack_parse_ownership(struct CTextStack *self, struct CTextStack *new_stack){
-
-    free(self->line_breaker);
-    free(self->separator);
-    free(self->rendered_text);
-
-    self->rendered_text_alocation_size = new_stack->rendered_text_alocation_size;
-    self->size = new_stack->size;
-    self->ident_level = new_stack->ident_level;
-
-
-    self->line_breaker = new_stack->line_breaker;
-    self->separator = new_stack->separator;
-    self->rendered_text = new_stack->rendered_text;
-    free(new_stack);
-
-}
-void CTextStack_restart(struct CTextStack *self){
-    free(self->rendered_text);
-    self->rendered_text = (char*)malloc(2);
-    strcpy(self->rendered_text,"\0");
-    self->rendered_text_alocation_size = 2;
-    self->size = 0;
-    self->ident_level = 0;
-}
-
-void CTextStack_represent(struct CTextStack *self){
-    printf("%s\n",self->rendered_text);
-}
-
-
-void CTextStack_free(struct CTextStack *self){
-    free(self->line_breaker);
-    free(self->separator);
-    free(self->rendered_text);
-    free(self);
-}
-
- CTextStack * CTextStack_clone(struct CTextStack *self){
-    CTextStack *new_stack = newCTextStack(self->line_breaker,self->separator);
-    new_stack->ident_level = self->ident_level;
-    CTextStack_text(new_stack,self->rendered_text);
-    return new_stack;
-}
-
-
-
-
-
-
-
- CTextStack * CTextStack_substr(struct CTextStack *self, long starter, long end){
-
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    long formated_starter = private_CText_transform_index(self->size, starter);
-    long formated_end = private_CText_transform_index(self->size, end);
-
-    if(formated_starter == formated_end){
-        CTextStack_format(new_element,"%c",self->rendered_text[formated_starter]);
-        return new_element;
-    }
-
-    for(long i =formated_starter; i < formated_end; i++){
-        CTextStack_format(new_element,"%c",self->rendered_text[i]);
-    }
-
-    return new_element;
-
-}
-
-void CTextStack_self_substr(struct CTextStack *self, long starter, long end){
-    CTextStack *new_stack = CTextStack_substr(self,starter,end);
-    private_CTextStack_parse_ownership(self,new_stack);
-
-}
-
-
- CTextStack *CTextStack_replace(struct CTextStack *self,const char *element, const char *element_to_replace){
-
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-
-    long element_size = (long)strlen(element);
-    for(long i = 0; i < self->size;i++){
-        CTextStack  *possible_ocurrence  = CTextStack_substr(self,i,i+element_size);
-
-        if(strcmp(possible_ocurrence->rendered_text,element)== 0){
-            CTextStack_text(new_element,element_to_replace);
-            i+=element_size -1;
-        }
-
-        else{
-            CTextStack_format(new_element,"%c",self->rendered_text[i]);
-        }
-
-        CTextStack_free(possible_ocurrence);
-
-    }
-    return new_element;
-}
-
-void CTextStack_self_replace(struct CTextStack *self,const char *element, const char *element_to_replace){
-    CTextStack  *new_stack = CTextStack_replace(self,element,element_to_replace);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
- CTextStack *CTextStack_replace_long(struct CTextStack *self,const char *element, long element_to_replace){
-    char num_conversion[20] = {0};
-    sprintf(num_conversion,"%ld",element_to_replace);
-    return CTextStack_replace(self,element,num_conversion);
-}
-
-
-void CTextStack_self_replace_long(struct CTextStack *self,const char *element, long element_to_replace){
-    CTextStack  *new_stack = CTextStack_replace_long(self,element,element_to_replace);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
- CTextStack *CTextStack_replace_double(struct CTextStack *self,const char *element, double element_to_replace){
-    CTextStack  *num_formated = newCTextStack_string_empty();
-    CTextStack_format(num_formated,"%f",element_to_replace);
-    CTextStack  *result = CTextStack_replace(self,element,num_formated->rendered_text);
-    CTextStack_free(num_formated);
-    return result;
-}
-
-
-void CTextStack_self_replace_double(struct CTextStack *self,const char *element, double element_to_replace){
-    CTextStack  *new_stack = CTextStack_replace_double(self,element,element_to_replace);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-
-long CTextStack_index_of(struct  CTextStack *self, const char *element){
-    long element_size = (long)strlen(element);
-    for(int i = 0; i < self->size; i++){
-        CTextStack  *possible_element = CTextStack_substr(self,i,i+element_size);
-        if(strcmp(possible_element->rendered_text,element) == 0){
-            CTextStack_free(possible_element);
-            return i;
-        }
-        CTextStack_free(possible_element);
-
-    }
-    return -1;
-}
-
-
-long CTextStack_index_of_char(struct  CTextStack *self, char element){
-    for(int i = 0; i < self->size; i++) {
-        if(self->rendered_text[i] == element){
-            return i;
-        }
-    }
-    return -1;
-}
-bool CTextStack_starts_with(struct  CTextStack *self, const char *element){
-    long element_size = strlen(element);
-    CTextStack  *separated = CTextStack_substr(self,0,element_size);
-    if(strcmp(separated->rendered_text,element) == 0){
-        CTextStack_free(separated);
-        return true;
-    }
-    CTextStack_free(separated);
-    return false;
-}
-
-bool CTextStack_ends_with(struct  CTextStack *self, const char *element){
-    long element_size = strlen(element);
-    CTextStack  *separated = CTextStack_substr(self,self->size -element_size,-1);
-
-    if(strcmp(separated->rendered_text,element) == 0){
-        CTextStack_free(separated);
-        return true;
-    }
-    CTextStack_free(separated);
-    return false;
-}
-
-
-
-struct CTextStack *CTextStack_lower(struct CTextStack *self){
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    for(long i =0; i < self->size; i++){
-        char current = self->rendered_text[i];
-        CTextStack_format(new_element,"%c",tolower(current));
-    }
-    return new_element;
-}
-
-void CTextStack_self_lower(struct CTextStack *self){
-    CTextStack *new_stack = CTextStack_lower(self);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-struct CTextStack *CTextStack_upper(struct CTextStack *self){
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    for(long i =0; i < self->size; i++){
-        char current = self->rendered_text[i];
-        CTextStack_format(new_element,"%c",toupper(current));
-    }
-    return new_element;
-}
-
-struct CTextStack *CTextStack_captalize(struct CTextStack *self){
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    if(self->size  ==0){
-        return  new_element;
-    }
-
-    CTextStack_format(new_element,"%c", toupper(self->rendered_text[0]));
-
-    for(long i =1; i < self->size; i++){
-        char  last = self->rendered_text[i-1];
-        char current = self->rendered_text[i];
-
-
-        if(last == ' '){
-            CTextStack_format(new_element,"%c",toupper(current));
-        }
-        else{
-            CTextStack_format(new_element,"%c", tolower(current));
-
-        }
-
-    }
-    return new_element;
-}
-
-void CTextStack_self_captalize(struct CTextStack *self){
-    CTextStack *new_stack = CTextStack_captalize(self);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-void CTextStack_self_upper(struct CTextStack *self){
-    CTextStack *new_stack = CTextStack_upper(self);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-struct CTextStack *CTextStack_reverse(struct CTextStack *self){
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    for(long i = (long)self->size; i >= 0 ; i--){
-        CTextStack_format(new_element,"%c",self->rendered_text[i]);
-    }
-    return new_element;
-
-}
-
-void CTextStack_self_reverse(struct CTextStack *self){
-    CTextStack *new_stack = CTextStack_reverse(self);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-
-struct CTextStack *CTextStack_pop(struct CTextStack *self, long starter, long end){
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    long formated_starter = private_CText_transform_index(self->size, starter);
-    long formated_end = private_CText_transform_index(self->size, end);
-
-    for(int i =0; i < self->size; i ++){
-        if(i >= formated_starter && i <= formated_end){
-            continue;
-        }
-        CTextStack_format(new_element,"%c",self->rendered_text[i]);
-    }
-    return new_element;
-}
-
-
-void  CTextStack_self_pop(struct CTextStack *self, long starter, long end){
-    CTextStack  *new_stack = CTextStack_pop(self, starter, end);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-struct CTextStack *CTextStack_insert_at(struct CTextStack *self,long point, const char *element){
-
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-
-    long converted_point = private_CText_transform_index(self->size, point);
-    for(long i = 0; i < converted_point; i++){
-        CTextStack_format(new_element,"%c",self->rendered_text[i]);
-    }
-    CTextStack_text(new_element,element);
-    for(long i = converted_point; i < self->size; i++){
-        CTextStack_format(new_element,"%c",self->rendered_text[i]);
-    }
-    return new_element;
-}
-
-void CTextStack_self_insert_at(struct CTextStack *self,long point, const char *element){
-    CTextStack  *new_stack = CTextStack_insert_at(self, point,element);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-struct CTextStack *CTextStack_trim(struct CTextStack *self){
-
-    CTextStack  *invalid_elements = newCTextStack_string("\t\r\n ");
-    long start_point = 0;
-    for(int i = 0; i < self->size; i ++){
-        char current_char =self->rendered_text[i];
-        long invalid_point = CTextStack_index_of_char(invalid_elements, current_char);
-        bool is_invalid = invalid_point != -1;
-        if(!is_invalid){
-            start_point = i;
-            break;
-        }
-    }
-    long end_point = -1;
-    for(long i = (long)self->size -1; i >= 0; i--){
-
-        char current_char =self->rendered_text[i];
-        long invalid_point = CTextStack_index_of_char(invalid_elements, current_char);
-        bool is_invalid = invalid_point != -1;
-        if(!is_invalid){
-            end_point = i+1;
-            break;
-        }
-    }
-    CTextStack_free(invalid_elements);
-    return CTextStack_substr(self,start_point,end_point);
-
-}
-
-
-void CTextStack_self_trim(struct CTextStack *self){
-    CTextStack  *new_stack = CTextStack_trim(self);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-bool CTextStack_equal(  CTextStack *self,const char *element){
-    return strcmp(self->rendered_text,element) == 0;
-}
-
-
-
-
-
- CTextStack * newCTextStack(const char *line_breaker, const char *separator){
-    struct CTextStack *self = (struct CTextStack*)malloc(sizeof(struct CTextStack));
-    *self = (CTextStack){0};
-    self->rendered_text = (char*)malloc(2);
-    strcpy(self->rendered_text,"\0");
-    self->rendered_text_alocation_size = 2;
-
-    self->line_breaker = strdup(line_breaker);
-    self->separator = strdup(separator);
-
-
-    return self;
-}
-
- CTextStack *newCTextStack_string(const char *starter){
-    CTextStack *self = newCTextStack("","");
-    if(starter){
-        CTextStack_format(self,"%s", starter);
-    }
-    return self;
-}
-
- CTextStack *newCTextStack_string_format(const char *format, ...){
-    CTextStack *self = newCTextStack("","");
-    va_list  argptr;
-    va_start(argptr, format);
-    private_ctext_generate_formated_text(self,format,argptr);
-     va_end(argptr);
-
-    return self;
-}
-
- CTextStack *newCTextStack_string_getting_ownership(const char *starter){
-    CTextStack *self = newCTextStack("","");
-    free(self->rendered_text);
-    self->rendered_text = (char*)starter;
-    self->size = strlen(starter);
-    self->rendered_text_alocation_size = self->size;
-    return self;
-}
- CTextStack *newCTextStack_string_empty(){
-    return  newCTextStack("","");
-}
-
-
-
-
-
-int CTextStack_typeof(struct CTextStack *self){
-    if(self->size == 0){
-        return CTEXT_STRING;
-    }
-
-    if(CTextStack_equal(self,"true") ||CTextStack_equal(self,"false") ){
-        return CTEXT_BOOL;
-    }
-
-    double data;
-    int result = sscanf(self->rendered_text,"%lf",&data);
-    if(!result){
-        return CTEXT_STRING;
-    }
-    if(CTextStack_index_of(self,".") == -1){
-        return CTEXT_LONG;
-    }
-    return CTEXT_DOUBLE;
-
-
-}
-bool CTextStack_is_a_num(struct CTextStack *self){
-    int type = CTextStack_typeof(self);
-    if(type == CTEXT_DOUBLE || type == CTEXT_LONG){
-        return true;
-    }
-    return false;
-}
-
-
-const char * CTextStack_typeof_in_str(struct CTextStack *self){
-    int current_type = CTextStack_typeof(self);
-
-    if(current_type == CTEXT_BOOL){
-        return "bool";
-    }
-
-    else if(current_type == CTEXT_STRING){
-        return "string";
-    }
-
-    else if(current_type == CTEXT_LONG){
-        return "long";
-    }
-
-    else if(current_type == CTEXT_DOUBLE){
-        return "double";
-    }
-
-    else{
-        return "invalid";
-    }
-}
-
-bool  CTextStack_parse_to_bool(struct CTextStack *self){
-    if(CTextStack_equal(self,"true")){
-        return true;
-    }
-    return false;
-}
-
-long  CTextStack_parse_to_integer(struct CTextStack *self){
-    long value;
-    int result = sscanf(self->rendered_text,"%ld",&value);
-    if(!result){
-        return -1;
-    }
-    return value;
-}
-
-double  CTextStack_parse_to_double(struct CTextStack *self){
-    double value;
-    int result = sscanf(self->rendered_text,"%lf",&value);
-    if(!result){
-        return -1;
-    }
-    return value;
-}
-
-
-
-
-
-void private_ctext_text_double_size_if_reachs(struct CTextStack *self){
-
-    while(self->size >= (self->rendered_text_alocation_size - 2)){
-        self->rendered_text_alocation_size  =  (self->rendered_text_alocation_size  * 2)+2;
-        self->rendered_text = (char*)(realloc(
-            self->rendered_text,self->rendered_text_alocation_size
-        ));
-    }
-}
-
-void CTextStack_text(struct CTextStack *self, const char *text){
-
-    if (!text || !text[0]) {
-        // Tratar caso de ponteiro nulo ou string vazia
-        return;
-    }
-
-    size_t text_size = strlen(text);
-
-    self->size += text_size;
-    private_ctext_text_double_size_if_reachs(self);
-
-    memcpy(
-            self->rendered_text + self->size - text_size,
-        text,
-        text_size
-    );
-    self->rendered_text[self->size] = '\0';
-}
-
-
-
-void CTextStack_segment_text(struct CTextStack *self, const char *text){
-    CTextStack_segment(self);
-    CTextStack_text(self,text);
-}
-
-
-void CTextStack_format(struct CTextStack *self, const char *format, ...){
-    va_list  argptr;
-    va_start(argptr, format);
-    private_ctext_generate_formated_text(self,format,argptr);
-    va_end(argptr);
-
-}
-
-void CTextStack_segment_format(struct CTextStack *self, const char *format, ...){
-    CTextStack_segment(self);
-    va_list  argptr;
-    va_start(argptr, format);
-    private_ctext_generate_formated_text(self,format,argptr);
-    va_end(argptr);
-
-}
-
-
-void CTextStack_segment(struct CTextStack *self){
-
-    CTextStack_text(self,self->line_breaker);
-
-    for(int i=0;i<self->ident_level;i++){
-        CTextStack_text(self,self->separator);
-
-    }
-
-
-}
-
-void CTextStack_open_format(struct CTextStack *self, const char *tag, const char *format, ...){
-    CTextStack_segment(self);
-    CTextStack_format(self, "%c",'<');
-    CTextStack_text(self,tag);
-
-
-    if(format!=NULL){
-        CTextStack_format(self, "%c",' ');
-
-        va_list  argptr;
-        va_start(argptr, format);
-        private_ctext_generate_formated_text(self,format,argptr);
-        va_end(argptr);
-
-    }
-    CTextStack_format(self, "%c",'>');
-
-
-    self->ident_level += 1;
-}
-
-
-
-void CTextStack_only_open_format(struct CTextStack *self, const char *tag, const char *format, ...){
-    CTextStack_segment(self);
-    CTextStack_format(self, "%c",'<');
-
-    CTextStack_text(self,tag);
-
-
-    if(format!=NULL){
-        CTextStack_format(self, "%c",' ');
-        va_list  argptr;
-        va_start(argptr, format);
-        private_ctext_generate_formated_text(self,format,argptr);
-        va_end(argptr);
-
-    }
-    CTextStack_format(self, "%c",'>');
-
-
-}
-
-void CTextStack_auto_close_format(struct CTextStack *self, const char *tag, const char *format, ...){
-    CTextStack_segment(self);
-    CTextStack_format(self, "%c",'<');
-
-    CTextStack_text(self,tag);
-
-
-    if(format!=NULL){
-        CTextStack_format(self, "%c",' ');
-
-        va_list  argptr;
-        va_start(argptr, format);
-        private_ctext_generate_formated_text(self,format,argptr);
-        va_end(argptr);
-    }
-    CTextStack_text(self,"/>");
-
-}
-
-void ctext_open(struct CTextStack *self, const char *tag){
-    if(tag ==  NULL){
-
-        self->ident_level += 1;
-        return;
-    }
-    CTextStack_open_format(self, tag, NULL);
-}
-
-
-
-void ctext_close(struct CTextStack *self, const char *tag){
-
-    if(tag==NULL){
-        self->ident_level -= 1;
-
-        return;
-    }
-    self->ident_level -= 1;
-    CTextStack_segment(self);
-
-
-    CTextStack_text(self,"</");
-    CTextStack_text(self,tag);
-    CTextStack_format(self, "%c",'>');
-
-}
-
-
-
-
-
-
-
-CTextArray * newCTextArray(){
-    CTextArray  *self = (CTextArray*) malloc(sizeof (CTextArray));
-    self->size = 0;
-    self->stacks = (CTextStack**) malloc(0);
-    return self;
-}
-
-void CTextArray_append(CTextArray *self,CTextStack *element){
-    self->stacks =  (CTextStack**) realloc(
-            self->stacks,
-            (self->size+1)* sizeof (CTextStack*)
-            );
-
-    self->stacks[self->size] = element;
-    self->size+=1;
-}
-
-
-
-void CTextArray_append_string(CTextArray *self,const char *element){
-    CTextStack *new_element = newCTextStack_string(element);
-    CTextArray_append(self,new_element);
-}
-
-CTextStack * CTextArray_join(CTextArray *self,const char *separator){
-    CTextStack  *result  = newCTextStack_string_empty();
-    for(int i = 0; i < self->size; i++){
-        if(i < self->size -1){
-            CTextStack_format(result,"%t%s",self->stacks[i],separator);
-        }
-        else{
-            CTextStack_format(result,"%t",self->stacks[i]);
-
-        }
-
-    }
-    return result;
-}
-
-CTextArray *CTextArray_split(const char *element,const char *target){
-    CTextArray *self = newCTextArray();
-    CTextStack *text = newCTextStack_string(element);
-    long target_size = (long)strlen(target);
-    CTextStack  *acumulated = newCTextStack_string_empty();
-
-    for(int i = 0; i <text->size; i++){
-        CTextStack  *possible_division = CTextStack_substr(text,i,target_size + i);
-        if(CTextStack_equal(possible_division,target)){
-            CTextArray_append(self,acumulated);
-            acumulated = newCTextStack_string_empty();
-            CTextStack_free(possible_division);
-            continue;
-        }
-        CTextStack_free(possible_division);
-
-        CTextStack_format(acumulated,"%c",text->rendered_text[i]);
-    }
-
-    CTextArray_append(self,acumulated);
-    CTextStack_free(text);
-    return self;
-}
-
-
-
-void  CTextArray_free(CTextArray *self){
-    for(int i = 0; i < self->size; i++){
-            CTextStack_free(self->stacks[i]);
-    }
-    free(self->stacks);
-    free(self);
-}
-
-CTextArray * CTextArray_map(CTextArray *self, CTextStack *(caller)(CTextStack* element)){
-    CTextArray *new_array  = newCTextArray();
-    for(int i = 0; i < self->size; i++){
-        CTextStack *result = caller(self->stacks[i]);
-        CTextArray_append(new_array,result);
-    }
-    return new_array;
-}
-
-
-CTextArray * CTextArray_filter(CTextArray *self, bool (caller)(CTextStack* element)){
-    CTextArray *new_array  = newCTextArray();
-
-    for(int i = 0; i < self->size; i++){
-        if(caller(self->stacks[i])){
-
-            CTextArray_append(new_array, CTextStack_clone(self->stacks[i]));
-        }
-    }
-
-    return new_array;
-}
-
-void  CTextArray_foreach(CTextArray *self, void (*caller)(CTextStack* element)){
-    for(int i = 0; i < self->size; i++){
-        caller(self->stacks[i]);
-    }
-}
-
-bool CTextArray_includes(CTextArray *self,const char *element){
-    for(int i = 0 ; i < self->size;i++){
-        if(CTextStack_equal(self->stacks[i],element)){
-            return true;
-        }
-    }
-    return false;
-}
-
-
-void CTextArray_represent(CTextArray *self){
-    for(int i =0; i < self->size; i++){
-        CTextStack_represent(self->stacks[i]);
-    }
-}
-
-
-
-
-
-CTextStackModule newCTextStackModule(){
-    struct CTextStackModule self = {0};
-    self.newStack = newCTextStack;
-    self.newStack_string = newCTextStack_string;
-    self.newStack_string_format = newCTextStack_string_format;
-    self.newStack_string_empty = newCTextStack_string_empty;
-    self.newStack_string_getting_ownership = newCTextStack_string_getting_ownership;
-    self.text = CTextStack_text;
-    self.segment_text = CTextStack_segment_text;
-    self.format = CTextStack_format;
-    self.segment = CTextStack_segment;
-    self.segment_format = CTextStack_segment_format;
-    self.open_format = CTextStack_open_format;
-    self.only_open_format =CTextStack_only_open_format;
-    self.auto_close_format = CTextStack_auto_close_format;
-    self.open = ctext_open;
-    self.close = ctext_close;
-    self.free =  CTextStack_free;
-    self.clone = CTextStack_clone;
-    self.represent = CTextStack_represent;
-    self.self_transform_in_string_and_self_clear = CTextStack_self_transform_in_string_and_self_clear;
-    self.restart = CTextStack_restart;
-    self.substr = CTextStack_substr;
-    self.self_substr =CTextStack_self_substr;
-
-    self.pop = CTextStack_pop;
-    self.self_pop =CTextStack_self_pop;
-
-    self.replace = CTextStack_replace;
-    self.self_replace = CTextStack_self_replace;
-
-    self.replace_long = CTextStack_replace_long;
-    self.self_replace_long =CTextStack_self_replace_long;
-
-
-    self.replace_double = CTextStack_replace_double;
-    self.self_replace_double =CTextStack_self_replace_double;
-
-    self.insert_at = CTextStack_insert_at;
-    self.self_insert_at  = CTextStack_self_insert_at;
-
-
-    self.index_of = CTextStack_index_of;
-    self.index_of_char = CTextStack_index_of_char;
-
-    self.lower = CTextStack_lower;
-    self.self_lower = CTextStack_self_lower;
-
-    self.upper = CTextStack_upper;
-    self.self_upper = CTextStack_self_upper;
-
-    self.captalize = CTextStack_captalize;
-    self.self_captalize = CTextStack_self_captalize;
-
-    self.starts_with = CTextStack_starts_with;
-    self.ends_with = CTextStack_ends_with;
-
-    self.equal = CTextStack_equal;
-    self.reverse = CTextStack_reverse;
-    self.self_reverse = CTextStack_self_reverse;
-
-
-    self.typeof_element = CTextStack_typeof;
-    self.is_a_num = CTextStack_is_a_num;
-    self.typeof_in_str = CTextStack_typeof_in_str;
-    self.parse_to_bool = CTextStack_parse_to_bool;
-    self.parse_to_integer = CTextStack_parse_to_integer;
-    self.parse_to_double = CTextStack_parse_to_double;
-
-    self.trim = CTextStack_trim;
-    self.self_trim = CTextStack_self_trim;
-
-
-    return self;
-}
-
-
-
-
-
-
-CTextArrayModule newCTextArrayModule(){
-    CTextArrayModule module = {0};
-    module.newArray = newCTextArray;
-    module.append = CTextArray_append;
-    module.append_string = CTextArray_append_string;
-    module.join = CTextArray_join;
-    module.map  = CTextArray_map;
-    module.filter = CTextArray_filter;
-    module.foreach = CTextArray_foreach;
-    module.represent = CTextArray_represent;
-    module.includes = CTextArray_includes;
-    module.free = CTextArray_free;
-    return module;
-}
-
-
-
-
-
-
-CTextNamespace newCTextNamespace(){
-    CTextNamespace self  = {0};
-    self.stack = newCTextStackModule();
-    self.array = newCTextArrayModule();
-    return self;
-}
-
-
-
-
-
-
-void private_ctext_generate_formated_text(
-        struct CTextStack *stack,const char *format,va_list argptr){
-    long  text_size = strlen(format);
-
-    int i;
-    for(i =0;i < text_size -1 ;i++){
-
-        char single_test[3] = {format[i],format[i+1],'\0'};
-        char double_test[4] = {0};
-
-
-        if(i < text_size -2){
-            strcpy(double_test,single_test);
-            double_test[2] = format[i+2];
-            double_test[3] = '\0';
-
-        }
-
-        if(strcmp(single_test,"%d") == 0 || strcmp(single_test,"%i") == 0) {
-            int value = va_arg(argptr,int);
-            char result[20] ={0};
-            sprintf(result,"%d", value);
-
-
-
-            CTextStack_text(stack,result);
-
-            i+=1;
-            continue;
-        }
-
-        else if(strcmp(double_test,"%ld") == 0 ) {
-
-            int value = va_arg(argptr,int);
-            char result[20] ={0};
-            sprintf(result,"%d", value);
-
-            CTextStack_text(stack,result);
-
-            i+=2;
-            continue;
-        }
-
-
-        else if(strcmp(single_test,"%f") == 0 ) {
-            char result_text[20]= {0};
-
-            sprintf(result_text,"%lf", va_arg(argptr,double ));
-
-            for(int t = 18; t > 0; t--){
-                char current_char = result_text[t];
-                if(current_char != '0' && current_char != '\0'){
-
-                    if(current_char == '.'){
-                        result_text[t+2]  = '\0';
-                    }
-                    else{
-                        result_text[t+1]  = '\0';
-                    }
-
-                    break;
-                }
-            }
-            CTextStack_text(stack,result_text);
-            i+=1;
-            continue;
-        }
-
-        else if(strcmp(double_test,"%lf") == 0 ) {
-            char result_text[20]= {0};
-
-            sprintf(result_text,"%lf", va_arg(argptr,double ));
-
-            for(int t = 18; t > 0; t--){
-                char current_char = result_text[t];
-                if(current_char != '0' && current_char != '\0'){
-
-                    if(current_char == '.'){
-                        result_text[t+2]  = '\0';
-                    }
-                    else{
-                        result_text[t+1]  = '\0';
-                    }
-
-                    break;
-                }
-            }
-            CTextStack_text(stack,result_text);
-            i+=2;
-            continue;
-        }
-        else if(strcmp(single_test,"%c") == 0){
-            char result = va_arg(argptr,int);
-            char element[2] = {result,'\0'};
-            CTextStack_text(stack,element);
-            i+=1;
-            continue;
-        }
-
-
-        else if(strcmp(single_test,"%b") == 0){
-            bool value = va_arg(argptr,int);
-            if(value){
-                CTextStack_text(stack,"true");
-            }else{
-                CTextStack_text(stack,"false");
-            }
-            i+=1;
-            continue;
-        }
-
-        else if(strcmp(double_test,"%sc") == 0){
-            char *value = va_arg(argptr,char*);
-            if(value){
-                CTextStack_text(stack,value);
-                free(value);
-            }
-            i+=2;
-            continue;
-        }
-
-        else if(strcmp(single_test,"%s") == 0){
-            const char *value = va_arg(argptr,const char*);
-            if(value){
-                CTextStack_text(stack,value);
-            }
-
-            i+=1;
-            continue;
-        }
-        else if(strcmp(double_test,"%tc") == 0){
-            struct CTextStack *new_stack = (struct  CTextStack*)va_arg(argptr,void *);
-            if(new_stack){
-                char *result = CTextStack_self_transform_in_string_and_self_clear(new_stack);
-                CTextStack_text(stack,result);
-                free(result);
-            }
-            i+=2;
-            continue;
-        }
-
-        else if(strcmp(single_test,"%t") == 0){
-            struct CTextStack *new_stack = (struct  CTextStack*)va_arg(argptr,void *);
-            if(new_stack){
-                CTextStack_text(stack,new_stack->rendered_text);
-            }
-            i+=1;
-            continue;
-        }
-
-        char element[2] = {format[i],'\0'};
-        CTextStack_text(stack,element);
-
-        }
-
-
-
-    if(text_size > 0 && text_size> i){
-        char element[2] = {format[text_size-1],'\0'};
-        CTextStack_text(stack,element);
-    }
-
-    va_end(argptr);
-}
-
-
-long private_CText_transform_index(long size , long value){
-    long formated_value = value;
-
-    if(formated_value >= size){
-        formated_value = size;
-    }
-
-    if(formated_value  < 0){
-        formated_value = size + (formated_value +1);
-    }
-    if(formated_value <0){
-        formated_value = 0;
-    }
-    return formated_value;
-}
-
-
-
-
-
-
-#define  CTEXTENGINE_H
-#endif
-
-
 // USE  THIS FILE ONLY FOR PRODUCTION
 // This file is part of the DoTheWorld project.
 // Do not edit this file, it is automatically generated.
@@ -1737,7 +73,6 @@ extern "C" {
   #include <direct.h>
 #endif
 
-
 #ifndef PRIVATE_DTW_CONSTS_H
 #define PRIVATE_DTW_CONSTS_H
 
@@ -1759,11 +94,9 @@ extern "C" {
 
 #define DTW_NOT_NUMERICAL -2
 #define DTW_NOT_BOOL -3
-
 #define DTW_CONCAT_PATH true
 #define DTW_NOT_CONCAT_PATH false
 #define WIN32_FILETYPE 32
-
 
 #define DTW_MULTIFILE_LOCKER_TOTAL_CHECK 500
 #define DTW_MULTIFILE_LOCKER_MAX_TIMEOUT 10
@@ -1775,7 +108,6 @@ extern "C" {
 #define DTW_LOCKER_FLCTL_FAIL 6
 #define DTW_LOCKER_WAIT_ERROR 21
 #define DTW_LOCKER_OS_NOT_PREDICTIBLE -1
-
 
 
 #define DTW_RESOURCE_ELEMENT_IS_NULL -1
@@ -1810,7 +142,6 @@ extern "C" {
 
 #define DTW_RESOURCE_ALL -1
 
-
 enum {
 
     JSON_TRANSACTION_WRONG_TYPE,
@@ -1829,7 +160,6 @@ enum {
     DTW_ACTION_COPY_MERGING,
     DTW_ACTION_DELETE
 };
-
 
 
 
@@ -1867,9 +197,7 @@ enum {
 #define DTW_ACTION_ERROR (-1)
 
 
-
 #endif
-
 
 
 #ifndef PRIVATE_DTW_MACROS_H
@@ -1885,7 +213,6 @@ enum {
 
 
 
-
 #define DtwSchemaRebase self->root_props->schema_unsafe =old;
 #define privateDtwSchemaUnsafe(scope){\
     bool old = self->root_props->schema_unsafe;\
@@ -1894,9 +221,7 @@ enum {
     DtwSchemaRebase\
 }
 
-
 #endif
-
 
 #ifndef cJSON__h
 /*
@@ -2199,7 +524,6 @@ CJSON_PUBLIC(void) cJSON_free(void *object);
 #endif
 
 #endif
-
 #define PRIVATE_DTW_CJSON_DEFINED_IN_DO_THE_WORLD
 #endif //cJSON__h
 
@@ -2309,10 +633,8 @@ uint8_t *sha_256_close(struct Sha_256 *sha_256);
 #endif
 
 #endif
-
 #define PRIVATE_DTW_SHA_DEFINED_IN_DO_THE_WORLD
 #endif  //SHA_256_H
-
 #ifndef PRIVATE_DTW_TYPES_H
 #define PRIVATE_DTW_TYPES_H
 #ifndef PRIVATE_DTW_STRING_ARRAY_TYPE_H
@@ -2322,8 +644,6 @@ typedef struct DtwStringArray {
     char **strings;
 }DtwStringArray;
 #endif
-
-
 
 
 #ifndef PRIVATE_DTW_PATH_TYPE_H
@@ -2337,14 +657,12 @@ typedef struct DtwPath {
 }DtwPath;
 #endif
 
-
 #ifndef  PRIVATE_DTW_HASH_TYPE_H
 #define PRIVATE_DTW_HASH_TYPE_H
 typedef  struct DtwHash{
     char *hash;
 }DtwHash;
 #endif
-
 
 #ifndef  PRIVATE_DTW_LOCKED_ELEMENT_TYPE_H
 #define PRIVATE_DTW_LOCKED_ELEMENT_TYPE_H
@@ -2359,8 +677,6 @@ typedef struct {
 
 
 
-
-
 #ifndef  PRIVATE_DTW_FLOCK_ARRAY_TYPE_H
 #define PRIVATE_DTW_FLOCK_ARRAY_TYPE_H
 
@@ -2372,8 +688,6 @@ typedef struct {
 
 
 
-
-
 #ifndef PRIVATE_DTW_FLOCK_LOCKER_TYPE_H
 #define PRIVATE_DTW_FLOCK_LOCKER_TYPE_H
 typedef struct {
@@ -2381,9 +695,6 @@ typedef struct {
     privateDtwFlockArray  *locked_files;
 }DtwFlockLocker;
 #endif
-
-
-
 
 
 
@@ -2406,9 +717,6 @@ typedef struct {
 
 
 
-
-
-
 #ifndef PRIVATE_DTW_LOCKER_TYPE_H
 #define PRIVATE_DTW_LOCKER_TYPE_H
 typedef struct {
@@ -2424,8 +732,6 @@ typedef struct {
 
 
 
-
-
 #ifndef PRIVATE_DTW_RANDONIZER_TYPE_H
 #define PRIVATE_DTW_RANDONIZER_TYPE_H
 typedef struct DtwRandonizer{
@@ -2435,7 +741,6 @@ typedef struct DtwRandonizer{
 
 }DtwRandonizer;
 #endif
-
 
 #ifndef PRIVATE_DTW_ACTION_TRANSACTION_TYPE_H
 #define PRIVATE_DTW_ACTION_TRANSACTION_TYPE_H
@@ -2451,7 +756,6 @@ typedef struct DtwActionTransaction{
 }DtwActionTransaction;
 #endif
 
-
 #ifndef PRIVATE_DTW_JSON_TRANSACTION_ERROR_TYPE_H
 #define PRIVATE_DTW_JSON_TRANSACTION_ERROR_TYPE_H
 typedef struct DtwJsonTransactionError{
@@ -2462,8 +766,6 @@ typedef struct DtwJsonTransactionError{
 
 }DtwJsonTransactionError;
 #endif
-
-
 
 
 
@@ -2478,8 +780,6 @@ typedef struct DtwTransaction{
 }DtwTransaction;
 #endif
 
-
-
 #ifndef PRIVATE_DTW_JSON_TREE_ERROR_TYPE_H
 #define PRIVATE_DTW_JSON_TREE_ERROR_TYPE_H
 typedef struct DtwJsonTreeError {
@@ -2490,7 +790,6 @@ typedef struct DtwJsonTreeError {
 
 }DtwJsonTreeError;
 #endif
-
 
 #ifndef PRIVATE_DTW_TREE_PROPS_TYPE_H
 #define PRIVATE_DTW_TREE_PROPS_TYPE_H
@@ -2504,8 +803,6 @@ typedef struct DtwTreeProps{
 
 }DtwTreeProps;
 #endif
-
-
 
 
 
@@ -2536,8 +833,6 @@ typedef struct DtwTreePart{
 
 
 
-
-
 #ifndef PRIVATE_DTW_TRANSACTION_REPORT_TYPE_H
 #define PRIVATE_DTW_TRANSACTION_REPORT_TYPE_H
 typedef struct DtwTreeTransactionReport{
@@ -2547,8 +842,6 @@ typedef struct DtwTreeTransactionReport{
 
 }DtwTreeTransactionReport;
 #endif
-
-
 
 
 
@@ -2564,8 +857,6 @@ typedef struct  DtwTree{
 
 
 
-
-
 #ifndef  PRIVATE_DTW_DATABASE_SCHEMA_TYPE_H
 #define PRIVATE_DTW_DATABASE_SCHEMA_TYPE_H
 typedef struct DtwDatabaseSchema{
@@ -2577,10 +868,8 @@ typedef struct DtwDatabaseSchema{
 }DtwDatabaseSchema;
 #endif
 
-
 #ifndef PRIVATE_DTW_SCHEMA_TYPE_H
 #define PRIVATE_DTW_SCHEMA_TYPE_H
-
 
 
 typedef struct DtwSchema{
@@ -2601,10 +890,6 @@ typedef struct DtwSchema{
 
 
 
-
-
-
-
 #ifndef PRIVATE_DTW_ROOT_PROPS_RESOURCE_TYPE_H
 #define PRIVATE_DTW_ROOT_PROPS_RESOURCE_TYPE_H
 typedef struct {
@@ -2618,10 +903,6 @@ typedef struct {
 
 }privateDtwResourceRootProps;
 #endif
-
-
-
-
 
 
 
@@ -2674,8 +955,6 @@ typedef struct DtwResource{
 
 
 
-
-
 #ifndef PRIVATE_DTW_RESORCE_ARRAY_TYPE_H
 #define PRIVATE_DTW_RESORCE_ARRAY_TYPE_H
 typedef struct DtwResourceArray{
@@ -2684,9 +963,6 @@ typedef struct DtwResourceArray{
 
 }DtwResourceArray;
 #endif
-
-
-
 
 
 
@@ -2704,9 +980,6 @@ typedef  struct{
 
 
 
-
-
-
 #ifndef PRIVATE_DTW_RESOURCE_CJSON_ARRAY_MAP_PROPS
 #define PRIVATE_DTW_RESOURCE_CJSON_ARRAY_MAP_PROPS
 typedef  struct{
@@ -2718,9 +991,6 @@ typedef  struct{
     int qtd;
 } DtwResourcecJSONArrayMapProps;
 #endif
-
-
-
 
 
 
@@ -2742,9 +1012,6 @@ typedef  struct{
 
 
 
-
-
-
 #ifndef PRIVATE_DTW_RESOURCE_MAP_ELEMENT_TYPE_H
 #define PRIVATE_DTW_RESOURCE_MAP_ELEMENT_TYPE_H
 
@@ -2755,8 +1022,6 @@ typedef struct {
     int (*ordenation_callback)(DtwResource *item1, DtwResource *item2, void *args);
 }privateDtwResource_map_element;
 #endif
-
-
 
 
 
@@ -2773,7 +1038,6 @@ typedef struct {
         int qtd;
     }DtwResourceMapProps;
 #endif
-
 
 #ifdef DTW_ALLOW_CHASH
 
@@ -2793,9 +1057,6 @@ typedef  struct{
 
 
 
-
-
-
 #ifndef PRIVATE_DTW_RESOURCE_CHASH_ARRAY_MAP_PROPS
 #define PRIVATE_DTW_RESOURCE_CHASH_ARRAY_MAP_PROPS
 typedef  struct{
@@ -2807,9 +1068,6 @@ typedef  struct{
     int qtd;
 } DtwResourceCHashrrayMapProps;
 #endif
-
-
-
 
 
 
@@ -2829,11 +1087,7 @@ typedef  struct{
 #endif
 
 
-
-
 #endif
-
-
 
 
 
@@ -2862,20 +1116,6 @@ typedef struct{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #ifndef PRIVATE_DTW_RESOURCE_ARRAY_MODULE_TYPE_H
 #define PRIVATE_DTW_RESOURCE_ARRAY_MODULE_TYPE_H
 typedef struct DtwResourceArrayModule{
@@ -2887,9 +1127,6 @@ typedef struct DtwResourceArrayModule{
 
 }DtwResourceArrayModule;
 #endif
-
-
-
 
 
 
@@ -3048,9 +1285,6 @@ typedef struct DtwResourceModule{
 
 
 
-
-
-
 #ifndef PRIVATE_DTW_ACTION_TRANSACTION_MODULE_TYPE_H
 #define PRIVATE_DTW_ACTION_TRANSACTION_MODULE_TYPE_H
 typedef struct DtwActionTransactionModule{
@@ -3081,7 +1315,6 @@ typedef struct DtwActionTransactionModule{
 #endif
 
 
-
 #ifndef PRIVATE_DTW_JSON_TRANSACTION_MODULE_TYPE_H
 #define PRIVATE_DTW_JSON_TRANSACTION_MODULE_TYPE_H
 typedef struct DtwJsonTransactionErrorModule{
@@ -3090,10 +1323,6 @@ typedef struct DtwJsonTransactionErrorModule{
 
 }DtwJsonTransactionErrorModule;
 #endif
-
-
-
-
 
 
 
@@ -3142,9 +1371,6 @@ typedef struct DtwTransactionModule{
 
 
 
-
-
-
 #ifndef PRIVATE_DTW_JSON_TREE_ERROR_MODULE_TYPE_H
 #define PRIVATE_DTW_JSON_TREE_ERROR_MODULE_TYPE_H
 typedef struct DtwJsonTreeErrorModule{
@@ -3157,7 +1383,6 @@ typedef struct DtwJsonTreeErrorModule{
 }DtwJsonTreeErrorModule;
 #endif
 
-
 #ifndef PRIVATE_DTW_TRANSACTION_REPORT_MODULE_TYPE_H
 #define PRIVATE_DTW_TRANSACTION_REPORT_MODULE_TYPE_H
 typedef struct  DtwTreeTransactionReportModule{
@@ -3167,8 +1392,6 @@ typedef struct  DtwTreeTransactionReportModule{
 
 }DtwTreeTransactionReportModule;
 #endif
-
-
 
 
 
@@ -3201,11 +1424,6 @@ typedef struct DtwTreePartModule{
     struct DtwTreePart *(*self_copy)(struct DtwTreePart *self);
 }DtwTreePartModule;
 #endif
-
-
-
-
-
 
 
 
@@ -3325,17 +1543,12 @@ typedef struct DtwTreeModule{
 
 
 
-
-
-
 #ifndef PRIVATE_DTW_DATABASE_SCHEMA_MODULE_TYPE_H
 #define PRIVATE_DTW_DATABASE_SCHEMA_MODULE_TYPE_H
 typedef struct {
     DtwSchema * (*sub_schema)(DtwDatabaseSchema *self,const char *name);
 }DtwDatabaseSchemaModule;
 #endif
-
-
 
 
 #ifndef PRIVATE_DTW_SCHEMA_MODULE_TYPE_H
@@ -3345,9 +1558,6 @@ typedef struct {
     DtwSchema * (*sub_schema)(DtwSchema *self,const char *name);
 }DtwSchemaModule;
 #endif
-
-
-
 
 
 
@@ -3377,8 +1587,6 @@ typedef struct DtwHashModule{
 
 
 
-
-
 #ifndef PRIVATE_DTW_LOCKER_MODULE_TYPE_H
 #define PRIVATE_DTW_LOCKER_MODULE_TYPE_H
 typedef struct DtwLockerModule{
@@ -3391,8 +1599,6 @@ typedef struct DtwLockerModule{
 }DtwLockerModule;
 
 #endif
-
-
 
 
 
@@ -3440,8 +1646,6 @@ typedef struct DtwPathModule{
 
 
 
-
-
 #ifndef PRIVATE_DTW_RANDONIZER_MODULE_TYPE_H
 #define PRIVATE_DTW_RANDONIZER_MODULE_TYPE_H
 typedef struct  DtwRandonizerModule{
@@ -3451,8 +1655,6 @@ typedef struct  DtwRandonizerModule{
     void (*free)(DtwRandonizer *self);
 }DtwRandonizerModule;
 #endif
-
-
 
 
 #ifndef PRIVATE_DTW_STRING_ARRAY_MODULE_TYPE_H
@@ -3491,17 +1693,6 @@ typedef struct DtwStringArrayModule{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 #ifndef PRIVATE_DTW_NAMESPACE_MODULE_TYPE_H
 #define PRIVATE_DTW_NAMESPACE_MODULE_TYPE_H
 typedef struct DtwNamespace{
@@ -3513,8 +1704,6 @@ typedef struct DtwNamespace{
     char *(*get_current_dir)();
 
     unsigned char *(*load_any_content)(const char * path,long *size,bool *is_binary);
-
-    char *(*get_absolute_path)(const char *path);
 
     char *(*load_string_file_content)(const char * path);
 
@@ -3609,18 +1798,9 @@ typedef struct DtwNamespace{
 
 
 
-
-
 #endif
 
-
 //# include "../../extras/CHashManipulator.h"
-
-
-
-
-
-
 
 
 
@@ -3656,8 +1836,6 @@ DtwStringArray * DtwStringArray_clone(DtwStringArray *self);
 
 
 
-
-
 char * calc_sha_256_returning_string(const void *input, size_t len);
 
 void calc_sha_256_from_string(uint8_t hash[SIZE_OF_SHA_256_HASH], const char *input);
@@ -3669,8 +1847,6 @@ char * calc_sha_256_from_string_returning_string(const char *input);
 char * calc_sha_256_from_file_returning_string(const char *filename);
 
 char * sha256_open_file(const char *filename, int *size);
-
-
 
 
 
@@ -3688,16 +1864,12 @@ char *dtw_convert_binary_file_to_base64(const char *path);
 
 
 
-
-
 DtwRandonizer * newDtwRandonizer();
 
 int DtwRandonizer_generate_num(DtwRandonizer *self,int max);
 
 char * DtwRandonizer_generate_token(struct DtwRandonizer*self, int size);
 void DtwRandonizer_free(struct DtwRandonizer *self);
-
-
 
 
 
@@ -3716,8 +1888,6 @@ long private_dtw_convert_index(long index,long size);
 
 
 long dtw_get_time();
-
-
 
 
 
@@ -3759,7 +1929,6 @@ double private_dtw_convert_string_to_number(const char *num, bool *its_a_number)
 
 
 
-
 void dtw_create_dir_recursively(const char *path);
 
 bool dtw_remove_any(const char* path);
@@ -3769,8 +1938,6 @@ char *dtw_get_current_dir();
 long dtw_get_total_itens_of_dir(const char *path);
 
 unsigned char *dtw_load_any_content(const char * path,long *size,bool *is_binary);
-
-char *dtw_get_absolute_path(const char *path);
 
 char *dtw_load_string_file_content(const char * path);
 
@@ -3800,8 +1967,6 @@ bool dtw_move_any(const char* src_path, const char* dest_path,bool merge);
 
 
 
-
-
 long dtw_load_long_file_content_setting_error(const char *path,int *error);
 
 long dtw_load_long_file_content(const char * path);
@@ -3825,14 +1990,10 @@ void dtw_write_double_file_content(const char *path,double value);
 
 
 
-
-
  DtwStringArray * dtw_list_files(const char *path, bool concat_path);
 DtwStringArray * dtw_list_dirs(const char *path, bool concat_path);
 
 DtwStringArray *  dtw_list_all(const char *path,  bool concat_path);
-
-
 
 
 
@@ -3856,8 +2017,6 @@ struct DtwStringArray * dtw_list_basic(const char *path,int expected_type,bool c
 
 
 
-
-
  DtwStringArray * dtw_list_dirs_recursively(const char *path,bool concat_path);
 
 
@@ -3865,9 +2024,6 @@ struct DtwStringArray * dtw_list_basic(const char *path,int expected_type,bool c
 
 
  DtwStringArray * dtw_list_all_recursively(const char *path,bool concat_path);
-
-
-
 
 
 
@@ -3889,8 +2045,6 @@ void DtwPath_free(struct DtwPath *self);
 
 
 
-
-
 char * DtwPath_get_name(DtwPath *self);
 
 char * DtwPath_get_extension(struct DtwPath *self);
@@ -3903,7 +2057,6 @@ char * DtwPath_get_dir(struct DtwPath *self);
 
 
 char * DtwPath_get_path(struct DtwPath *self);
-
 
 
 
@@ -3933,8 +2086,6 @@ void DtwPath_replace_dirs(DtwPath *self,const char *str,const char *dir);
 
 
 
-
-
 int DtwPath_get_total_dirs(DtwPath *self);
 
 char *DtwPath_get_sub_dirs_from_index(DtwPath *self, int start, int end);
@@ -3945,8 +2096,6 @@ int private_dtw_count_dirs_before(const char *dirs,int index);
 void DtwPath_insert_dir_at_index(DtwPath *self, int index, const char *dir);
 
 void DtwPath_remove_sub_dirs_at_index(DtwPath *self, int start, int end);
-
-
 
 
 
@@ -3963,12 +2112,7 @@ void DtwPath_remove_sub_dirs_at(DtwPath *self,const char *str);
 
 
 
-
-
-
 DtwTreeProps DtwTreeProps_format_props(DtwTreeProps props);
-
-
 
 
 
@@ -3986,12 +2130,9 @@ void DtwJsonTreeError_free(struct DtwJsonTreeError *self);
 
 
 
-
 struct DtwTreeTransactionReport * newDtwTreeTransactionReport();
 void  DtwTreeTransactionReport_represent(struct DtwTreeTransactionReport *report);
 void  DtwTreeTransactionReport_free(struct DtwTreeTransactionReport *report);
-
-
 
 
 
@@ -4020,8 +2161,6 @@ struct DtwTreePart * DtwTreePart_self_copy(struct DtwTreePart *self);
 struct DtwTreePart * newDtwTreePart(const char *path, DtwTreeProps props);
 struct DtwTreePart * newDtwTreePartEmpty(const char *path);
 struct DtwTreePart * newDtwTreePartLoading(const char *path);
-
-
 
 
 
@@ -4103,9 +2242,6 @@ void DtwTree_dumps_tree_json_to_file(DtwTree *self,const char *path,DtwTreeProps
 
 
 
-
-
-
 DtwMultiFileLocker *newDtwMultiFileLocker();
 
 int DtwMultiFIleLocker_lock(DtwMultiFileLocker *self, const  char *element);
@@ -4116,9 +2252,7 @@ void DtwMultiFileLocker_represemt(DtwMultiFileLocker *self);
 
 void DtwMultiFileLocker_free(DtwMultiFileLocker *self);
 
-
 #ifdef __linux__
-
 
 
 
@@ -4127,8 +2261,6 @@ privateDtwFlockLockedElement * private_new_privateDtwFlockLockedElement(const ch
 void privateDtwFlockLockedElement_represent(privateDtwFlockLockedElement *self);
 
 void privateDtwFlockLockedElement_free(privateDtwFlockLockedElement *self);
-
-
 
 
 
@@ -4154,9 +2286,6 @@ void privateDtwFlockArray_free(privateDtwFlockArray *self);
 
 
 
-
-
-
 DtwFlockLocker * newFlockLocker();
 
 void private_FlockLocker_unlock_by_index(DtwFlockLocker *self, int index);
@@ -4169,10 +2298,7 @@ void  DtwFlockLocker_represent(DtwFlockLocker *self);
 
 void  DtwFlockLocker_free(DtwFlockLocker *self);
 
-
-
 #endif
-
 
 
 
@@ -4189,9 +2315,6 @@ void DtwLocker_free(DtwLocker *self);
 
 
 
-
-
-
 DtwJsonTransactionError * private_new_DtwJsonTransactionError( int code,const char *mensage,const  char *path);
 
 void DtwJsonTransactionError_represent(struct DtwJsonTransactionError *self);
@@ -4199,8 +2322,6 @@ void DtwJsonTransactionError_represent(struct DtwJsonTransactionError *self);
 void DtwJsonTransactionError_prepend_path(struct DtwJsonTransactionError *self,char *path);
 
 void DtwJsonTransactionError_free(struct DtwJsonTransactionError *self);
-
-
 
 
 
@@ -4238,8 +2359,6 @@ void DtwActionTransaction_commit(DtwActionTransaction* self,const char *path);
 void DtwActionTransaction_represent(DtwActionTransaction* self);
 
 void DtwActionTransaction_free(DtwActionTransaction* self);
-
-
 
 
 
@@ -4297,15 +2416,10 @@ void DtwTransaction_free(struct DtwTransaction *self);
 
 
 
-
-
-
 privateDtwResourceRootProps *private_newDtwResourceRootProps();
 
 
 void privateDtwResourceRootProps_free(privateDtwResourceRootProps *self);
-
-
 
 
 
@@ -4327,8 +2441,6 @@ void private_newDtwSchema_free(DtwSchema *self);
 
 
 
-
-
 DtwDatabaseSchema *private_newDtwDtatabaseSchema();
 
 DtwSchema * privateDtwDtatabaseSchema_get_sub_schema(DtwDatabaseSchema *self,const char *name);
@@ -4336,8 +2448,6 @@ DtwSchema * privateDtwDtatabaseSchema_get_sub_schema(DtwDatabaseSchema *self,con
 DtwSchema * DtwDtatabaseSchema_new_subSchema(DtwDatabaseSchema *self,const char *name);
 
 void private_new_DtwDtatabaseSchema_free(DtwDatabaseSchema *self);
-
-
 
 
 
@@ -4353,8 +2463,6 @@ void DtwResource_free(DtwResource *self);
 
 
 
-
-
 DtwResource * DtwResource_sub_resource_next(DtwResource *self, const char *end_path);
 
 
@@ -4363,8 +2471,6 @@ DtwResource * DtwResource_sub_resource_now(DtwResource *self, const char *end_pa
 DtwResource * DtwResource_sub_resource_now_in_unix(DtwResource *self, const char *end_path);
 
 DtwResource * DtwResource_sub_resource_random(DtwResource *self, const char *end_path);
-
-
 
 
 
@@ -4377,8 +2483,6 @@ void DtwResource_destroy(DtwResource *self);
 
 
 void DtwResource_destroy_sub_resource(DtwResource *self, const char *key);
-
-
 
 
 
@@ -4426,8 +2530,6 @@ void DtwResource_represent(DtwResource *self);
 
 
 
-
-
 unsigned char *DtwResource_get_any(DtwResource *self, long *size, bool *is_binary);
 
 
@@ -4460,16 +2562,12 @@ bool DtwResource_get_bool_from_sub_resource(DtwResource *self,const char *format
 
 
 
-
-
 void DtwResource_unload(DtwResource *self);
 
 
 void DtwResource_load(DtwResource *self);
 
 void DtwResource_load_if_not_loaded(DtwResource *self);
-
-
 
 
 
@@ -4492,8 +2590,6 @@ void DtwResource_dangerous_rename_schema_prop(DtwResource*self,const char *prop,
 
 
 DtwDatabaseSchema * DtwResource_newDatabaseSchema(DtwResource *self);
-
-
 
 
 
@@ -4522,8 +2618,6 @@ void DtwResource_set_bool( DtwResource *self,bool element);
 
 
 
-
-
 void DtwResource_set_any_in_sub_resource(DtwResource *self,const char *key, unsigned char *element, long size,bool is_binary);
 
 
@@ -4546,15 +2640,11 @@ void DtwResource_set_bool_in_sub_resource(DtwResource *self,const char *key, boo
 
 
 
-
-
 DtwResourceForeachProps DtwResource_create_foreach_props( void(*callback)(DtwResource *item, void *args));
 
 void DtwResource_foreach(DtwResource *self,DtwResourceForeachProps props);
 
 void DtwResource_schema_foreach(DtwResource *self,DtwResourceForeachProps props);
-
-
 
 
 
@@ -4573,8 +2663,6 @@ void DtwResource_schema_map(DtwResource *self,DtwResourceMapProps props);
 
 
 
-
-
 DtwResourcecJSONArrayMapProps DtwResource_create_cJSONArrayMapProps(cJSON *(*callback)(DtwResource *item, void *args));
 
 cJSON *DtwResource_map_cJSONArray(DtwResource *self,DtwResourcecJSONArrayMapProps props);
@@ -4588,8 +2676,6 @@ bool private_dtw_cJSONArray_filtrage(DtwResource *item,void *args);
 int private_dtw_cJSONArray_ordenation(DtwResource *item1,DtwResource *item2,void *args);
 
 void privateDtwResource_add_to_item_to_cJSONArray_array(void* array, void *item);
-
-
 
 
 
@@ -4613,11 +2699,8 @@ int private_dtw_cJSONArray_ordenation(DtwResource *item1,DtwResource *item2,void
 void privateDtwResource_add_to_item_to_cJSONObject(void* object, void *item);
 
 
-
-
 #ifdef DTW_ALLOW_CHASH
 #define DTW_ALLOW_CHASH
-
 
 
 DtwResourceCHashrrayMapProps  DtwResource_create_CHashrrayMapProps(    CHash *(*callback)(DtwResource *item, void *args));
@@ -4635,9 +2718,7 @@ int private_dtw_CHashArray_ordenation(DtwResource *item1,DtwResource *item2,void
 void privateDtwResource_add_to_item_to_CHashArray_array(void* array, void *item);
 
 
-
 #define DTW_ALLOW_CHASH
-
 
 
 DtwResourceCHashObjectMapProps DtwResource_createCHashObjectMapProps(
@@ -4658,12 +2739,7 @@ int private_dtw_CHashArray_ordenation(DtwResource *item1,DtwResource *item2,void
 void privateDtwResource_add_to_item_to_CHashObject(void* object, void *item);
 
 
-
-
 #endif
-
-
-
 
 
 
@@ -4672,9 +2748,6 @@ void privateDtwResource_add_to_item_to_CHashObject(void* object, void *item);
 DtwResourceArray * DtwResource_get_schema_values(DtwResource *self);
 
 DtwResourceArray * DtwResource_sub_resources(DtwResource *self);
-
-
-
 
 
 
@@ -4692,9 +2765,6 @@ DtwResource * DtwResourceArray_get_by_name(DtwResourceArray *self, const char *n
 void DtwResourceArray_represent(DtwResourceArray *self);
 
 void DtwResourceArray_free(DtwResourceArray *self);
-
-
-
 
 
 
@@ -4739,11 +2809,7 @@ void  DtwHash_free(DtwHash *self);
 
 
 
-
-
 DtwRandonizerModule newDtwRandonizerModule();
-
-
 
 
 
@@ -4752,17 +2818,11 @@ DtwPathModule newDtwPathModule();
 
 
 
-
-
 DtwStringArrayModule newDtwStringArrayModule();
 
 
 
-
-
 DtwTreePartModule newDtwTreePartModule();
-
-
 
 
 
@@ -4771,18 +2831,11 @@ DtwJsonTreeErrorModule newDtwJsonTreeErrorModule();
 
 
 
-
-
 DtwTreeTransactionReportModule newDtwTreeTransactionReportModule();
 
 
 
-
-
 DtwTreeModule newDtwTreeModule();
-
-
-
 
 
 
@@ -4793,11 +2846,7 @@ DtwLockerModule newDtwLockerModule();
 
 
 
-
-
 DtwActionTransactionModule newDtwActionTransactionModule();
-
-
 
 
 
@@ -4807,12 +2856,7 @@ DtwJsonTransactionErrorModule newDtwJsonTransactionErrorModule();
 
 
 
-
-
 DtwTransactionModule newDtwTransactionModule();
-
-
-
 
 
 
@@ -4822,12 +2866,7 @@ DtwResourceArrayModule newDtwResourceArrayModule();
 
 
 
-
-
 DtwResourceModule newDtwResourceModule();
-
-
-
 
 
 
@@ -4837,11 +2876,7 @@ DtwHashModule newDtwHashModule();
 
 
 
-
-
 DtwSchemaModule newDtwSchemaModule();
-
-
 
 
 
@@ -4851,12 +2886,7 @@ DtwDatabaseSchemaModule newDtwDatabaseSchemaModule();
 
 
 
-
-
 DtwNamespace newDtwNamespace();
-
-
-
 
 
 
@@ -4865,7 +2895,6 @@ DtwNamespace newDtwNamespace();
 #ifdef __cplusplus
 }
 #endif
-
 
 
 //doTheWorldDeclarationEnd
@@ -4883,11 +2912,7 @@ const char dtw_base64_table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstu
 
 
 
-
 //# include "../../extras/CHashManipulator.h"
-
-
-
 
 
 
@@ -4953,8 +2978,6 @@ char * sha256_open_file(const char *filename, int *size){
     fclose(file);
     return content;
 }
-
-
 
 
 
@@ -5041,8 +3064,6 @@ char *dtw_convert_binary_file_to_base64(const char *path){
 
 
 
-
-
 DtwRandonizer * newDtwRandonizer(){
     DtwRandonizer *self = (DtwRandonizer*) malloc(sizeof (DtwRandonizer));
     *self =(DtwRandonizer){0};
@@ -5097,8 +3118,6 @@ char * DtwRandonizer_generate_token(struct DtwRandonizer*self, int size){
 void DtwRandonizer_free(struct DtwRandonizer *self){
     free(self);
 }
-
-
 
 
 
@@ -5258,8 +3277,6 @@ long private_dtw_convert_index(long index,long size){
 
     return converted_index;
 }
-
-
 
 
 
@@ -5556,8 +3573,6 @@ double private_dtw_convert_string_to_number(const char *num, bool *its_a_number)
 
 
 
-
-
 void dtw_create_dir_recursively(const char *path){
 
     int entity =dtw_entity_type(path);
@@ -5591,24 +3606,7 @@ void dtw_create_dir_recursively(const char *path){
 
     dtw_create_dir(path);
 }
-char *dtw_get_absolute_path(const char *path){
-    char absolute_path[PATH_MAX] ={0};
 
-    #ifdef __linux__
-     // Usa realpath para obter o caminho absoluto
-     if (realpath(path, absolute_path) != NULL) {
-         return strdup(absolute_path);
-     }
-     #endif
-     #ifdef _WIN32
-     if (_fullpath(absolute_path, relative_path, _MAX_PATH) != NULL) {
-            return strdup(absolute_path);
-    }
-     #endif
-
-     return NULL;
-
-}
 char *dtw_get_current_dir(){
     char *path = (char*)malloc(1024);
     getcwd(path,1024);
@@ -5857,8 +3855,7 @@ long dtw_get_total_itens_of_dir(const char *path){
         }
         closedir(dir);
         return i -2;
-    #endif
-    #ifdef _WIN32
+    #else
         WIN32_FIND_DATA findFileData;
             HANDLE hFind = FindFirstFile(path, &findFileData);
 
@@ -5973,8 +3970,6 @@ bool dtw_move_any(const char* src_path, const char* dest_path,bool merge) {
 
 
 
-
-
 long dtw_load_long_file_content_setting_error(const char *path,int *error){
     char *data = dtw_load_string_file_content(path);
     if(!data){
@@ -6079,8 +4074,6 @@ void dtw_write_bool_file_content(const char *path, bool value){
 
 
 
-
-
  DtwStringArray * dtw_list_files(const char *path, bool concat_path){
     return dtw_list_basic(path,  DTW_FILE_TYPE, concat_path);
 }
@@ -6092,8 +4085,6 @@ void dtw_write_bool_file_content(const char *path, bool value){
  DtwStringArray *  dtw_list_all(const char *path,  bool concat_path){
     return dtw_list_basic(path, DTW_ALL_TYPE, concat_path);
 }
-
-
 
 
 
@@ -6177,8 +4168,6 @@ struct DtwStringArray * dtw_list_basic(const char *path,int expected_type,bool c
 }
 
 #endif
-
-
 
 
 
@@ -6274,8 +4263,6 @@ struct DtwStringArray *  dtw_list_basic(const char *path,int expected_type,bool 
     return dirs;
 }
 #endif
-
-
 
 
 
@@ -6385,9 +4372,6 @@ struct DtwStringArray *  dtw_list_basic(const char *path,int expected_type,bool 
 
 
 
-
-
-
 struct DtwPath * newDtwPath(const char *path) {
     struct DtwPath *self = (struct DtwPath *)malloc(sizeof(struct DtwPath));
     self->garbage = newDtwStringArray();
@@ -6431,8 +4415,6 @@ void DtwPath_free(struct DtwPath *self) {
     free(self->path);
     free(self);
 }
-
-
 
 
 
@@ -6518,8 +4500,6 @@ char * DtwPath_get_dir(struct DtwPath *self){
 char * DtwPath_get_path(struct DtwPath *self){
     return self->path;
 }
-
-
 
 
 
@@ -6629,8 +4609,6 @@ void DtwPath_replace_dirs(DtwPath *self,const char *str,const char *dir){
     free(formatted_entry);
 
 }
-
-
 
 
 
@@ -6781,8 +4759,6 @@ void DtwPath_remove_sub_dirs_at_index(DtwPath *self, int start, int end){
 
 
 
-
-
 void DtwPath_insert_dir_after(DtwPath *self,const char *str,const char *dir){
     char *current_dir = DtwPath_get_dir(self);
     int index = (int)dtw_index_of_string(current_dir,str);
@@ -6815,9 +4791,6 @@ void DtwPath_remove_sub_dirs_at(DtwPath *self,const char *str){
     int end = private_dtw_count_dirs_before(current_dir,index+ (int)strlen(str));
     DtwPath_remove_sub_dirs_at_index(self, start, end - 1);
 }
-
-
-
 
 
 
@@ -6941,8 +4914,6 @@ void DtwStringArray_free(struct DtwStringArray *self){
 
 
 
-
-
 DtwTreeProps DtwTreeProps_format_props(DtwTreeProps props){
     DtwTreeProps result = props;
 
@@ -6966,8 +4937,6 @@ DtwTreeProps DtwTreeProps_format_props(DtwTreeProps props){
     }
     return result;
 }
-
-
 
 
 
@@ -7124,8 +5093,6 @@ void DtwJsonTreeError_free(struct DtwJsonTreeError *self){
 
 
 
-
-
 struct DtwTreeTransactionReport * newDtwTreeTransactionReport(){
     struct DtwTreeTransactionReport *new_report = (struct DtwTreeTransactionReport *)malloc(sizeof(struct DtwTreeTransactionReport));
     new_report->write = newDtwStringArray();
@@ -7150,8 +5117,6 @@ void  DtwTreeTransactionReport_free(struct DtwTreeTransactionReport *report){
     DtwStringArray_free(report->remove);
     free(report);
 }
-
-
 
 
 
@@ -7372,8 +5337,6 @@ void DtwTreePart_free(struct DtwTreePart *self){
 
 
 
-
-
 void DtwTreePart_load_content_from_hardware(struct DtwTreePart *self){
 
     char *path = DtwPath_get_path(self->path);
@@ -7523,8 +5486,6 @@ bool DtwTreePart_hardware_commit(struct DtwTreePart *self){
     }
     return false;
 }
-
-
 
 
 
@@ -7811,8 +5772,6 @@ void  DtwTree_dumps_tree_json_to_file(struct DtwTree *self, const char *path, Dt
 
 
 
-
-
 struct DtwTreePart *DtwTree_find_tree_part_by_function(
         struct DtwTree *self,
         bool (*caller)(struct  DtwTreePart *part,void *args),
@@ -7894,8 +5853,6 @@ struct DtwTree *DtwTree_filter(
 
     return NULL;
 }
-
-
 
 
 
@@ -8130,8 +6087,6 @@ struct DtwStringArray *DtwTree_list_all( DtwTree *self, const char *path,bool co
 
 
 
-
-
 struct  DtwTree * newDtwTree(){
 
     struct DtwTree *self = (struct DtwTree*)malloc(sizeof(struct DtwTree));
@@ -8319,10 +6274,6 @@ void DtwTree_hardware_commit_tree(struct DtwTree *self){
 
 
 
-
-
-
-
 DtwMultiFileLocker *newDtwMultiFileLocker(){
     DtwMultiFileLocker *self = (DtwMultiFileLocker*) malloc(sizeof (DtwMultiFileLocker));
 
@@ -8449,10 +6400,8 @@ void DtwMultiFileLocker_free(DtwMultiFileLocker *self){
     free(self);
 }
 
-
 #ifdef __linux__
     
-
 
 
 privateDtwFlockLockedElement * private_new_privateDtwFlockLockedElement(const char *filename, int file_descriptor){
@@ -8472,8 +6421,6 @@ void privateDtwFlockLockedElement_free(privateDtwFlockLockedElement *self){
     free(self);
 
 }
-
-
 
 
 
@@ -8538,9 +6485,6 @@ void privateDtwFlockArray_free(privateDtwFlockArray *self){
 
 
 
-
-
-
 DtwFlockLocker * newFlockLocker(){
 
     DtwFlockLocker *self = (DtwFlockLocker*) malloc(sizeof (DtwFlockLocker));
@@ -8602,10 +6546,7 @@ void  DtwFlockLocker_free(DtwFlockLocker *self){
     free(self);
 }
 
-
-
 #endif
-
 
 
 
@@ -8664,9 +6605,6 @@ void DtwLocker_free(DtwLocker *self){
 #endif
     free(self);
 }
-
-
-
 
 
 
@@ -8730,8 +6668,6 @@ void private_newDtwSchema_free(DtwSchema *self){
 
 
 
-
-
 DtwDatabaseSchema *private_newDtwDtatabaseSchema(){
     DtwDatabaseSchema *self = (DtwDatabaseSchema*) malloc(sizeof (DtwDatabaseSchema));
     *self = (DtwDatabaseSchema){0};
@@ -8776,8 +6712,6 @@ void private_new_DtwDtatabaseSchema_free(DtwDatabaseSchema *self){
 
 
 
-
-
 privateDtwResourceRootProps *private_newDtwResourceRootProps(){
     privateDtwResourceRootProps *self  = (privateDtwResourceRootProps*) malloc(sizeof (privateDtwResourceRootProps));
     *self = (privateDtwResourceRootProps){0};
@@ -8806,8 +6740,6 @@ void privateDtwResourceRootProps_free(privateDtwResourceRootProps *self){
 
     free(self);
 }
-
-
 
 
 
@@ -9005,8 +6937,6 @@ void DtwResource_free(DtwResource *self){
 
 
 
-
-
 DtwResource * DtwResource_sub_resource_next(DtwResource *self, const char *end_path){
     if(DtwResource_error(self)){
         return NULL;
@@ -9157,8 +7087,6 @@ DtwResource * DtwResource_sub_resource_random(DtwResource *self, const char *end
 
 
 
-
-
 void private_DtwResurce_destroy_primary_key(DtwResource *self) {
 
 
@@ -9260,8 +7188,6 @@ void DtwResource_destroy_sub_resource(DtwResource *self, const char *key){
     DtwResource *son = DtwResource_sub_resource(self, "%s",key);
     DtwResource_destroy(son);
 }
-
-
 
 
 
@@ -9532,8 +7458,6 @@ void DtwResource_represent(DtwResource *self){
 
 
 
-
-
 unsigned char *DtwResource_get_any(DtwResource *self, long *size, bool *is_binary){
     if(DtwResource_error(self)){
         return NULL;
@@ -9760,8 +7684,6 @@ bool DtwResource_get_bool_from_sub_resource(DtwResource *self,const char *format
 
 
 
-
-
 void DtwResource_unload(DtwResource *self){
     if(DtwResource_error(self)){
         return ;
@@ -9796,8 +7718,6 @@ void DtwResource_load_if_not_loaded(DtwResource *self){
         DtwResource_load(self);
     }
 }
-
-
 
 
 
@@ -10046,8 +7966,6 @@ DtwDatabaseSchema * DtwResource_newDatabaseSchema(DtwResource *self){
 
 
 
-
-
 void private_dtw_resource_set_primary_key(DtwResource *self, unsigned  char *element, long size){
 
 privateDtwSchemaUnsafe({
@@ -10210,8 +8128,6 @@ void DtwResource_set_bool( DtwResource *self,bool element){
 
 
 
-
-
 void DtwResource_set_any_in_sub_resource(DtwResource *self,const char *key, unsigned char *element, long size,bool is_binary) {
     if(DtwResource_error(self)){
         return ;
@@ -10287,8 +8203,6 @@ void DtwResource_set_bool_in_sub_resource(DtwResource *self,const char *key, boo
 
 
 
-
-
 DtwResourceForeachProps DtwResource_create_foreach_props( void(*callback)(DtwResource *item, void *args)){
     DtwResourceForeachProps props = {0};
     props.callback = callback;
@@ -10356,8 +8270,6 @@ void DtwResource_schema_foreach(DtwResource *self,DtwResourceForeachProps props)
     }
     DtwResource_foreach(self->values_resource,props);
 }
-
-
 
 
 
@@ -10500,8 +8412,6 @@ void DtwResource_schema_map(DtwResource *self,DtwResourceMapProps props){
 }
 
 
-
-
 DtwResourcecJSONArrayMapProps DtwResource_create_cJSONArrayMapProps(cJSON *(*callback)(DtwResource *item, void *args)){
     DtwResourcecJSONArrayMapProps props = {0};
     props.callback= callback;
@@ -10574,8 +8484,6 @@ cJSON *DtwResource_schema_map_cJSONArray(DtwResource *self,DtwResourcecJSONArray
     return  DtwResource_map_cJSONArray(self->values_resource, props);
 
 }
-
-
 
 
 
@@ -10661,11 +8569,8 @@ cJSON *DtwResource_schema_map_cJSONObject(DtwResource *self,DtwResourcecJSONObje
 }
 
 
-
-
 #ifdef DTW_ALLOW_CHASH
 #define DTW_ALLOW_CHASH
-
 
 DtwResourceCHashrrayMapProps  DtwResource_create_CHashrrayMapProps(    CHash *(*callback)(DtwResource *item, void *args)){
     DtwResourceCHashrrayMapProps props = {0};
@@ -10734,9 +8639,7 @@ CHashArray *DtwResource_schema_map_CHashArray(DtwResource *self,DtwResourceCHash
     return DtwResource_map_CHashArray(self->values_resource,props);
 }
 
-
 #define DTW_ALLOW_CHASH
-
 
 
 DtwResourceCHashObjectMapProps DtwResource_createCHashObjectMapProps(
@@ -10825,12 +8728,7 @@ CHash *DtwResource_schema_map_CHashObject(DtwResource *self,DtwResourceCHashObje
 }
 
 
-
-
 #endif
-
-
-
 
 
 
@@ -10904,9 +8802,6 @@ DtwResourceArray * DtwResource_sub_resources(DtwResource *self){
 
 
 
-
-
-
 DtwResourceArray * newDtwResourceArray(){
     DtwResourceArray *self = (DtwResourceArray*) malloc(sizeof (DtwResourceArray));
     self->resources = (DtwResource**) malloc(0);
@@ -10949,9 +8844,6 @@ void DtwResourceArray_free(DtwResourceArray *self){
     free(self->resources);
     free(self);
 }
-
-
-
 
 
 
@@ -11002,8 +8894,6 @@ void DtwJsonTransactionError_free(struct DtwJsonTransactionError *self){
     free(self);
 
 }
-
-
 
 
 
@@ -11123,8 +9013,6 @@ void DtwActionTransaction_free(DtwActionTransaction* self){
     }
     free(self);
 }
-
-
 
 
 
@@ -11373,8 +9261,6 @@ void DtwActionTransaction_represent(DtwActionTransaction* self){
 
 
 
-
-
 DtwTransaction * newDtwTransaction(){
     DtwTransaction *self = (DtwTransaction*) malloc(sizeof(DtwTransaction));
     self->actions = (DtwActionTransaction **) malloc(sizeof (DtwActionTransaction**));
@@ -11504,8 +9390,6 @@ void DtwTransaction_free(struct DtwTransaction *self){
     free(self->actions);
     free(self);
 }
-
-
 
 
 
@@ -11647,9 +9531,6 @@ void DtwTransaction_represent(struct DtwTransaction *self){
     }
 
 }
-
-
-
 
 
 
@@ -11836,8 +9717,6 @@ void  DtwHash_free(DtwHash *self){
 
 
 
-
-
 DtwRandonizerModule newDtwRandonizerModule(){
     DtwRandonizerModule self = {0};
     self.newRandonizer = newDtwRandonizer;
@@ -11846,8 +9725,6 @@ DtwRandonizerModule newDtwRandonizerModule(){
     self.free = DtwRandonizer_free;
     return self;
 }
-
-
 
 
 
@@ -11885,8 +9762,6 @@ DtwPathModule newDtwPathModule(){
 
 
 
-
-
 DtwStringArrayModule newDtwStringArrayModule(){
     DtwStringArrayModule self = {0};
     self.newStringArray = newDtwStringArray;
@@ -11900,8 +9775,6 @@ DtwStringArrayModule newDtwStringArrayModule(){
     self.free =DtwStringArray_free;
     return self;
 }
-
-
 
 
 
@@ -11934,8 +9807,6 @@ DtwTreePartModule newDtwTreePartModule(){
 
 
 
-
-
 DtwJsonTreeErrorModule newDtwJsonTreeErrorModule(){
     DtwJsonTreeErrorModule self = {0};
     self.validate_json_tree_by_cJSON= DtwJsonTreeError_validate_json_tree_by_cJSON;
@@ -11947,16 +9818,12 @@ DtwJsonTreeErrorModule newDtwJsonTreeErrorModule(){
 
 
 
-
-
 DtwTreeTransactionReportModule newDtwTreeTransactionReportModule(){
     DtwTreeTransactionReportModule self = {0};
     self.represent = DtwTreeTransactionReport_represent;
     self.free = DtwTreeTransactionReport_free;
     return self;
 }
-
-
 
 
 
@@ -12005,9 +9872,6 @@ DtwTreeModule newDtwTreeModule(){
 
 
 
-
-
-
 DtwLockerModule newDtwLockerModule(){
     DtwLockerModule  self = {0};
     self.newLocker = newDtwLocker;
@@ -12017,8 +9881,6 @@ DtwLockerModule newDtwLockerModule(){
     self.free = DtwLocker_free;
     return self;
 }
-
-
 
 
 
@@ -12041,16 +9903,12 @@ DtwActionTransactionModule newDtwActionTransactionModule(){
 
 
 
-
-
 DtwJsonTransactionErrorModule newDtwJsonTransactionErrorModule(){
     DtwJsonTransactionErrorModule self = {0};
     self.represent = DtwJsonTransactionError_represent;
     self.free = DtwJsonTransactionError_free;
     return self;
 }
-
-
 
 
 
@@ -12093,9 +9951,6 @@ DtwTransactionModule newDtwTransactionModule(){
 
 
 
-
-
-
 DtwResourceArrayModule newDtwResourceArrayModule(){
     DtwResourceArrayModule self = {0};
     self.append = DtwResourceArray_append;
@@ -12104,8 +9959,6 @@ DtwResourceArrayModule newDtwResourceArrayModule(){
     self.free = DtwResourceArray_free;
     return self;
 }
-
-
 
 
 
@@ -12217,9 +10070,6 @@ DtwResourceModule newDtwResourceModule(){
 
 
 
-
-
-
 DtwHashModule newDtwHashModule(){
     DtwHashModule self = {0};
     self.newHash =newDtwHash;
@@ -12244,8 +10094,6 @@ DtwHashModule newDtwHashModule(){
 
 
 
-
-
 DtwSchemaModule newDtwSchemaModule(){
     DtwSchemaModule  self = {0};
     self.sub_schema = DtwSchema_new_subSchema;
@@ -12253,8 +10101,6 @@ DtwSchemaModule newDtwSchemaModule(){
 
     return  self;
 }
-
-
 
 
 
@@ -12267,14 +10113,11 @@ DtwDatabaseSchemaModule newDtwDatabaseSchemaModule(){
 
 
 
-
-
 DtwNamespace newDtwNamespace(){
     DtwNamespace self = {0};
     //io
     self.create_dir_recursively = dtw_create_dir_recursively;
     self.remove_any = dtw_remove_any;
-    self.get_absolute_path = dtw_get_absolute_path;
     self.get_current_dir = dtw_get_current_dir;
     self.load_any_content = dtw_load_any_content;
     self.load_string_file_content = dtw_load_string_file_content;
@@ -12330,10 +10173,6 @@ DtwNamespace newDtwNamespace(){
 
     return self;
 }
-
-
-
-
 
 
 
@@ -12397,7 +10236,6 @@ DtwNamespace newDtwNamespace(){
 #ifdef __GNUC__
 #pragma GCC visibility pop
 #endif
-
 
 
 
@@ -15484,7 +13322,6 @@ CJSON_PUBLIC(void) cJSON_free(void *object)
     global_hooks.deallocate(object);
     object = NULL;
 }
-
         #undef true
         #define true 1
         #undef false
@@ -15495,7 +13332,6 @@ CJSON_PUBLIC(void) cJSON_free(void *object)
 #ifndef DTW_NOT_IMPLEMENT_SHA256
     #ifdef PRIVATE_DTW_SHA_DEFINED_IN_DO_THE_WORLD
         
-
 
 #define TOTAL_LEN_LEN 8
 
@@ -15721,3028 +13557,8 @@ void calc_sha_256(uint8_t hash[SIZE_OF_SHA_256_HASH], const void *input, size_t 
 	sha_256_write(&sha_256, input, len);
 	(void)sha_256_close(&sha_256);
 }
-
     #endif
 #endif
 
 
-
 #endif //DO_THE_WORLD_H
-
-
-
-#ifndef UNIVERSAL_GARBAGE_H
-#ifndef UNIVERSAL_GARBAGE_H
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-
-#define UniversalGarbage_create_empty_struct(name,element_type) \
-(element_type*)malloc(sizeof(element_type));    \
-*name = (element_type){0};
-
-
-#define UniversalGarbage_cast(value) ((void**)&value)
-
-
-#define UniversalGarbage_add(garbage,deallocator_callback,value) \
-    rawUniversalGarbage_add(garbage,(void(*)(void*))deallocator_callback,UniversalGarbage_cast(value))
-
-#define UniversalGarbage_add_simple(garbage,value) \
-     UniversalGarbage_add(garbage,free,value)
-
-
-#define UniversalGarbage_add_return(garbage,deallocator_callback,value) \
-        UniversalGarbage_add(garbage->return_values,deallocator_callback,value)
-
-
-#define UniversalGarbage_add_simple_return(garbage,value) \
-    UniversalGarbage_add_simple(garbage->return_values,value)
-
-
-
-#define  UniversalGarbage_remove(garbage,value) \
-    rawUniversalGarbage_remove(garbage,UniversalGarbage_cast(value));
-
-
-#define  UniversalGarbage_disconnect(garbage,value) \
-    rawUniversalGarbage_disconnect(garbage,UniversalGarbage_cast(value));
-
-
-
-
-#define UniversalGarbage_reallocate(garbage,value) \
-    rawUniversalGarbage_reallocate(garbage,UniversalGarbage_cast(value))
-
-
-#define UniversalGarbage_resset(garbage,value) \
-    rawUniversalGarbage_resset(garbage,UniversalGarbage_cast(value))
-
-
-
-#ifndef PRIVATE_UNIVERSGAL_GARBAGE_ELEMENT_TYPE
-#define PRIVATE_UNIVERSGAL_GARBAGE_ELEMENT_TYPE
-typedef struct privateUniversalGarbageElement{
-    void **pointer;
-    void (*deallocator_callback)(void *element);
-    void *pointed_value;
-}privateUniversalGarbageElement;
-#endif
-
-
-
-#ifndef  PRIVATE_UNIVERSAL_GARBAGE_TYPE
-#define PRIVATE_UNIVERSAL_GARBAGE_TYPE
-
-
-typedef  struct UniversalGarbage{
-
-    struct UniversalGarbage *return_values;
-    privateUniversalGarbageElement **elements;
-    int  elements_size;
-    bool is_the_root;
-
-}UniversalGarbage;
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void private_UniversalGarbageSimpleElement_free_pointed_value(privateUniversalGarbageElement *self);
-
-
-void private_UniversalGarbageSimpleElement_free(privateUniversalGarbageElement *self);
-
-privateUniversalGarbageElement * private_newUniversalGarbageSimpleElement(void (*dealocator_callback)(void *element), void **pointer);
-
-
-
-
-
-
-
-UniversalGarbage * newUniversalGarbage();
-
-UniversalGarbage * private_new_MainUniversalGarbage();
-
-
-
-bool  rawUniversalGarbage_resset(UniversalGarbage *self, void **pointer);
-
-bool  rawUniversalGarbage_remove(UniversalGarbage *self, void **pointer);
-
-bool  rawUniversalGarbage_disconnect(UniversalGarbage *self, void **pointer);
-
-bool rawUniversalGarbage_reallocate(UniversalGarbage *self, void **pointer);
-
-bool  rawUniversalGarbage_add(UniversalGarbage *self,  void (*dealocator_callback)(void *element), void **pointer);
-
-void private_UniversalGarbage_free_all_sub_elements(UniversalGarbage *self);
-
-void UniversalGarbage_free_including_return(UniversalGarbage *self);
-
-void UniversalGarbage_free(UniversalGarbage *self);
-
-
-
-
-
-#ifdef __cplusplus
-}
-#endif
-
-#define UNIVERSAL_GARBAGE_H
-#endif
-
-
-
-
-
-
-
-
-
-
-privateUniversalGarbageElement * private_newUniversalGarbageSimpleElement(void (*dealocator_callback)(void *element), void **pointer){
-
-    privateUniversalGarbageElement * self = UniversalGarbage_create_empty_struct(
-        self,
-        privateUniversalGarbageElement
-    );
-    self->pointer = pointer;
-    self->deallocator_callback = dealocator_callback;
-    self->pointed_value = *pointer;
-    return  self;
-}
-void private_UniversalGarbageSimpleElement_free_pointed_value(privateUniversalGarbageElement *self){
-    if(self->pointed_value){
-        self->deallocator_callback(self->pointed_value);
-        self->pointed_value = NULL;
-    }
-}
-
-void private_UniversalGarbageSimpleElement_free(privateUniversalGarbageElement *self){
-    private_UniversalGarbageSimpleElement_free_pointed_value(self);
-    free(self);
-}
-
-
-
-
-
-
-UniversalGarbage * private_new_MainUniversalGarbage(){
-    UniversalGarbage *self = UniversalGarbage_create_empty_struct(self,UniversalGarbage)
-    self->elements = (privateUniversalGarbageElement**)malloc(0);
-    self->is_the_root = false;
-    return self;
-}
-
-UniversalGarbage * newUniversalGarbage(){
-    UniversalGarbage *self = UniversalGarbage_create_empty_struct(self,UniversalGarbage)
-    self->is_the_root = true;
-    self->elements = (privateUniversalGarbageElement**)malloc(0);
-    self->return_values =private_new_MainUniversalGarbage();
-
-    return self;
-}
-
-
-
-
-bool  rawUniversalGarbage_reallocate(UniversalGarbage *self, void **pointer){
-
-    if(self->is_the_root){
-
-        if(rawUniversalGarbage_reallocate(self->return_values,pointer)){
-            return true;
-        }
-    }
-
-
-    for(int i = 0; i < self->elements_size; i++){
-
-        privateUniversalGarbageElement *current = self->elements[i];
-        bool reallocate = current->pointer == pointer;
-
-        if(reallocate){
-            current->pointed_value = *pointer;
-            return true;
-        }
-    }
-    return false;
-}
-
-bool rawUniversalGarbage_resset(UniversalGarbage *self, void **pointer){
-
-    if(self->is_the_root){
-        if(rawUniversalGarbage_resset(self->return_values,pointer)){
-            return true;
-        }
-    }
-
-
-    for(int i = 0; i < self->elements_size; i++){
-        privateUniversalGarbageElement *current = self->elements[i];
-        bool resset = current->pointer == pointer;
-        if(resset){
-            private_UniversalGarbageSimpleElement_free_pointed_value(current);
-            current->pointed_value = *pointer;
-            return true;
-        }
-    }
-    return  false;
-
-}
-bool  rawUniversalGarbage_remove(UniversalGarbage *self, void **pointer){
-    if(self->is_the_root){
-        if(rawUniversalGarbage_remove(self->return_values,pointer)){
-            *pointer = NULL;
-            return true;
-        }
-    }
-
-    for(int i = 0; i < self->elements_size; i++){
-        privateUniversalGarbageElement *current = self->elements[i];
-        if(current->pointer == pointer){
-            private_UniversalGarbageSimpleElement_free(current);
-            self->elements_size-=1;
-            bool its_not_the_last = i < self->elements_size;
-            if(its_not_the_last){
-                self->elements[i] = self->elements[self->elements_size];
-
-            }
-            *pointer = NULL;
-            return  true;
-        }
-    }
-    return  false;
-}
-bool  rawUniversalGarbage_disconnect(UniversalGarbage *self, void **pointer){
-    if(self->is_the_root){
-        if(rawUniversalGarbage_disconnect(self->return_values,pointer)){
-            return true;
-        }
-    }
-
-    for(int i = 0; i < self->elements_size; i++){
-        privateUniversalGarbageElement *current = self->elements[i];
-        if(current->pointer == pointer){
-            free(current);
-            self->elements_size-=1;
-            bool its_not_the_last = i < self->elements_size;
-            if(its_not_the_last){
-                privateUniversalGarbageElement *last_element =  self->elements[self->elements_size];
-                self->elements[i] = last_element;
-            }
-            return true;
-        }
-    }
-    return  false;
-
-
-
-}
-bool  rawUniversalGarbage_add(UniversalGarbage *self,  void (*dealocator_callback)(void *element), void **pointer){
-
-    if(!pointer){
-        return false;
-    }
-
-    if(*pointer){
-        for(int i = 0; i < self->elements_size; i++){
-            privateUniversalGarbageElement *current = self->elements[i];
-            if(current->pointed_value == *pointer){
-                return false;
-            }
-        }
-    }
-
-
-    self->elements = (privateUniversalGarbageElement**)realloc(
-            self->elements,
-            (self->elements_size + 1) * sizeof(privateUniversalGarbageElement*)
-    );
-
-
-
-    self->elements[self->elements_size] = private_newUniversalGarbageSimpleElement(dealocator_callback, pointer);
-    self->elements_size+=1;
-    return  true;
-}
-
-
-
-void  private_UniversalGarbage_free_all_sub_elements(UniversalGarbage *self){
-    for(int i = 0; i < self->elements_size; i++){
-        private_UniversalGarbageSimpleElement_free(self->elements[i]);
-    }
-    free(self->elements);
-}
-
-void UniversalGarbage_free_including_return(UniversalGarbage *self){
-    private_UniversalGarbage_free_all_sub_elements(self);
-    if(self->is_the_root){
-        UniversalGarbage_free(self->return_values);
-    }
-    free(self);
-}
-
-void UniversalGarbage_free(UniversalGarbage *self){
-    private_UniversalGarbage_free_all_sub_elements(self);
-
-    if(self->is_the_root){
-
-        UniversalGarbage *return_garbage = self->return_values;
-        for(int i = 0; i < return_garbage->elements_size; i++){
-            free(return_garbage->elements[i]);
-        }
-
-        free(return_garbage->elements);
-        free(return_garbage);
-    }
-
-
-    free(self);
-}
-
-
-
-
-
-
-#define UNIVERSAL_GARBAGE_H
-#endif
-
-
-#endif
-
-#ifndef camalgamator_api_const
-#define camalgamator_api_const
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-#define  PRIVATE_CAMALGAMATOR_NO_ERRORS 0
-#define  CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED -1
-
-#define  CAMALGAMATOR_UNEXPECTED_ERROR -2
-
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-#define CAMALGAMATOR_DONT_INCLUDE 1
-#define CAMALGAMATOR_DONT_CHANGE 2
-#define CAMALGAMATOR_INCLUDE_ONCE 3
-#define CAMALGAMATOR_INCLUDE_PERPETUAL 4
-
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-
-enum{
-    PRIVATE_CAMALGAMATOR_NORMAL_STATE,
-    PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START,
-    PRIVATE_CAMALGAMATOR_COLLECTING_FILENAME,
-    PRIVATE_CAMALGAMATOR_INSIDE_INLINE_COMENT,
-    PRIVATE_CAMALGAMATOR_INSIDE_MULTILINE_COMENT,
-    PRIVATE_CAMALGAMATOR_INSIDE_NORMAL_STRING,
-    PRIVATE_CAMALGAMATOR_INSIDE_CHAR
-};
-
-#endif
-
-#ifndef camalgamator_api_type
-#define camalgamator_api_type
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-
-struct CAmalgamatorErrorOrContent{
-    char *content;
-    int error;
-    char *error_msg;
-    char *include_name;
-    char *filename;
-};
-typedef  struct CAmalgamatorErrorOrContent CAmalgamatorErrorOrContent;
-
-#endif
-
-#ifndef camalgamator_api_type1
-#define camalgamator_api_type1
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-struct CAmalgamatorNamesapce{
-    CAmalgamatorErrorOrContent * (*generate_amalgamation)(
-        const char*filename,
-        short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
-        void *args
-    );
-    CAmalgamatorErrorOrContent * (*generate_amalgamation_simple)(const char*filename);
-    short DONT_INCLUDE;
-    short DONT_CHANGE;
-    short INCLUDE_ONCE;
-    short INCLUDE_PERPETUAL;
-    short FILE_NOT_FOUND;
-    short UNEXPECTED_ERROR;
-    short NO_ERRORS;
-    void (*free_error_or_string)(CAmalgamatorErrorOrContent *self);
-
-};
-typedef   struct  CAmalgamatorNamesapce CAmalgamatorNamesapce;
-
-#endif
-
-#ifndef camalgamator_api_declare
-#define camalgamator_api_declare
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-
-CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int error_code,char *include_name,char *filename, const char *error_msg,...);
-
-
-CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_ok(char *content);
-
-void CAmalgamatorErrorOrString_free(CAmalgamatorErrorOrContent *self);
-
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
-    const char*filename,
-    short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
-    void *args
-);
-CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename);
-
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-CAmalgamatorNamesapce newCAmalgamatorNamesapce();
-
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-bool private_CAmalgamator_is_include_at_point(char *content,int content_size,int point);
-
-bool private_CAmalgamator_is_start_multiline_coment_at_point(char *content,int content_size,int point);
-
-bool private_CAmalgamator_is_end_multiline_coment_at_point(char *content,int content_size,int point);
-
-bool private_CAmalgamator_is_start_inline_coment_at_point(char *content,int content_size,int point);
-
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-int  private_CAmalgamator_generate_amalgamation(
-    short behavionr,
-    const char*filename,
-    CTextStack * final,
-    DtwStringArray *already_included_sha_list,
-    char **include_code_error,
-    char **filename_errr,
-    const char *prev_file,
-    const char *include_code,
-    short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
-    void *args
-);
-
-#endif
-
-#ifndef camalgamator_api_define
-#define camalgamator_api_define
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int error_code,char *include_name,char *filename, const char *error_msg,...){
-    CAmalgamatorErrorOrContent *self = (CAmalgamatorErrorOrContent*)malloc(sizeof(CAmalgamatorErrorOrContent));
-    *self = (CAmalgamatorErrorOrContent){0};
-    self->error = error_code;
-    va_list args;
-    va_start(args, error_msg);
-    self->error_msg = private_dtw_format_vaarg(error_msg,args);
-    va_end(args);
-    self->include_name = include_name;
-    self->filename = filename;
-    return  self;
-}
-
-CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_ok(char *content){
-    CAmalgamatorErrorOrContent *self = (CAmalgamatorErrorOrContent*)malloc(sizeof(CAmalgamatorErrorOrContent));
-    *self = (CAmalgamatorErrorOrContent){0};
-    self->error = PRIVATE_CAMALGAMATOR_NO_ERRORS;
-    self->content = content; //we take the ownership
-    return  self;
-}
-
-void CAmalgamatorErrorOrString_free(CAmalgamatorErrorOrContent *self){
-    if(self->include_name){
-        free(self->include_name);
-    }
-    if(self->content){
-        free(self->content);
-    }
-    if(self->error_msg){
-        free(self->error_msg);
-    }
-    if(self->filename){
-        free(self->filename);
-    }
-
-    free(self);
-}
-
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-#include <time.h>
-//silver_chain_scope_end
-
-
-
-CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
-    const char*filename,
-    short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
-    void *args
-){
-    CTextStack *final = newCTextStack_string_empty();
-    DtwStringArray *already_included = newDtwStringArray();
-    char *include_error_name = NULL;
-    char *filename_error = NULL;
-    int error  = private_CAmalgamator_generate_amalgamation(
-        CAMALGAMATOR_INCLUDE_ONCE,
-        filename,
-        final,
-        already_included,
-        &include_error_name,
-        &filename_error,
-        NULL, //filename
-        NULL, //include code
-        generator_handler,
-        args
-    );
-
-    DtwStringArray_free(already_included);
-    if(error){
-        CTextStack_free(final);
-        if(error == CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED && include_error_name){
-            return Private_new_CAmalgamatorErrorOrString_as_error(
-                CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED,
-                include_error_name,
-                filename_error,
-                "include:'%s' at file '%s' not found",
-                include_error_name,
-                filename_error
-            );
-        }
-        if(error == CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED){
-            return Private_new_CAmalgamatorErrorOrString_as_error(
-                CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED,
-                NULL,
-                NULL,
-                "file '%s' not found",
-                filename_error
-            );
-        }
-
-
-
-        return Private_new_CAmalgamatorErrorOrString_as_error(
-                CAMALGAMATOR_UNEXPECTED_ERROR,
-                NULL,
-                NULL,
-                "unexpected behavior"
-        );
-
-    }
-    char *content =  CTextStack_self_transform_in_string_and_self_clear(final);
-    return Private_new_CAmalgamatorErrorOrString_as_ok(content);
-}
-
-CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename){
-    return CAmalgamator_generate_amalgamation(filename,NULL,NULL);
-}
-
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-CAmalgamatorNamesapce newCAmalgamatorNamesapce(){
-    CAmalgamatorNamesapce self = {0};
-    self.generate_amalgamation = CAmalgamator_generate_amalgamation;
-    self.generate_amalgamation_simple = CAmalgamator_generate_amalgamation_simple;
-    self.free_error_or_string = CAmalgamatorErrorOrString_free;
-    self.DONT_CHANGE = CAMALGAMATOR_DONT_CHANGE;
-    self.DONT_INCLUDE = CAMALGAMATOR_DONT_INCLUDE;
-    self.INCLUDE_ONCE = CAMALGAMATOR_INCLUDE_ONCE;
-    self.INCLUDE_PERPETUAL= CAMALGAMATOR_INCLUDE_PERPETUAL;
-    self.FILE_NOT_FOUND = PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START;
-    self.UNEXPECTED_ERROR = CAMALGAMATOR_UNEXPECTED_ERROR;
-    self.NO_ERRORS = PRIVATE_CAMALGAMATOR_NO_ERRORS;
-    return self;
-}
-
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-#define PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point,char)\
-    if(content[point] != char){\
-    return false;\
-}
-#define PRIVATE_CAMALGAMATOR_STR_SIZE(str) (sizeof(str)-1)
-
-bool private_CAmalgamator_is_include_at_point(char *content,int content_size,int point){
-    if(point + PRIVATE_CAMALGAMATOR_STR_SIZE("#include") >= content_size){
-        return false;
-    }
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point,'#')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+1,'i')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+2,'n')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+3,'c')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+4,'l')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+5,'u')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+6,'d')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+7,'e')
-    return true;
-}
-
-bool private_CAmalgamator_is_start_multiline_coment_at_point(char *content,int content_size,int point){
-    if(point + PRIVATE_CAMALGAMATOR_STR_SIZE("/*") >= content_size){
-        return false;
-    }
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point,'/')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+1,'*')
-    return true;
-}
-
-bool private_CAmalgamator_is_end_multiline_coment_at_point(char *content,int content_size,int point){
-    if(point + PRIVATE_CAMALGAMATOR_STR_SIZE("*/") >= content_size){
-        return false;
-    }
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point,'*')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+1,'/')
-    return true;
-}
-
-
-bool private_CAmalgamator_is_start_inline_coment_at_point(char *content,int content_size,int point){
-    if(point + PRIVATE_CAMALGAMATOR_STR_SIZE("//") >= content_size){
-        return false;
-    }
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point,'/')
-    PRIVATE_C_AMALGAMATOR_CHECK_CHAR(point+1,'/')
-    return true;
-}
-
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-
-
-
-
-int  private_CAmalgamator_generate_amalgamation(
-    short behavionr,
-    const char*filename,
-    CTextStack * final,
-    DtwStringArray *already_included_sha_list,
-    char **include_code_error,
-    char **filename_errr,
-    const char *prev_file,
-    const char *include_code,
-    short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
-    void *args
-){
-    if(behavionr == CAMALGAMATOR_DONT_INCLUDE){
-        return PRIVATE_CAMALGAMATOR_NO_ERRORS;
-    }
-    if(behavionr == CAMALGAMATOR_DONT_CHANGE){
-        CTextStack_format(final,"$include \"%s\"\n", include_code);
-        return PRIVATE_CAMALGAMATOR_NO_ERRORS;
-    }
-    UniversalGarbage *garbage = newUniversalGarbage();
-    bool is_binary;
-    long size;
-    char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
-    UniversalGarbage_add_simple(garbage, content);
-    if(content == NULL || is_binary){
-        if(prev_file){
-            *include_code_error = strdup(include_code);
-            *filename_errr = dtw_get_absolute_path(prev_file);
-        }
-
-        //means its the first include
-        if(!prev_file){
-            *filename_errr = strdup(filename);
-        }
-        UniversalGarbage_free(garbage);
-        return CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED;
-    }
-
-    if(behavionr == CAMALGAMATOR_INCLUDE_ONCE){
-        char *sha_content = dtw_generate_sha_from_any(content,size);
-        UniversalGarbage_add_simple(garbage, sha_content);
-        bool is_already_included =DtwStringArray_find_position(already_included_sha_list,sha_content) != -1;
-        if(is_already_included){
-                UniversalGarbage_free(garbage);
-                return PRIVATE_CAMALGAMATOR_NO_ERRORS;
-        }
-        DtwStringArray_append(already_included_sha_list, sha_content);
-    }
-
-    DtwPath *current_path = newDtwPath(filename);
-    UniversalGarbage_add(garbage,DtwPath_free, current_path);
-
-    char *dir = DtwPath_get_dir(current_path);
-
-    CTextStack *new_include_code = newCTextStack_string_empty();
-    UniversalGarbage_add(garbage,CTextStack_free,new_include_code);
-
-    int state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
-    for(int i =0; i < size;i++){
-
-        char current_char = content[i];
-
-        if(state == PRIVATE_CAMALGAMATOR_NORMAL_STATE){
-            bool is_multiline_coment_start = private_CAmalgamator_is_start_multiline_coment_at_point(content,size,i);
-            if(is_multiline_coment_start){
-                state = PRIVATE_CAMALGAMATOR_INSIDE_MULTILINE_COMENT;
-                CTextStack_format(final,"%c",current_char);
-                continue;
-            }
-            bool is_inline_coment_start =  private_CAmalgamator_is_start_inline_coment_at_point(content,size,i);
-            if(is_inline_coment_start){
-                state = PRIVATE_CAMALGAMATOR_INSIDE_INLINE_COMENT;
-                CTextStack_format(final,"%c",current_char);
-                continue;
-            }
-            bool is_str_start = current_char == '"';
-            if(is_str_start){
-                state = PRIVATE_CAMALGAMATOR_INSIDE_NORMAL_STRING;
-                CTextStack_format(final,"%c",current_char);
-                continue;
-            }
-            bool is_char_start = current_char == '\'';
-            if(is_char_start){
-                state = PRIVATE_CAMALGAMATOR_INSIDE_CHAR;
-                CTextStack_format(final,"%c",current_char);
-                continue;
-            }
-            bool is_include = private_CAmalgamator_is_include_at_point(content,size,i);
-            if(is_include){
-                state =PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START;
-                continue; // we dont format include here
-            }
-            CTextStack_format(final,"%c",current_char);
-            continue;
-        }
-
-        if(state == PRIVATE_CAMALGAMATOR_INSIDE_MULTILINE_COMENT ){
-            bool is_multiline_coment_end = private_CAmalgamator_is_end_multiline_coment_at_point(content,size,i);
-            if(is_multiline_coment_end){
-                state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
-            }
-            CTextStack_format(final,"%c",current_char);
-            continue;
-
-        }
-
-        if(state == PRIVATE_CAMALGAMATOR_INSIDE_INLINE_COMENT){
-            bool is_inline_comment_end = current_char == '\n';
-            if(is_inline_comment_end){
-                state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
-            }
-
-            CTextStack_format(final,"%c",current_char);
-            continue;
-
-        }
-
-        if(state == PRIVATE_CAMALGAMATOR_INSIDE_NORMAL_STRING){
-            char last_char = content[i-1];
-            bool is_str_end = current_char == '"' && last_char != '\\';
-            if(is_str_end){
-                state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
-            }
-
-            CTextStack_format(final,"%c",current_char);
-            continue;
-
-        }
-
-        if(state == PRIVATE_CAMALGAMATOR_INSIDE_CHAR){
-            char last_char = content[i-1];
-            bool is_char_end = current_char == '\''&& last_char != '\'';
-            if(is_char_end){
-                state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
-
-            }
-            CTextStack_format(final,"%c",current_char);
-            continue;
-
-        }
-
-        if(state == PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START){
-            if (current_char == '"'){
-                state = PRIVATE_CAMALGAMATOR_COLLECTING_FILENAME;
-            }
-
-            if(current_char == '<'){
-                state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
-                //aborts inclusion
-                CTextStack_text(final,"#include <");
-            }
-            continue;
-        }
-
-        if(state == PRIVATE_CAMALGAMATOR_COLLECTING_FILENAME){
-
-            // means its the end of the #include "filename"
-            // so whe have the hle filename stored in
-            // new_include_code->rendered_text
-            if(current_char == '"'){
-                //default behavior its include only once
-                int behavior = CAMALGAMATOR_INCLUDE_ONCE;
-                char *new_path = dtw_concat_path(dir, new_include_code->rendered_text);
-                if(generator_handler){
-                    int behavior  = generator_handler(new_path,new_include_code->rendered_text, args);
-                }
-
-                int error = private_CAmalgamator_generate_amalgamation(
-                    behavionr,
-                    new_path,
-                    final,
-                    already_included_sha_list,
-                    include_code_error,
-                    filename_errr,
-                    filename, // its the prev filename
-                    new_include_code->rendered_text,
-                    generator_handler,
-                    args
-                );
-                if(error){
-                        UniversalGarbage_free(garbage);
-                        return error;
-                }
-
-                free(new_path);
-                CTextStack_restart(new_include_code);
-                state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
-            }
-
-            else{
-                CTextStack_format(new_include_code,"%c", current_char);
-            }
-        }
-    }
-    UniversalGarbage_free(garbage);
-    return PRIVATE_CAMALGAMATOR_NO_ERRORS;
-}
-
-#endif
-
-#ifndef camalgamator_cli_dependencies
-#define camalgamator_cli_dependencies
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-
-
-/*
-MIT License
-
-Copyright (c) 2023 OUI
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-#ifndef CTEXTENGINE_H
-#define CTEXTENGINE_H
-
-
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <ctype.h>
-
-
-
-
-#define CTEXT_BY_OWNESHIP 1
-#define CTEXT_BY_COPY 2
-#define CTEXT_BY_REFERENCE 3
-
-//
-// Created by jurandi on 18-04-2023.
-//
-#define CTEXT_HTML "html"
-#define CTEXT_BODY "body"
-#define CTEXT_DIV "div"
-#define CTEXT_H1 "h1"
-#define CTEXT_H2 "h2"
-#define CTEXT_H3 "h3"
-#define CTEXT_H4 "h4"
-#define CTEXT_H5 "h5"
-#define CTEXT_H6 "h6"
-#define CTEXT_P "p"
-#define CTEXT_SPAN "span"
-#define CTEXT_A "a"
-#define CTEXT_IMG "img"
-#define CTEXT_INPUT "input"
-#define CTEXT_BUTTON "button"
-#define CTEXT_TABLE "table"
-#define CTEXT_TR "tr"
-#define CTEXT_TD "td"
-#define TH "th"
-#define CTEXT_THEAD "thead"
-#define CTEXT_TBODY "tbody"
-#define CTEXT_TFOOT "tfoot"
-#define CTEXT_UL "ul"
-#define CTEXT_LI "li"
-#define CTEXT_OL "ol"
-#define CTEXT_FORM "form"
-#define CTEXT_LABEL "label"
-#define CTEXT_SELECT "select"
-#define CTEXT_OPTION "option"
-#define CTEXT_TEXTAREA "textarea"
-#define CTEXT_SCRIPT "script"
-#define CTEXT_STYLE "style"
-#define CTEXT_META "meta"
-#define CTEXT_LINK "link"
-#define CTEXT_HEAD "head"
-#define CTEXT_BASE "base"
-#define CTEXT_BR "br"
-#define CTEXT_HR "hr"
-#define CTEXT_TITLE "title"
-#define CTEXT_IFRAME "iframe"
-#define CTEXT_NAV "nav"
-#define CTEXT_HEADER "header"
-#define CTEXT_FOOTER "footer"
-#define CTEXT_SECTION "section"
-#define CTEXT_ARTICLE "article"
-#define CTEXT_ASIDE "aside"
-#define CTEXT_DETAILS "details"
-#define CTEXT_SUMMARY "summary"
-#define CTEXT_DIALOG "dialog"
-#define MENU "menu"
-#define MENUITEM "menuitem"
-#define CTEXT_MAIN "main"
-#define CTEXT_CANVAS "canvas"
-#define CTEXT_AUDIO "audio"
-#define CTEXT_VIDEO "video"
-#define CTEXT_SOURCE "source"
-#define CTEXT_TRACK "track"
-#define CTEXT_EMBED "embed"
-#define CTEXT_PARAM "param"
-    
-
-
-
-
-
-
-
-#define CTEXT_LINE_BREAKER "\n"
-#define CTEXT_SEPARATOR "   "
-
-#define CTEXT_LONG 1
-#define CTEXT_DOUBLE 2
-#define CTEXT_BOOL 3
-#define CTEXT_STRING 4
-
-typedef struct CTextStack{
-
-    char *rendered_text;
-    size_t rendered_text_alocation_size;
-    size_t size;
-    
-    char *line_breaker;
-    char *separator;
-    int ident_level;
-
-}CTextStack;
-
-struct CTextStack *newCTextStack(const char *line_breaker, const char *separator);
-
-
-struct CTextStack *newCTextStack_string(const char *starter);
-
-struct CTextStack *newCTextStack_string_getting_ownership(const char *starter);
-
-struct CTextStack *newCTextStack_string_empty();
-
-
-void CTextStack_text(struct CTextStack *self, const char *text);
-
-
-void private_ctext_text_double_size_if_reachs(struct CTextStack *self);
-
-
-void CTextStack_segment_text(struct CTextStack *self, const char *text);
-
-
-void CTextStack_segment(struct CTextStack *self);
-
-
-void CTextStack_$open(struct CTextStack *self, const char *tag, const char *format, ...);
-
-
-void CTextStack_only$open(struct CTextStack *self, const char *tag, const char *format, ...);
-
-
-void CTextStack_auto$close(struct CTextStack *self, const char *tag, const char *format, ...);
-
-
-void CTextStack_format(struct CTextStack *self, const char *format, ...);
-
-
-void CTextStack_segment_format(struct CTextStack *self, const char *format, ...);
-
-
-void ctext_open(struct CTextStack *self, const char *tag);
-
-
-void ctext_close(struct CTextStack *self, const char *tag);
-
-void CTextStack_represent(struct CTextStack *self);
-void CTextStack_free(struct CTextStack *self);
-
-
-struct CTextStack * CTextStack_clone(struct CTextStack *self);
-
-
-char * CTextStack_self_transform_in_string_and_self_clear(struct CTextStack *self);
-
-void private_CTextStack_parse_ownership(struct CTextStack *self, struct CTextStack *new_string);
-
-
-void CTextStack_restart(struct CTextStack *self);
-
-
-//algorithm methods
-
-struct CTextStack *CTextStack_substr(struct CTextStack *self, long starter, long end);
-void CTextStack_self_substr(struct CTextStack *self, long starter, long end);
-
-
-struct CTextStack *CTextStack_pop(struct CTextStack *self, long starter, long end);
-void  CTextStack_self_pop(struct CTextStack *self, long starter, long end);
-
-
-struct CTextStack *CTextStack_replace(struct CTextStack *self,const char *element, const char *element_to_replace);
-void CTextStack_self_replace(struct CTextStack *self,const char *element, const char *element_to_replace);
-
-
-struct CTextStack *CTextStack_replace_long(struct CTextStack *self,const char *element, long element_to_replace);
-void CTextStack_self_replace_long(struct CTextStack *self,const char *element, long element_to_replace);
-
-struct CTextStack *CTextStack_replace_double(struct CTextStack *self,const char *element, double element_to_replace);
-void CTextStack_self_replace_double(struct CTextStack *self,const char *element, double element_to_replace);
-
-
-struct CTextStack *CTextStack_insert_at(struct CTextStack *self,long point, const char *element);
-void CTextStack_self_insert_at(struct CTextStack *self,long point, const char *element);
-
-
-long CTextStack_index_of_char(struct  CTextStack *self, char element);
-long CTextStack_index_of(struct  CTextStack *self, const char *element);
-
-bool CTextStack_starts_with(struct  CTextStack *self, const char *element);
-bool CTextStack_ends_with(struct  CTextStack *self, const char *element);
-
-bool CTextStack_equal(struct  CTextStack *self,const char *element);
-
-struct CTextStack *CTextStack_trim(struct CTextStack *self);
-void CTextStack_self_trim(struct CTextStack *self);
-
-struct CTextStack *CTextStack_lower(struct CTextStack *self);
-void CTextStack_self_lower(struct CTextStack *self);
-
-struct CTextStack *CTextStack_upper(struct CTextStack *self);
-void CTextStack_self_upper(struct CTextStack *self);
-
-int CTextStack_typeof(struct CTextStack *self);
-
-bool CTextStack_is_a_num(struct CTextStack *self);
-
-
-const char * CTextStack_typeof_in_str(struct CTextStack *self);
-bool  CTextStack_parse_to_bool(struct CTextStack *self);
-long  CTextStack_parse_to_integer(struct CTextStack *self);
-double  CTextStack_parse_to_double(struct CTextStack *self);
-
-
-struct CTextStack *CTextStack_reverse(struct CTextStack *self);
-void CTextStack_self_reverse(struct CTextStack *self);
-
-
-
-
-
-
-long private_CText_transform_index(long size, long value);
-
-
-void private_ctext_generate_formated_text(
-    struct CTextStack *stack,
-    const char *format,
-    va_list argptr
-    );
-
-
-
-typedef struct CTextArray{
-
-    CTextStack **stacks;
-    long size;
-
-
-}CTextArray;
-
-CTextArray * newCTextArray();
-
-
-void CTextArray_append(CTextArray *self,CTextStack *element);
-
-
-void CTextArray_append_string(CTextArray *self,const char *element);
-
-CTextStack * CTextArray_join(CTextArray *self,const char *separator);
-
-CTextArray * CTextArray_split(const char *element,const char *target);
-
-CTextArray * CTextArray_map(CTextArray *self, CTextStack *(caller)(CTextStack* element));
-
-CTextArray * CTextArray_filter(CTextArray *self, bool (caller)(CTextStack* element));
-
-void  CTextArray_foreach(CTextArray *self, void (*caller)(CTextStack* element));
-
-bool CTextArray_includes(CTextArray *self,const char *element);
-
-void  CTextArray_free(CTextArray *self);
-
-void CTextArray_represent(CTextArray *self);
-
-
-
-
-
-typedef struct CTextStackModule{
-
-    //admnistrative methods
-    CTextStack  *(*newStack)(const char *line_breaker, const char *separator);
-    CTextStack *(*newStack_string)(const char *starter);
-    CTextStack *(*newStack_string_getting_ownership)(const char *starter);
-    CTextStack *(*newStack_string_empty)();
-
-    void (*free)(struct CTextStack *self);
-    struct CTextStack *(*clone)(struct CTextStack *self);
-    void (*represent)(struct CTextStack *self);
-    char *(*self_transform_in_string_and_self_clear)(struct CTextStack *self);
-    void (*restart)(struct CTextStack *self);
-
-    //render methods
-    void (*text)(struct CTextStack *self, const char *element);
-
-    void (*segment_text)(struct CTextStack *self, const char *element);
-
-    void (*format)(struct CTextStack *self, const char *format, ...);
-
-    void (*segment)(struct CTextStack *self);
-
-    void (*segment_format)(struct CTextStack *self, const char *format, ...);
-
-    void (*$open)(struct CTextStack *self, const char *tag, const char *format,...);
-
-    void (*only$open)(struct CTextStack *self, const char *tag, const char *format,...);
-
-    void (*auto$close)(struct CTextStack *self, const char *tag, const char *format,...);
-
-    void (*open)(struct CTextStack *self, const char *tag);
-
-    void (*close)(struct CTextStack *self, const char *tag);
-
-
-    //algorithm methods
-    struct CTextStack * (*substr)(struct CTextStack *self, long starter, long end);
-    void  (*self_substr)(struct CTextStack *self, long starter, long end);
-
-
-    struct CTextStack *(*pop)(struct CTextStack *self, long starter, long end);
-    void(*self_pop)(struct CTextStack *self, long starter, long end);
-
-
-
-    struct CTextStack *(*insert_at)(struct CTextStack *self,long point, const char *element);
-    void (*self_insert_at)(struct CTextStack *self,long point, const char *element);
-
-    struct CTextStack *(*replace)(struct CTextStack *self,const char *element, const char *element_to_replace);
-    void (*self_replace)(struct CTextStack *self,const char *element, const char *element_to_replace);
-
-
-    struct CTextStack *(*replace_long)(struct CTextStack *self,const char *element, long element_to_replace);
-    void(*self_replace_long)(struct CTextStack *self,const char *element, long element_to_replace);
-
-
-    struct CTextStack *(*replace_double)(struct CTextStack *self,const char *element, double element_to_replace);
-    void (*self_replace_double)(struct CTextStack *self,const char *element, double element_to_replace);
-
-
-    struct CTextStack * (*lower)(struct CTextStack *self);
-    void(*self_lower)(struct CTextStack *self);
-
-    struct CTextStack * (*upper)(struct CTextStack *self);
-    void(*self_upper)(struct CTextStack *self);
-
-
-    struct CTextStack * (*reverse)(struct CTextStack *self);
-    void(*self_reverse)(struct CTextStack *self);
-
-    struct CTextStack * (*trim)(struct CTextStack *self);
-    void(*self_trim)(struct CTextStack *self);
-
-    bool (*starts_with)(struct CTextStack *self, const char *element);
-    bool (*ends_with)(struct CTextStack *self, const char *element);
-
-    bool (*equal)(struct  CTextStack *self,const char *element);
-    int (*typeof_element)(struct CTextStack *self);
-    bool (*is_a_num)(struct CTextStack *self);
-
-    const char * (*typeof_in_str)(struct CTextStack *self);
-    bool  (*parse_to_bool)(struct CTextStack *self);
-    long  (*parse_to_integer)(struct CTextStack *self);
-    double  (*parse_to_double)(struct CTextStack *self);
-
-    long (*index_of)(struct CTextStack *self, const char *element);
-    long (*index_of_char)(struct CTextStack *self, char element);
-}CTextStackModule;
-
-CTextStackModule newCTextStackModule();
-
-
-typedef struct CTextArrayModule{
-    CTextArray *(*newArray)();
-    void (*append)(CTextArray *self,CTextStack *element);
-    void (*append_string)(CTextArray *self,const char *element);
-    CTextStack * (*join)(CTextArray *self,const char *separator);
-
-    CTextArray * (*map)(CTextArray *self, CTextStack *(caller)(CTextStack* element));
-    CTextArray * (*filter)(CTextArray *self, bool (caller)(CTextStack* element));
-    void  (*foreach)(CTextArray *self, void (*caller)(CTextStack* element));
-    bool (*includes)(CTextArray *self,const char *element);
-    void (*represent)(CTextArray *self);
-    void (*free)(CTextArray *self);
-
-}CTextArrayModule;
-
-CTextArrayModule newCTextArrayModule();
-
-
-
-typedef struct CTextNamespace{
-
-    CTextArrayModule array;
-    CTextStackModule stack;
-
-}CTextNamespace;
-
-CTextNamespace newCTextNamespace();
-
-
-
-
-
-
-
-
-
-char * CTextStack_self_transform_in_string_and_self_clear(struct CTextStack *self){
-    free(self->line_breaker);
-    free(self->separator);
-    char *result = self->rendered_text;
-    free(self);
-    return result;
-}
-
-void private_CTextStack_parse_ownership(struct CTextStack *self, struct CTextStack *new_stack){
-
-    free(self->line_breaker);
-    free(self->separator);
-    free(self->rendered_text);
-
-    self->rendered_text_alocation_size = new_stack->rendered_text_alocation_size;
-    self->size = new_stack->size;
-    self->ident_level = new_stack->ident_level;
-
-
-    self->line_breaker = new_stack->line_breaker;
-    self->separator = new_stack->separator;
-    self->rendered_text = new_stack->rendered_text;
-    free(new_stack);
-
-}
-void CTextStack_restart(struct CTextStack *self){
-    free(self->rendered_text);
-    self->rendered_text = (char*)malloc(2);
-    strcpy(self->rendered_text,"\0");
-    self->rendered_text_alocation_size = 2;
-    self->size = 0;
-    self->ident_level = 0;
-}
-
-void CTextStack_represent(struct CTextStack *self){
-    printf("%s\n",self->rendered_text);
-}
-
-
-void CTextStack_free(struct CTextStack *self){
-    free(self->line_breaker);
-    free(self->separator);
-    free(self->rendered_text);
-    free(self);
-}
-
-struct CTextStack * CTextStack_clone(struct CTextStack *self){
-    CTextStack *new_stack = newCTextStack(self->line_breaker,self->separator);
-    new_stack->ident_level = self->ident_level;
-    CTextStack_text(new_stack,self->rendered_text);
-    return new_stack;
-}
-
-
-
-
-struct CTextStack * CTextStack_substr(struct CTextStack *self, long starter, long end){
-
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    long formated_starter = private_CText_transform_index(self->size, starter);
-    long formated_end = private_CText_transform_index(self->size, end);
-
-    if(formated_starter == formated_end){
-        CTextStack_format(new_element,"%c",self->rendered_text[formated_starter]);
-        return new_element;
-    }
-
-    for(long i =formated_starter; i < formated_end; i++){
-        CTextStack_format(new_element,"%c",self->rendered_text[i]);
-    }
-
-    return new_element;
-
-}
-
-void CTextStack_self_substr(struct CTextStack *self, long starter, long end){
-    CTextStack *new_stack = CTextStack_substr(self,starter,end);
-    private_CTextStack_parse_ownership(self,new_stack);
-
-}
-
-
-struct CTextStack *CTextStack_replace(struct CTextStack *self,const char *element, const char *element_to_replace){
-
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-
-    long element_size = (long)strlen(element);
-    for(long i = 0; i < self->size;i++){
-        CTextStack  *possible_ocurrence  = CTextStack_substr(self,i,i+element_size);
-
-        if(strcmp(possible_ocurrence->rendered_text,element)== 0){
-            CTextStack_text(new_element,element_to_replace);
-            i+=element_size -1;
-        }
-
-        else{
-            CTextStack_format(new_element,"%c",self->rendered_text[i]);
-        }
-
-        CTextStack_free(possible_ocurrence);
-
-    }
-    return new_element;
-}
-
-void CTextStack_self_replace(struct CTextStack *self,const char *element, const char *element_to_replace){
-    CTextStack  *new_stack = CTextStack_replace(self,element,element_to_replace);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-struct CTextStack *CTextStack_replace_long(struct CTextStack *self,const char *element, long element_to_replace){
-    char num_conversion[20] = {0};
-    sprintf(num_conversion,"%ld",element_to_replace);
-    return CTextStack_replace(self,element,num_conversion);
-}
-
-
-void CTextStack_self_replace_long(struct CTextStack *self,const char *element, long element_to_replace){
-    CTextStack  *new_stack = CTextStack_replace_long(self,element,element_to_replace);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-struct CTextStack *CTextStack_replace_double(struct CTextStack *self,const char *element, double element_to_replace){
-    CTextStack  *num_formated = newCTextStack_string_empty();
-    CTextStack_format(num_formated,"%f",element_to_replace);
-    CTextStack  *result = CTextStack_replace(self,element,num_formated->rendered_text);
-    CTextStack_free(num_formated);
-    return result;
-}
-
-
-void CTextStack_self_replace_double(struct CTextStack *self,const char *element, double element_to_replace){
-    CTextStack  *new_stack = CTextStack_replace_double(self,element,element_to_replace);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-
-long CTextStack_index_of(struct  CTextStack *self, const char *element){
-    long element_size = (long)strlen(element);
-    for(int i = 0; i < self->size; i++){
-        CTextStack  *possible_element = CTextStack_substr(self,i,i+element_size);
-        if(strcmp(possible_element->rendered_text,element) == 0){
-            CTextStack_free(possible_element);
-            return i;
-        }
-        CTextStack_free(possible_element);
-
-    }
-    return -1;
-}
-
-
-long CTextStack_index_of_char(struct  CTextStack *self, char element){
-    for(int i = 0; i < self->size; i++) {
-        if(self->rendered_text[i] == element){
-            return i;
-        }
-    }
-    return -1;
-}
-bool CTextStack_starts_with(struct  CTextStack *self, const char *element){
-    long element_size = strlen(element);
-    CTextStack  *separated = CTextStack_substr(self,0,element_size);
-    if(strcmp(separated->rendered_text,element) == 0){
-        CTextStack_free(separated);
-        return true;
-    }
-    CTextStack_free(separated);
-    return false;
-}
-
-bool CTextStack_ends_with(struct  CTextStack *self, const char *element){
-    long element_size = strlen(element);
-    CTextStack  *separated = CTextStack_substr(self,self->size -element_size,-1);
-
-    if(strcmp(separated->rendered_text,element) == 0){
-        CTextStack_free(separated);
-        return true;
-    }
-    CTextStack_free(separated);
-    return false;
-}
-
-
-
-struct CTextStack *CTextStack_lower(struct CTextStack *self){
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    for(long i =0; i < self->size; i++){
-        char current = self->rendered_text[i];
-        CTextStack_format(new_element,"%c",tolower(current));
-    }
-    return new_element;
-}
-
-void CTextStack_self_lower(struct CTextStack *self){
-    CTextStack *new_stack = CTextStack_lower(self);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-struct CTextStack *CTextStack_upper(struct CTextStack *self){
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    for(long i =0; i < self->size; i++){
-        char current = self->rendered_text[i];
-        CTextStack_format(new_element,"%c",toupper(current));
-    }
-    return new_element;
-}
-
-
-void CTextStack_self_upper(struct CTextStack *self){
-    CTextStack *new_stack = CTextStack_upper(self);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-struct CTextStack *CTextStack_reverse(struct CTextStack *self){
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    for(long i = (long)self->size; i >= 0 ; i--){
-        CTextStack_format(new_element,"%c",self->rendered_text[i]);
-    }
-    return new_element;
-
-}
-
-void CTextStack_self_reverse(struct CTextStack *self){
-    CTextStack *new_stack = CTextStack_reverse(self);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-
-struct CTextStack *CTextStack_pop(struct CTextStack *self, long starter, long end){
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-    long formated_starter = private_CText_transform_index(self->size, starter);
-    long formated_end = private_CText_transform_index(self->size, end);
-
-    for(int i =0; i < self->size; i ++){
-        if(i >= formated_starter && i <= formated_end){
-            continue;
-        }
-        CTextStack_format(new_element,"%c",self->rendered_text[i]);
-    }
-    return new_element;
-}
-
-
-void  CTextStack_self_pop(struct CTextStack *self, long starter, long end){
-    CTextStack  *new_stack = CTextStack_pop(self, starter, end);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-struct CTextStack *CTextStack_insert_at(struct CTextStack *self,long point, const char *element){
-
-    CTextStack *new_element = newCTextStack(self->line_breaker,self->separator);
-    new_element->ident_level = self->ident_level;
-
-    long converted_point = private_CText_transform_index(self->size, point);
-    for(long i = 0; i < converted_point; i++){
-        CTextStack_format(new_element,"%c",self->rendered_text[i]);
-    }
-    CTextStack_text(new_element,element);
-    for(long i = converted_point; i < self->size; i++){
-        CTextStack_format(new_element,"%c",self->rendered_text[i]);
-    }
-    return new_element;
-}
-
-void CTextStack_self_insert_at(struct CTextStack *self,long point, const char *element){
-    CTextStack  *new_stack = CTextStack_insert_at(self, point,element);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-
-struct CTextStack *CTextStack_trim(struct CTextStack *self){
-
-    CTextStack  *invalid_elements = newCTextStack_string("\t\r\n ");
-    long start_point = 0;
-    for(int i = 0; i < self->size; i ++){
-        char current_char =self->rendered_text[i];
-        long invalid_point = CTextStack_index_of_char(invalid_elements, current_char);
-        bool is_invalid = invalid_point != -1;
-        if(!is_invalid){
-            start_point = i;
-            break;
-        }
-    }
-    long end_point = -1;
-    for(long i = (long)self->size -1; i >= 0; i--){
-
-        char current_char =self->rendered_text[i];
-        long invalid_point = CTextStack_index_of_char(invalid_elements, current_char);
-        bool is_invalid = invalid_point != -1;
-        if(!is_invalid){
-            end_point = i+1;
-            break;
-        }
-    }
-    CTextStack_free(invalid_elements);
-    return CTextStack_substr(self,start_point,end_point);
-
-}
-
-
-void CTextStack_self_trim(struct CTextStack *self){
-    CTextStack  *new_stack = CTextStack_trim(self);
-    private_CTextStack_parse_ownership(self,new_stack);
-}
-
-//
-// Created by jurandi on 14-06-2023.
-//
-struct CTextStack * newCTextStack(const char *line_breaker, const char *separator){
-    struct CTextStack *self = (struct CTextStack*)malloc(sizeof(struct CTextStack));
-    self->rendered_text = (char*)malloc(2);
-    strcpy(self->rendered_text,"\0");
-    self->rendered_text_alocation_size = 2;
-    self->size = 0;
-    self->ident_level = 0;
-    self->line_breaker = strdup(line_breaker);
-    self->separator = strdup(separator);
-
-
-    return self;
-}
-
-struct CTextStack *newCTextStack_string(const char *starter){
-    CTextStack *self = newCTextStack("","");
-    if(starter){
-        CTextStack_format(self,"%s", starter);
-    }
-    return self;
-}
-
-struct CTextStack *newCTextStack_string_getting_ownership(const char *starter){
-    CTextStack *self = newCTextStack("","");
-    free(self->rendered_text);
-    self->rendered_text = (char*)starter;
-    self->size = strlen(starter);
-    self->rendered_text_alocation_size = self->size;
-    return self;
-}
-struct CTextStack *newCTextStack_string_empty(){
-    return  newCTextStack("","");
-}
-
-
-int CTextStack_typeof(struct CTextStack *self){
-    if(self->size == 0){
-        return CTEXT_STRING;
-    }
-
-    if(CTextStack_equal(self,"true") ||CTextStack_equal(self,"false") ){
-        return CTEXT_BOOL;
-    }
-
-    double data;
-    int result = sscanf(self->rendered_text,"%lf",&data);
-    if(!result){
-        return CTEXT_STRING;
-    }
-    if(CTextStack_index_of(self,".") == -1){
-        return CTEXT_LONG;
-    }
-    return CTEXT_DOUBLE;
-
-
-}
-bool CTextStack_is_a_num(struct CTextStack *self){
-    int type = CTextStack_typeof(self);
-    if(type == CTEXT_DOUBLE || type == CTEXT_LONG){
-        return true;
-    }
-    return false;
-}
-
-
-const char * CTextStack_typeof_in_str(struct CTextStack *self){
-    int current_type = CTextStack_typeof(self);
-
-    if(current_type == CTEXT_BOOL){
-        return "bool";
-    }
-
-    else if(current_type == CTEXT_STRING){
-        return "string";
-    }
-
-    else if(current_type == CTEXT_LONG){
-        return "long";
-    }
-    
-    else if(current_type == CTEXT_DOUBLE){
-        return "double";
-    }
-    
-    else{
-        return "invalid";
-    }
-}
-
-bool  CTextStack_parse_to_bool(struct CTextStack *self){
-    if(CTextStack_equal(self,"true")){
-        return true;
-    }
-    return false;
-}
-
-long  CTextStack_parse_to_integer(struct CTextStack *self){
-    long value;
-    int result = sscanf(self->rendered_text,"%ld",&value);
-    if(!result){
-        return -1;
-    }
-    return value;
-}
-
-double  CTextStack_parse_to_double(struct CTextStack *self){
-    double value;
-    int result = sscanf(self->rendered_text,"%lf",&value);
-    if(!result){
-        return -1;
-    }
-    return value;
-}
-
-
-
-void private_ctext_text_double_size_if_reachs(struct CTextStack *self){
-
-    while(self->size >= (self->rendered_text_alocation_size - 2)){
-        self->rendered_text_alocation_size  =  (self->rendered_text_alocation_size  * 2)+2;
-        self->rendered_text = (char*)(realloc(
-            self->rendered_text,self->rendered_text_alocation_size
-        ));
-    }
-}
-
-void CTextStack_text(struct CTextStack *self, const char *text){
-
-    if (!text || !text[0]) {
-        // Tratar caso de ponteiro nulo ou string vazia
-        return;
-    }
-
-    size_t text_size = strlen(text);
-    
-    self->size += text_size;
-    private_ctext_text_double_size_if_reachs(self);
-    
-    memcpy(
-            self->rendered_text + self->size - text_size,
-        text,
-        text_size 
-    );
-    self->rendered_text[self->size] = '\0';
-}
-
-
-
-void CTextStack_segment_text(struct CTextStack *self, const char *text){
-    CTextStack_segment(self);
-    CTextStack_text(self,text);
-}
-
-
-void CTextStack_format(struct CTextStack *self, const char *format, ...){
-    va_list  argptr;
-    va_start(argptr, format);
-    private_ctext_generate_formated_text(self,format,argptr);
-}
-
-void CTextStack_segment_format(struct CTextStack *self, const char *format, ...){
-    CTextStack_segment(self);
-    va_list  argptr;
-    va_start(argptr, format);
-    private_ctext_generate_formated_text(self,format,argptr);
-}
-
-
-void CTextStack_segment(struct CTextStack *self){
-
-    CTextStack_text(self,self->line_breaker);
-
-    for(int i=0;i<self->ident_level;i++){
-        CTextStack_text(self,self->separator);
-
-    }
-
-
-}
-
-void CTextStack_$open(struct CTextStack *self, const char *tag, const char *format, ...){
-    CTextStack_segment(self);
-    CTextStack_format(self, "%c",'<');
-    CTextStack_text(self,tag);
-
-
-    if(format!=NULL){
-        CTextStack_format(self, "%c",' ');
-
-        va_list  argptr;
-        va_start(argptr, format);
-        private_ctext_generate_formated_text(self,format,argptr);
-    }
-    CTextStack_format(self, "%c",'>');
-
-
-    self->ident_level += 1;
-}
-
-void CTextStack_only$open(struct CTextStack *self, const char *tag, const char *format, ...){
-    CTextStack_segment(self);
-    CTextStack_format(self, "%c",'<');
-
-    CTextStack_text(self,tag);
-
-
-    if(format!=NULL){
-        CTextStack_format(self, "%c",' ');
-        va_list  argptr;
-        va_start(argptr, format);
-        private_ctext_generate_formated_text(self,format,argptr);
-    }
-    CTextStack_format(self, "%c",'>');
-
-
-}
-
-void CTextStack_auto$close(struct CTextStack *self, const char *tag, const char *format, ...){
-    CTextStack_segment(self);
-    CTextStack_format(self, "%c",'<');
-
-    CTextStack_text(self,tag);
-
-
-    if(format!=NULL){
-        CTextStack_format(self, "%c",' ');
-
-        va_list  argptr;
-        va_start(argptr, format);
-        private_ctext_generate_formated_text(self,format,argptr);
-    }
-    CTextStack_text(self,"/>");
-
-}
-
-void ctext_open(struct CTextStack *self, const char *tag){
-    if(tag ==  NULL){
-
-        self->ident_level += 1;
-        return;
-    }
-    CTextStack_$open(self, tag, NULL);
-}
-
-
-
-
-void ctext_close(struct CTextStack *self, const char *tag){
-
-    if(tag==NULL){
-        self->ident_level -= 1;
-
-        return;
-    }
-    self->ident_level -= 1;
-    CTextStack_segment(self);
-
-
-    CTextStack_text(self,"</");
-    CTextStack_text(self,tag);
-    CTextStack_format(self, "%c",'>');
-
-}
-
-
-
-
-
-
-
-void private_ctext_generate_formated_text(
-        struct CTextStack *stack,const char *format,va_list argptr){
-    long  text_size = strlen(format);
-
-    int i;
-    for(i =0;i < text_size -1 ;i++){
-
-        char single_test[3] = {format[i],format[i+1],'\0'};
-        char double_test[4] = {0};
-
-
-        if(i < text_size -2){
-            strcpy(double_test,single_test);
-            double_test[2] = format[i+2];
-            double_test[3] = '\0';
-
-        }
-
-        if(strcmp(single_test,"%d") == 0) {
-            char result[20] ={0};
-            sprintf(result,"%ld", va_arg(argptr,long));
-            CTextStack_text(stack,result);
-            i+=1;
-            continue;
-        }
-
-        if(strcmp(single_test,"%f") == 0) {
-            char result_text[20]= {0};
-
-            sprintf(result_text,"%lf", va_arg(argptr,double ));
-
-            for(int t = 18; t > 0; t--){
-                char current_char = result_text[t];
-                if(current_char != '0' && current_char != '\0'){
-
-                    if(current_char == '.'){
-                        result_text[t+2]  = '\0';
-                    }
-                    else{
-                        result_text[t+1]  = '\0';
-                    }
-
-                    break;
-                }
-            }
-            CTextStack_text(stack,result_text);
-            i+=1;
-            continue;
-        }
-
-        else if(strcmp(single_test,"%c") == 0){
-            char result = va_arg(argptr,int);
-            char element[2] = {result,'\0'};
-            CTextStack_text(stack,element);
-            i+=1;
-            continue;
-        }
-
-
-        else if(strcmp(single_test,"%b") == 0){
-            bool value = va_arg(argptr,int);
-            if(value){
-                CTextStack_text(stack,"true");
-            }else{
-                CTextStack_text(stack,"false");
-            }
-            i+=1;
-            continue;
-        }
-
-        else if(strcmp(double_test,"%sc") == 0){
-            char *value = va_arg(argptr,char*);
-            CTextStack_text(stack,value);
-            free(value);
-            i+=2;
-            continue;
-        }
-
-        else if(strcmp(single_test,"%s") == 0){
-            const char *value = va_arg(argptr,const char*);
-            CTextStack_text(stack,value);
-            i+=1;
-            continue;
-        }
-        else if(strcmp(double_test,"%tc") == 0){
-            struct CTextStack *new_stack = (struct  CTextStack*)va_arg(argptr,void *);
-            char *result = CTextStack_self_transform_in_string_and_self_clear(new_stack);
-            CTextStack_text(stack,result);
-            free(result);
-            i+=2;
-            continue;
-        }
-
-        else if(strcmp(single_test,"%t") == 0){
-            struct CTextStack *new_stack = (struct  CTextStack*)va_arg(argptr,void *);
-            CTextStack_text(stack,new_stack->rendered_text);
-            i+=1;
-            continue;
-        }
-
-        char element[2] = {format[i],'\0'};
-        CTextStack_text(stack,element);
-
-        }
-
-
-
-    if(text_size > 0 && text_size> i){
-        char element[2] = {format[text_size-1],'\0'};
-        CTextStack_text(stack,element);
-    }
-
-    va_end(argptr);
-}
-
-
-long private_CText_transform_index(long size , long value){
-    long formated_value = value;
-
-    if(formated_value >= size){
-        formated_value = size;
-    }
-
-    if(formated_value  < 0){
-        formated_value = size + (formated_value +1);
-    }
-    if(formated_value <0){
-        formated_value = 0;
-    }
-    return formated_value;
-}
-
-
-CTextArray * newCTextArray(){
-    CTextArray  *self = (CTextArray*) malloc(sizeof (CTextArray));
-    self->size = 0;
-    self->stacks = (CTextStack**) malloc(0);
-    return self;
-}
-
-void CTextArray_append(CTextArray *self,CTextStack *element){
-    self->stacks =  (CTextStack**) realloc(
-            self->stacks,
-            (self->size+1)* sizeof (CTextStack*)
-            );
-
-    self->stacks[self->size] = element;
-    self->size+=1;
-}
-
-
-
-void CTextArray_append_string(CTextArray *self,const char *element){
-    CTextStack *new_element = newCTextStack_string(element);
-    CTextArray_append(self,new_element);
-}
-
-CTextStack * CTextArray_join(CTextArray *self,const char *separator){
-    CTextStack  *result  = newCTextStack_string_empty();
-    for(int i = 0; i < self->size; i++){
-        if(i < self->size -1){
-            CTextStack_format(result,"%t%s",self->stacks[i],separator);
-        }
-        else{
-            CTextStack_format(result,"%t",self->stacks[i]);
-
-        }
-
-    }
-    return result;
-}
-
-CTextArray *CTextArray_split(const char *element,const char *target){
-    CTextArray *self = newCTextArray();
-    CTextStack *text = newCTextStack_string(element);
-    long target_size = (long)strlen(target);
-    CTextStack  *acumulated = newCTextStack_string_empty();
-
-    for(int i = 0; i <text->size; i++){
-        CTextStack  *possible_division = CTextStack_substr(text,i,target_size + i);
-        if(CTextStack_equal(possible_division,target)){
-            CTextArray_append(self,acumulated);
-            acumulated = newCTextStack_string_empty();
-            CTextStack_free(possible_division);
-            continue;
-        }
-        CTextStack_free(possible_division);
-
-        CTextStack_format(acumulated,"%c",text->rendered_text[i]);
-    }
-
-    CTextArray_append(self,acumulated);
-    CTextStack_free(text);
-    return self;
-}
-
-bool CTextStack_equal(struct  CTextStack *self,const char *element){
-    return strcmp(self->rendered_text,element) == 0;
-}
-
-
-void  CTextArray_free(CTextArray *self){
-    for(int i = 0; i < self->size; i++){
-            CTextStack_free(self->stacks[i]);
-    }
-    free(self->stacks);
-    free(self);
-}
-
-CTextArray * CTextArray_map(CTextArray *self, CTextStack *(caller)(CTextStack* element)){
-    CTextArray *new_array  = newCTextArray();
-    for(int i = 0; i < self->size; i++){
-        CTextStack *result = caller(self->stacks[i]);
-        CTextArray_append(new_array,result);
-    }
-    return new_array;
-}
-
-
-CTextArray * CTextArray_filter(CTextArray *self, bool (caller)(CTextStack* element)){
-    CTextArray *new_array  = newCTextArray();
-
-    for(int i = 0; i < self->size; i++){
-        if(caller(self->stacks[i])){
-
-            CTextArray_append(new_array, CTextStack_clone(self->stacks[i]));
-        }
-    }
-
-    return new_array;
-}
-
-void  CTextArray_foreach(CTextArray *self, void (*caller)(CTextStack* element)){
-    for(int i = 0; i < self->size; i++){
-        caller(self->stacks[i]);
-    }
-}
-
-bool CTextArray_includes(CTextArray *self,const char *element){
-    for(int i = 0 ; i < self->size;i++){
-        if(CTextStack_equal(self->stacks[i],element)){
-            return true;
-        }
-    }
-    return false;
-}
-
-
-void CTextArray_represent(CTextArray *self){
-    for(int i =0; i < self->size; i++){
-        CTextStack_represent(self->stacks[i]);
-    }
-}
-
-
-
-CTextStackModule newCTextStackModule(){
-    struct CTextStackModule self = {0};
-    self.newStack = newCTextStack;
-    self.newStack_string = newCTextStack_string;
-    self.newStack_string_empty = newCTextStack_string_empty;
-    self.newStack_string_getting_ownership = newCTextStack_string_getting_ownership;
-    self.text = CTextStack_text;
-    self.segment_text = CTextStack_segment_text;
-    self.format = CTextStack_format;
-    self.segment = CTextStack_segment;
-    self.segment_format = CTextStack_segment_format;
-    self.$open = CTextStack_$open;
-    self.only$open =CTextStack_only$open;
-    self.auto$close = CTextStack_auto$close;
-    self.open = ctext_open;
-    self.close = ctext_close;
-    self.free =  CTextStack_free;
-    self.clone = CTextStack_clone;
-    self.represent = CTextStack_represent;
-    self.self_transform_in_string_and_self_clear = CTextStack_self_transform_in_string_and_self_clear;
-    self.restart = CTextStack_restart;
-    self.substr = CTextStack_substr;
-    self.self_substr =CTextStack_self_substr;
-
-    self.pop = CTextStack_pop;
-    self.self_pop =CTextStack_self_pop;
-
-    self.replace = CTextStack_replace;
-    self.self_replace = CTextStack_self_replace;
-
-    self.replace_long = CTextStack_replace_long;
-    self.self_replace_long =CTextStack_self_replace_long;
-
-
-    self.replace_double = CTextStack_replace_double;
-    self.self_replace_double =CTextStack_self_replace_double;
-
-    self.insert_at = CTextStack_insert_at;
-    self.self_insert_at  = CTextStack_self_insert_at;
-
-
-    self.index_of = CTextStack_index_of;
-    self.index_of_char = CTextStack_index_of_char;
-
-    self.lower = CTextStack_lower;
-    self.self_lower = CTextStack_self_lower;
-
-    self.upper = CTextStack_upper;
-    self.self_upper = CTextStack_self_upper;
-
-    self.starts_with = CTextStack_starts_with;
-    self.ends_with = CTextStack_ends_with;
-
-    self.equal = CTextStack_equal;
-    self.reverse = CTextStack_reverse;
-    self.self_reverse = CTextStack_self_reverse;
-
-
-    self.typeof_element = CTextStack_typeof;
-    self.is_a_num = CTextStack_is_a_num;
-    self.typeof_in_str = CTextStack_typeof_in_str;
-    self.parse_to_bool = CTextStack_parse_to_bool;
-    self.parse_to_integer = CTextStack_parse_to_integer;
-    self.parse_to_double = CTextStack_parse_to_double;
-
-    self.trim = CTextStack_trim;
-    self.self_trim = CTextStack_self_trim;
-
-
-    return self;
-}
-
-
-
-CTextArrayModule newCTextArrayModule(){
-    CTextArrayModule module = {0};
-    module.newArray = newCTextArray;
-    module.append = CTextArray_append;
-    module.append_string = CTextArray_append_string;
-    module.join = CTextArray_join;
-    module.map  = CTextArray_map;
-    module.filter = CTextArray_filter;
-    module.foreach = CTextArray_foreach;
-    module.represent = CTextArray_represent;
-    module.includes = CTextArray_includes;
-    module.free = CTextArray_free;
-    return module;
-}
-
-
-
-
-CTextNamespace newCTextNamespace(){
-    CTextNamespace self  = {0};
-    self.stack = newCTextStackModule();
-    self.array = newCTextArrayModule();
-    return self;
-}
-
-
-#endif // CTEXTENGINE_H
-
-#define CLI_NOT_EXIST -1
-#define CLI_BOOL CTEXT_BOOL
-#define CLI_DOUBLE CTEXT_DOUBLE
-#define CLI_LONG CTEXT_LONG
-#define CLI_STRING CTEXT_STRING
-
-
-
-
-#define PRIVATE_CLI_CHAR_TRASH 1
-#define PRIVATE_CLI_FLAG_TRASH 2
-
-typedef struct privateCliGarbageElement{
-    int type;
-    void *value;
-}privateCliGarbageElement;
-
-
-typedef struct privateCliGarbage{
-    int size;
-    privateCliGarbageElement **values;
-
-}privateCliGarbage;
-
-
-privateCliGarbage *private_cli_newGarbageArray();
-void private_CliGarbage_append(privateCliGarbage*self, int type, void *value);
-void private_cli_free_garbage(privateCliGarbage*self);
-
-
-
-
-
-int private_cli_compare_elements_size(const void *element1,const  void *element2);
-
-void private_cli_sort_text_arrays_by_size(CTextArray *element);
-
-CTextArray * private_cli_parse_flags(const char *flags,bool case_sensitive);
-
-CTextStack *private_cli_get_flag_if_its_an_flag(CTextArray *identifiers,CTextStack *possible_flag,bool case_sensitve);
-
-//getterso of arrays
-int private_cli_get_type_from_array(CTextArray *elements,int position);
-
-bool private_cli_verifiy_if_element_is_numeric(CTextArray *elements,int position);
-
-const char * private_cli_get_type_in_str_from_array(CTextArray *elements,int position);
-
-char * private_cli_get_str_from_array(privateCliGarbage *garbage, CTextArray *elements, int position,bool case_sensitive);
-
-long private_cli_get_long_from_array(CTextArray *elements,int position);
-
-double private_cli_get_double_from_array(CTextArray *elements,int position);
-
-bool private_cli_get_bool_from_array(CTextArray *elements,int position);
-
-
-typedef struct CliFlag{
-
-    CTextArray  *elements;
-    bool exist;
-    privateCliGarbage *private_garbage;
-    int size;
-
-
-
-}CliFlag;
-
-CliFlag *private_cli_newCliFlag();
-void private_cli_CliFlag_free(CliFlag *self);
-
-int CliFlag_typeof_arg(CliFlag *self, int position);
-bool CliFlag_is_numeric(CliFlag *self, int position);
-const char *CliFlag_typeof_arg_in_str(CliFlag *self, int position);
-char* CliFlag_get_str(CliFlag *self, int position, bool case_sensitive);
-long  CliFlag_get_long(CliFlag *self, int position);
-double CliFlag_get_double(CliFlag *self, int position);
-bool CliFlag_get_bool(CliFlag *self, int position);
-
-void CliFlag_represent(CliFlag *self);
-
-
-
-
-
-#define CLI_CASE_SENSITIVE true
-#define CLI_NOT_CASE_SENSITIVE false
-
-
-typedef struct CliEntry{
-
-    CTextArray * elements;
-    int size;
-    privateCliGarbage  * private_garbage;
-
-    const char *flag_identifiers;
-
-
-
-}CliEntry;
-
-CliEntry * newCliEntry(int argc, char **argv);
-int CliEntry_typeof_arg(CliEntry *self,int position);
-
-bool CliEntry_is_numeric(CliEntry *self,int position);
-
-const char *CliEntry_typeof_arg_in_str(CliEntry *self,int position);
-
-CliFlag *CliEntry_get_flag(CliEntry *self,const char *flags,bool case_sensitive);
-char*   CliEntry_get_str(CliEntry *self, int position, bool case_sensitive);
-
-long    CliEntry_get_long(CliEntry *self, int position);
-
-double  CliEntry_get_double(CliEntry *self, int position);
-
-bool  CliEntry_get_bool(CliEntry *self, int position);
-void CliEntry_free(struct CliEntry *self);
-
-void  CliEntry_represent(CliEntry *self);
-
-
-
-
-
-typedef struct CliEntryModule{
-
-    CliEntry *(*newEntry)(int argc, char **argv);
-    int (*typeof_arg)(CliEntry *self, int position);
-    bool (*is_numeric)(CliEntry *self,int position);
-    const char *(*typeof_arg_in_str)(CliEntry *self, int position);
-    CliFlag *(*get_flag)(CliEntry *self,const char *flags,bool case_sensitive);
-    char*   (*get_str)(CliEntry *self, int position, bool case_sensitive);
-
-    long    (*get_long)(CliEntry *self, int position);
-    double  (*get_double)(CliEntry *self, int position);
-    bool  (*get_bool)(CliEntry *self, int position);
-
-    void (*represent)(CliEntry *self);
-    void (*free)(CliEntry *self);
-
-}CliEntryModule;
-
-CliEntryModule newCliEntryModule();
-
-
-
-
-typedef struct CliFlagModule{
-
-    int      (*typeof_arg)(CliFlag *self, int position);
-    bool (*is_numeric)(CliFlag *self,int position);
-
-    const char *(*type_of_arg_in_str)(CliFlag *self, int position);
-    char*   (*get_str)(CliFlag *self, int position, bool case_sensitive);
-    long    (*get_long)(CliFlag *self, int position);
-    double  (*get_double)(CliFlag *self, int position);
-    bool  (*get_bool)(CliFlag *self, int position);
-    void  (*represent)(CliFlag *self);
-
-
-}CliFlagModule;
-
-CliFlagModule newCliFlagModule();
-
-
-typedef struct CliNamespace{
-    CliEntryModule entry;
-    CliFlagModule  flag;
-}CliNamespace;
-
-CliNamespace newCliNamespace();
-
-
-
-
-
-
-
-privateCliGarbage *private_cli_newGarbageArray(){
-    privateCliGarbage *self = (privateCliGarbage*) malloc(sizeof (privateCliGarbage));
-    self->values = (privateCliGarbageElement**)(0);
-    self->size = 0;
-    return self;
-}
-
-void private_CliGarbage_append(privateCliGarbage*self, int type, void *value){
-    self->values = (privateCliGarbageElement**) realloc(self->values, (self->size + 1) * sizeof (privateCliGarbageElement**));
-    privateCliGarbageElement *new_garbage = (privateCliGarbageElement*) malloc(sizeof (privateCliGarbageElement));
-    new_garbage->type = type;
-    new_garbage->value = value;
-    self->values[self->size] = new_garbage;
-    self->size+=1;;
-    
-}
-
-void private_cli_free_garbage(privateCliGarbage*self){
-    for(int i = 0 ; i < self->size; i++){
-        privateCliGarbageElement *current = self->values[i];
-        if(current->type == PRIVATE_CLI_CHAR_TRASH){
-            free(current->value);
-        }
-        if(current->type == PRIVATE_CLI_FLAG_TRASH){
-            CliFlag *current_flag = (CliFlag*)current->value;
-            private_cli_CliFlag_free(current_flag);
-        }
-        free(current);
-    }
-    free(self->values);
-    free(self);
-}
-
-
-
-
-
-
-
-int private_cli_compare_elements_size(const void *element1,const  void *element2){
-    CTextStack  *s1 = *(CTextStack**)element1;
-    CTextStack  *s2 = *(CTextStack**)element2;
-
-    return (int)(s2->size - s1->size);
-
-
-}
-
-
-void private_cli_sort_text_arrays_by_size(CTextArray *elements){
-    qsort(elements->stacks, (size_t)elements->size,sizeof(CTextStack **),private_cli_compare_elements_size);
-}
-
-
-CTextArray * private_cli_parse_flags(const char *flags,bool case_sensitive){
-    CTextArray *elements = CTextArray_split(flags,"|");
-    private_cli_sort_text_arrays_by_size(elements);
-
-    CTextArray_foreach(elements,CTextStack_self_trim);
-
-    if(!case_sensitive){
-        CTextArray_foreach(elements,CTextStack_self_lower);
-    }
-    return elements;
-}
-
-CTextStack *private_cli_get_flag_if_its_an_flag(CTextArray *identifiers,CTextStack *possible_flag,bool case_sensitve){
-
-    CTextStack *formated_possible_flag = CTextStack_clone(possible_flag);
-    if(!case_sensitve){
-        CTextStack_self_lower(formated_possible_flag);
-    }
-
-
-    for(int i =0; i < identifiers->size; i++){
-
-        CTextStack  *current_identifier = identifiers->stacks[i];
-
-        if(CTextStack_starts_with(formated_possible_flag,current_identifier->rendered_text)){
-            CTextStack_self_substr(formated_possible_flag, (long)current_identifier->size,-1);
-            
-            return formated_possible_flag;
-        }
-
-    }
-    CTextStack_free(formated_possible_flag);
-
-    return NULL;
-}
-int private_cli_get_type_from_array(CTextArray *elements,int position){
-    if(position >=elements->size){
-        return CLI_NOT_EXIST;
-    }
-    CTextStack *current = elements->stacks[position];
-    return CTextStack_typeof(current);
-}
-bool private_cli_verifiy_if_element_is_numeric(CTextArray *elements,int position){
-    int type = private_cli_get_type_from_array(elements,position);
-    if(type ==CLI_LONG || type == CLI_DOUBLE){
-        return true;
-    }
-    return false;
-}
-
-
-const char * private_cli_get_type_in_str_from_array(CTextArray *elements,int position){
-    if(position >=elements->size){
-        return  "not exist";
-    }
-    CTextStack *current = elements->stacks[position];
-    return CTextStack_typeof_in_str(current);
-}
-
-char * private_cli_get_str_from_array(privateCliGarbage *garbage, CTextArray *elements, int position,bool case_sensitive){
-    if(position >=elements->size){
-        return NULL;
-    }
-    CTextStack *current = elements->stacks[position];
-    char *result;
-    if(case_sensitive){
-        CTextStack *formated = CTextStack_lower(current);
-        result = CTextStack_self_transform_in_string_and_self_clear(formated);
-    } else{
-        result =strdup(current->rendered_text);
-    }
-
-    private_CliGarbage_append(garbage, PRIVATE_CLI_CHAR_TRASH, result);
-    return result;
-}
-
-long private_cli_get_long_from_array(CTextArray *elements,int position){
-    if(position >=elements->size){
-        return -1;
-    }
-    CTextStack *current = elements->stacks[position];
-    return CTextStack_parse_to_integer(current);
-}
-
-double private_cli_get_double_from_array(CTextArray *elements,int position){
-    if(position >=elements->size){
-        return -1;
-    }
-    CTextStack *current = elements->stacks[position];
-    return CTextStack_parse_to_double(current);
-}
-
-bool private_cli_get_bool_from_array(CTextArray *elements,int position){
-    if(position >=elements->size){
-        return false;
-    }
-    CTextStack *current = elements->stacks[position];
-    return CTextStack_parse_to_bool(current);
-}
-
-
-CliFlag *private_cli_newCliFlag(){
-    CliFlag *self = (CliFlag*) malloc(sizeof(CliFlag));
-    *self = (CliFlag){0};
-    self->elements = newCTextArray();
-    self->private_garbage = private_cli_newGarbageArray();
-    return self;
-}
-
-void private_cli_CliFlag_free(CliFlag *self){
-    CTextArray_free(self->elements);
-    private_cli_free_garbage(self->private_garbage);
-    free(self);
-}
-
-
-int CliFlag_typeof_arg(CliFlag *self, int position){
-    return private_cli_get_type_from_array(self->elements,position);
-}
-
-bool CliFlag_is_numeric(CliFlag *self, int position){
-    return private_cli_verifiy_if_element_is_numeric(self->elements,position);
-}
-
-const char *CliFlag_typeof_arg_in_str(CliFlag *self, int position){
-    return private_cli_get_type_in_str_from_array(self->elements,position);
-}
-
-char* CliFlag_get_str(CliFlag *self, int position, bool case_sensitive){
-    return private_cli_get_str_from_array(self->private_garbage,self->elements, position,case_sensitive);
-}
-
-long  CliFlag_get_long(CliFlag *self, int position){
-    return private_cli_get_long_from_array(self->elements,position);
-}
-
-double CliFlag_get_double(CliFlag *self, int position){
-    return private_cli_get_double_from_array(self->elements,position);
-}
-
-bool CliFlag_get_bool(CliFlag *self, int position){
-    return private_cli_get_bool_from_array(self->elements,position);
-}
-
-void CliFlag_represent(CliFlag *self){
-    printf("exist: %s\n",self->exist ?"true":"false");
-    printf("size :%d\n",self->size);
-    printf("flags: \n");
-    CTextArray_represent(self->elements);
-}
-
-
-
-
-CliEntry * newCliEntry(int argc, char **argv){
-    CliEntry *self = (CliEntry*) malloc(sizeof (CliEntry));
-    self->size = argc;
-    self->elements = newCTextArray();
-    self->private_garbage = private_cli_newGarbageArray();
-
-    self->flag_identifiers = " - | -- | --- ";
-    
-    for(int i = 0; i < argc; i++){
-        CTextArray_append_string(self->elements,argv[i]);
-    }
-    return self;
-
-}
-
-
-
-CliFlag *CliEntry_get_flag(CliEntry *self,const char *flags,bool case_sensitive){
-    CTextArray *identifiers = private_cli_parse_flags(self->flag_identifiers,case_sensitive);
-    CTextArray *formated_flags = private_cli_parse_flags(flags,case_sensitive);
-
-    CliFlag *flag = private_cli_newCliFlag();
-    private_CliGarbage_append(self->private_garbage, PRIVATE_CLI_FLAG_TRASH, flag);
-    for(int i = 0; i < self->size;i++){
-
-
-        CTextStack *possible_flag = private_cli_get_flag_if_its_an_flag(identifiers,self->elements->stacks[i],case_sensitive);
-        //means its an flag
-        if(possible_flag){
-            //means its the  end of current flag and start of other
-            if(flag->exist){
-                CTextStack_free(possible_flag);
-                break;
-            }
-            else{
-                if(CTextArray_includes(formated_flags,possible_flag->rendered_text)){
-                    flag->exist = true;
-                }
-            }
-            CTextStack_free(possible_flag);
-        }
-
-        else{
-            //means its an normal atribute
-            if(flag->exist){
-                CTextArray_append_string(flag->elements,self->elements->stacks[i]->rendered_text);
-            }
-        }
-    }
-    flag->size = (int)flag->elements->size;
-
-    CTextArray_free(identifiers);
-    CTextArray_free(formated_flags);
-
-    return flag;
-
-}
-
-int CliEntry_typeof_arg(CliEntry *self,int position){
-    return private_cli_get_type_from_array(self->elements,position);
-}
-
-bool CliEntry_is_numeric(CliEntry *self,int position){
-    return private_cli_verifiy_if_element_is_numeric(self->elements,position);
-}
-
-const char *CliEntry_typeof_arg_in_str(CliEntry *self,int position){
-    return private_cli_get_type_in_str_from_array(self->elements,position);
-}
-
-char*   CliEntry_get_str(CliEntry *self, int position, bool case_sensitive){
-    return private_cli_get_str_from_array(self->private_garbage, self->elements, position, case_sensitive);
-}
-
-long CliEntry_get_long(CliEntry *self, int position){
-    return private_cli_get_long_from_array(self->elements,position);
-}
-
-double CliEntry_get_double(CliEntry *self, int position){
-    return private_cli_get_double_from_array(self->elements,position);
-}
-
-bool CliEntry_get_bool(CliEntry *self, int position){
-    return private_cli_get_bool_from_array(self->elements,position);
-}
-
-void  CliEntry_represent(CliEntry *self){
-    printf("size :%d\n",self->size);
-    printf("args:\n");
-    CTextArray_represent(self->elements);
-}
-
-void CliEntry_free(struct CliEntry *self){
-    CTextArray_free(self->elements);
-    private_cli_free_garbage(self->private_garbage);
-    free(self);
-}
-
-
-
-
-
-CliEntryModule newCliEntryModule(){
-    CliEntryModule self = {0};
-    self.newEntry = newCliEntry;
-    self.is_numeric = CliEntry_is_numeric;
-    self.typeof_arg = CliEntry_typeof_arg;
-    self.typeof_arg_in_str = CliEntry_typeof_arg_in_str;
-    self.get_flag =CliEntry_get_flag;
-    self.get_long = CliEntry_get_long;
-    self.get_str = CliEntry_get_str;
-    self.get_double = CliEntry_get_double;
-    self.get_bool = CliEntry_get_bool;
-    self.represent = CliEntry_represent;
-    self.free = CliEntry_free;
-    return self;
-}
-
-
-CliFlagModule newCliFlagModule(){
-    CliFlagModule self = {0};
-    self.typeof_arg = CliFlag_typeof_arg;
-    self.is_numeric =CliFlag_is_numeric;
-    self.type_of_arg_in_str = CliFlag_typeof_arg_in_str;
-    self.get_str = CliFlag_get_str;
-    self.get_long = CliFlag_get_long;
-    self.get_double = CliFlag_get_double;
-    self.get_bool = CliFlag_get_bool;
-    self.represent =CliFlag_represent;
-    return self;
-}
-
-
-CliNamespace newCliNamespace(){
-    CliNamespace self = {0};
-    self.flag = newCliFlagModule();
-    self.entry = newCliEntryModule();
-    return self;
-}
-
-
-
-
-#endif
-
-#ifndef camalgamator_cli_type
-#define camalgamator_cli_type
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-struct Behaviors{
-    DtwStringArray *dont_change;
-    DtwStringArray *include_perpetual;
-    DtwStringArray *dont_include;
-};
-typedef  struct Behaviors Behaviors ;
-
-#endif
-
-#ifndef camalgamator_cli_globals
-#define camalgamator_cli_globals
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-CAmalgamatorNamesapce amalgamator;
-CliNamespace cli;
-DtwNamespace dtw;
-
-#endif
-
-#ifndef camalgamator_cli_declare
-#define camalgamator_cli_declare
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-bool is_inside(const char *file,DtwStringArray *source);
-
-short generator_handler(const char *filename,const  char *import_name, void *extra_args);
-
-int collect_flag(CliFlag *flag,DtwStringArray *source);
-
-#endif
-
-#ifndef camalgamator_cli_define
-#define camalgamator_cli_define
-
-//silver_chain_scope_start
-//mannaged by silver chain
-
-//silver_chain_scope_end
-
-bool is_inside(const char *file,DtwStringArray *source){
-    for(int i = 0; i < source->size; i++){
-        char *current = source->strings[i];
-        if(dtw_starts_with(current,file)){
-            return  true;
-        }
-    }
-    return  false;
-}
-short generator_handler(const char *filename,const  char *import_name, void *extra_args){
-    Behaviors * behavior = (Behaviors*)extra_args;
-    if(is_inside(filename,behavior->dont_change)){
-        return  amalgamator.DONT_CHANGE;
-    }
-    if(is_inside(filename, behavior->dont_include)){
-        return  amalgamator.DONT_INCLUDE;
-    }
-    if(is_inside(filename, behavior->include_perpetual)){
-        return amalgamator.INCLUDE_PERPETUAL;
-    }
-    return  amalgamator.INCLUDE_ONCE;
-}
-
-int  collect_flag(CliFlag *flag,DtwStringArray *source){
-    if(flag->exist == false){
-        return amalgamator.NO_ERRORS;
-    }
-    for(int i = 0; i < flag->size;i++){
-        char *current = cli.flag.get_str(flag,i,false);
-        char *current_absolute = dtw.get_absolute_path(current);
-        if(current_absolute == NULL){
-            return amalgamator.UNEXPECTED_ERROR;
-        }
-        dtw.string_array.append(source,current_absolute);
-        free(current_absolute);
-    }
-    return  amalgamator.NO_ERRORS;
-}
-
-#endif
-
-//silver_chain_scope_end
-
-
-
-int main(int argc, char *argv[]){
-    cli = newCliNamespace();
-    amalgamator = newCAmalgamatorNamesapce();
-    dtw = newDtwNamespace();
-    UniversalGarbage *garbage = newUniversalGarbage();
-    CliEntry* entry = newCliEntry(argc,argv);
-    UniversalGarbage_add(garbage, cli.entry.free, entry);
-
-    CliFlag *file = cli.entry.get_flag(entry,"f | file",CLI_NOT_CASE_SENSITIVE);
-
-    if(!file->exist){
-          printf(" entrie  file not provided \n");
-          UniversalGarbage_free(garbage);
-          return 1;
-    }
-    if(file->size == 0){
-        printf("file flag its empty\n");
-        UniversalGarbage_free(garbage);
-        return 1;
-    }
-    char *filename =  cli.flag.get_str(file,0,CLI_NOT_CASE_SENSITIVE);
-    CliFlag *output_flag = cli.entry.get_flag(entry,"o | out | output",CLI_NOT_CASE_SENSITIVE);
-    if(!output_flag->exist){
-        printf("you didint passed the output file\n");
-        UniversalGarbage_free(garbage);
-        return 1;
-    }
-
-    if(output_flag->size == 0){
-        printf("output flag its empty\n");
-        UniversalGarbage_free(garbage);
-        return 1;
-    }
-    char *output_file = cli.flag.get_str(output_flag,0,CLI_NOT_CASE_SENSITIVE);
-
-    Behaviors  behaviors = {0};
-
-    behaviors.dont_change = newDtwStringArray();
-    UniversalGarbage_add(garbage, dtw.string_array.free,  behaviors.dont_change );
-    if(collect_flag(cli.entry.get_flag(entry,"nochange | nc",CLI_NOT_CASE_SENSITIVE), behaviors.dont_change)){
-            UniversalGarbage_free(garbage);
-            return 1;
-    }
-
-    behaviors.dont_include = newDtwStringArray();
-    UniversalGarbage_add(garbage, dtw.string_array.free,   behaviors.dont_include);
-    if(collect_flag(cli.entry.get_flag(entry,"noinclude | ni",CLI_NOT_CASE_SENSITIVE), behaviors.dont_include)){
-        UniversalGarbage_free(garbage);
-        return 1;
-    }
-
-    behaviors.include_perpetual = newDtwStringArray();
-    UniversalGarbage_add(garbage, dtw.string_array.free,   behaviors.include_perpetual);
-    if(collect_flag(cli.entry.get_flag(entry,"perpetual | p",false), behaviors.include_perpetual)){
-        UniversalGarbage_free(garbage);
-        return 1;
-    }
-
-    CAmalgamatorErrorOrContent *error_or_content = amalgamator.generate_amalgamation(
-        filename,
-        generator_handler,
-        (void*)&behaviors
-    );
-
-    UniversalGarbage_add(garbage,amalgamator.free_error_or_string,error_or_content);
-    if(error_or_content->error){
-        printf("%s\n",error_or_content->error_msg);
-        UniversalGarbage_free(garbage);
-        return 1;
-    }
-    dtw.write_string_file_content(output_file,error_or_content->content);
-    UniversalGarbage_free(garbage);
-    return 0;
-}

@@ -188,12 +188,12 @@ int  private_CAmalgamator_generate_amalgamation(
                     generator_handler,
                     args
                 );
+
+                free(new_path);
                 if(error){
                         UniversalGarbage_free(garbage);
                         return error;
                 }
-
-                free(new_path);
                 CTextStack_restart(new_include_code);
                 state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
             }
