@@ -2,7 +2,7 @@
 //#define  CAMALGAMATOR_DEBUG
 //silver_chain_scope_start
 //mannaged by silver chain
-#include "../imports/imports.cli_globals.h"
+#include "../imports/imports.cli_define.h"
 //silver_chain_scope_end
 
 
@@ -10,6 +10,7 @@
 int main(int argc, char *argv[]){
     cli = newCliNamespace();
     amalgamator = newCAmalgamatorNamesapce();
+    dtw = newDtwNamespace();
     UniversalGarbage *garbage = newUniversalGarbage();
     CliEntry* entry = newCliEntry(argc,argv);
     UniversalGarbage_add(garbage, cli.entry.free, entry);

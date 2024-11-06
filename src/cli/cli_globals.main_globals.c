@@ -6,3 +6,4 @@
 
 CAmalgamatorNamesapce amalgamator;
 CliNamespace cli;
+DtwNamespace dtw;
