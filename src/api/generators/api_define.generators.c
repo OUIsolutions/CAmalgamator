@@ -2,7 +2,6 @@
 //silver_chain_scope_start
 //mannaged by silver chain
 #include "../../imports/imports.api_declare.h"
-#include <time.h>
 //silver_chain_scope_end
 
 
@@ -46,7 +45,7 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
             return Private_new_CAmalgamatorErrorOrString_as_error(
                 CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED,
                 NULL,
-                NULL,
+                filename_error,
                 "file '%s' not found",
                 filename_error
             );
