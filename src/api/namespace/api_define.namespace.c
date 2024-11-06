@@ -8,9 +8,12 @@ CAmalgamatorNamesapce newCAmalgamatorNamesapce(){
     CAmalgamatorNamesapce self = {0};
     self.generate_amalgamation = CAmalgamator_generate_amalgamation;
     self.generate_amalgamation_simple = CAmalgamator_generate_amalgamation_simple;
+    self.free_error = CAmalgamatorType_free;
     self.DONT_CHANGE = CAMALGAMATOR_DONT_CHANGE;
     self.DONT_INCLUDE = CAMALGAMATOR_DONT_INCLUDE;
     self.INCLUDE_ONCE = CAMALGAMATOR_INCLUDE_ONCE;
     self.INCLUDE_PERPETUAL= CAMALGAMATOR_INCLUDE_PERPETUAL;
+    self.FILE_NOT_FOUND = CAMALGAMATOR_FILE_NOT_FOUND;
+    self.UNEXPECTED_ERROR = CAMALGAMATOR_UNEXPECTED_ERROR;
     return self;
 }

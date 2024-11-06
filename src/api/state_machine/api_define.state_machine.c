@@ -19,11 +19,11 @@ int  private_CAmalgamator_generate_amalgamation(
 ){
 
     if(behavionr == CAMALGAMATOR_DONT_INCLUDE){
-        return CAMALGAMATOR_OK;
+        return PRIVATE_CAMALGAMATOR_OK;
     }
     if(behavionr == CAMALGAMATOR_DONT_CHANGE){
         CTextStack_format(final,"$include \"%s\"\n", include_code);
-        return CAMALGAMATOR_OK;
+        return PRIVATE_CAMALGAMATOR_OK;
     }
     UniversalGarbage *garbage = newUniversalGarbage();
     bool is_binary;
@@ -42,7 +42,7 @@ int  private_CAmalgamator_generate_amalgamation(
         bool is_already_included =DtwStringArray_find_position(already_included_sha_list,sha_content) != -1;
         if(is_already_included){
                 UniversalGarbage_free(garbage);
-                return CAMALGAMATOR_OK;
+                return PRIVATE_CAMALGAMATOR_OK;
         }
         DtwStringArray_append(already_included_sha_list, sha_content);
     }
@@ -189,5 +189,5 @@ int  private_CAmalgamator_generate_amalgamation(
         }
     }
     UniversalGarbage_free(garbage);
-    return CAMALGAMATOR_OK;
+    return PRIVATE_CAMALGAMATOR_OK;
 }
