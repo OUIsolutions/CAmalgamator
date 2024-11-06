@@ -23,8 +23,8 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
         already_included,
         &include_error_name,
         &filename_error,
-        filename,
-        NULL,
+        NULL, //filename
+        NULL, //include code
         generator_handler,
         args
     );
@@ -32,9 +32,9 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
     DtwStringArray_free(already_included);
     if(error){
         CTextStack_free(final);
-        if(error == CAMALGAMATOR_FILE_NOT_FOUND && include_error_name){
+        if(error == CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED && include_error_name){
             return Private_new_CAmalgamatorErrorOrString_as_error(
-                CAMALGAMATOR_FILE_NOT_FOUND,
+                CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED,
                 include_error_name,
                 filename_error,
                 "include:'%s' at file '%s' not found",
@@ -42,9 +42,9 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
                 filename_error
             );
         }
-        if(error == CAMALGAMATOR_FILE_NOT_FOUND){
+        if(error == CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED){
             return Private_new_CAmalgamatorErrorOrString_as_error(
-                CAMALGAMATOR_FILE_NOT_FOUND,
+                CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED,
                 NULL,
                 NULL,
                 "file '%s' not found",
@@ -55,7 +55,7 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
 
 
         return Private_new_CAmalgamatorErrorOrString_as_error(
-                CAMALGAMATOR_FILE_NOT_FOUND,
+                CAMALGAMATOR_UNEXPECTED_ERROR,
                 NULL,
                 NULL,
                 "unexpected behavior"
