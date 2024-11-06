@@ -24,6 +24,7 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
         &include_error_name,
         &filename_error,
         max_content_size,
+        0, //recursion size
         NULL, //filename
         NULL, //include code
         generator_handler,
@@ -34,6 +35,7 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
     if(error){
         long size = final->size;
         CTextStack_free(final);
+
         if(error == CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED && include_error_name){
             return Private_new_CAmalgamatorErrorOrString_as_error(
                 CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED,
@@ -44,6 +46,7 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
                 filename_error
             );
         }
+
         if(error == CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED){
             return Private_new_CAmalgamatorErrorOrString_as_error(
                 CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED,
@@ -51,6 +54,26 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
                 filename_error,
                 "file '%s' not found",
                 filename_error
+            );
+        }
+        if(error == CAMALGAMATOR_MAX_RECURSION_CALL && filename_error){
+            return Private_new_CAmalgamatorErrorOrString_as_error(
+                CAMALGAMATOR_MAX_RECURSION_CALL,
+                include_error_name,
+                filename_error,
+                "mex recursion call of: %d at file '%s'",
+                CAMALGAMATOR_MAX_RECURSION,
+                filename_error
+            );
+        }
+
+        if(error == CAMALGAMATOR_MAX_RECURSION_CALL){
+            return Private_new_CAmalgamatorErrorOrString_as_error(
+                CAMALGAMATOR_MAX_RECURSION_CALL,
+                include_error_name,
+                filename_error,
+                "mex recursion call of:%d",
+                CAMALGAMATOR_MAX_RECURSION
             );
         }
 

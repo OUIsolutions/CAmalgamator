@@ -22,11 +22,16 @@ int  private_CAmalgamator_generate_amalgamation(
     char **include_code_error,
     char **filename_errr,
     long max_content_size,
+    int recursion_call,
     const char *prev_file,
     const char *include_code,
     short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
     void *args
 ){
+
+    if(recursion_call >= CAMALGAMATOR_MAX_RECURSION){
+        return CAMALGAMATOR_MAX_RECURSION_CALL;
+    }
 
     if(final->size >= max_content_size ){
         COLLECT_ERROR_ATTIBUTES
@@ -203,6 +208,7 @@ int  private_CAmalgamator_generate_amalgamation(
                     include_code_error,
                     filename_errr,
                     max_content_size,
+                    recursion_call+1,
                     filename, // its the prev filename
                     new_include_code->rendered_text,
                     generator_handler,

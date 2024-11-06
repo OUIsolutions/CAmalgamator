@@ -11,6 +11,7 @@ int  private_CAmalgamator_generate_amalgamation(
     char **include_code_error,
     char **filename_errr,
     long max_content_size,
+    int recursion_call,
     const char *prev_file,
     const char *include_code,
     short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
