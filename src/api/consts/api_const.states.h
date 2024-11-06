@@ -1,10 +1,10 @@
 
 //silver_chain_scope_start
 //mannaged by silver chain
-#include "../imports/imports.api_globals.h"
+#include "../../imports/imports.api_dependencies.h"
 //silver_chain_scope_end
-#define  CAMALGAMATOR_FILE_NOT_FOUND 1
-#define  CAMALGAMATOR_OK 0
+
+
 enum{
     PRIVATE_CAMALGAMATOR_NORMAL_STATE,
     PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START,
@@ -14,6 +14,3 @@ enum{
     PRIVATE_CAMALGAMATOR_INSIDE_NORMAL_STRING,
     PRIVATE_CAMALGAMATOR_INSIDE_CHAR
 };
-#ifndef  CAMALGAMATION_PLOTAGE_FOLDER
-#define CAMALGAMATION_PLOTAGE_FOLDER "amalgamation_plotage"
-#endif

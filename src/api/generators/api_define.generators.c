@@ -8,13 +8,12 @@
 
 char * CAmalgamator_generate_amalgamation(
     const char*filename,
-    bool (*include_callback)(const char *filename,const  char *path, void *extra_args),
-    bool (*dont_change_callback)(const char *filename,const  char *path, void *extra_args),
+    short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
     void *args
 ){
     CTextStack *final = newCTextStack_string_empty();
     DtwStringArray *already_included = newDtwStringArray();
-    int error  = private_CAmalgamator_generate_amalgamation(final,filename,already_included,include_callback,dont_change_callback,args);
+    int error  = private_CAmalgamator_generate_amalgamation(CAMALGAMATOR_INCLUDE_ONCE,filename,final,already_included,generator_handler,args,NULL);
     DtwStringArray_free(already_included);
     if(error){
         CTextStack_free(final);
@@ -24,5 +23,5 @@ char * CAmalgamator_generate_amalgamation(
 }
 
 char * CAmalgamator_generate_amalgamation_simple(const char*filename){
-    return CAmalgamator_generate_amalgamation(filename,NULL,NULL,NULL);
+    return CAmalgamator_generate_amalgamation(filename,NULL,NULL);
 }
