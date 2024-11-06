@@ -10,5 +10,6 @@ struct CAmalgamatorErrorOrContent{
     int error;
     char *error_msg;
     char *include_name;
+    char *filename;
 };
 typedef  struct CAmalgamatorErrorOrContent CAmalgamatorErrorOrContent;

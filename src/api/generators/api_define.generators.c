@@ -2,6 +2,7 @@
 //silver_chain_scope_start
 //mannaged by silver chain
 #include "../../imports/imports.api_declare.h"
+#include <time.h>
 //silver_chain_scope_end
 
 
@@ -13,32 +14,49 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
 ){
     CTextStack *final = newCTextStack_string_empty();
     DtwStringArray *already_included = newDtwStringArray();
-    char *import_name = NULL;
+    char *include_error_name = NULL;
+    char *filename_error = NULL;
     int error  = private_CAmalgamator_generate_amalgamation(
         CAMALGAMATOR_INCLUDE_ONCE,
         filename,
         final,
         already_included,
+        &include_error_name,
+        &filename_error,
+        filename,
+        NULL,
         generator_handler,
-        args,
-        &import_name,
-        NULL
+        args
     );
 
     DtwStringArray_free(already_included);
     if(error){
         CTextStack_free(final);
+        if(error == CAMALGAMATOR_FILE_NOT_FOUND && include_error_name){
+            return Private_new_CAmalgamatorErrorOrString_as_error(
+                CAMALGAMATOR_FILE_NOT_FOUND,
+                include_error_name,
+                filename_error,
+                "include:'%s' at file '%s' not found",
+                include_error_name,
+                filename_error
+            );
+        }
         if(error == CAMALGAMATOR_FILE_NOT_FOUND){
             return Private_new_CAmalgamatorErrorOrString_as_error(
                 CAMALGAMATOR_FILE_NOT_FOUND,
-                import_name,
-                "include:'%s' not found",
-                import_name
+                NULL,
+                NULL,
+                "file '%s' not found",
+                filename_error
             );
         }
 
+
+
         return Private_new_CAmalgamatorErrorOrString_as_error(
                 CAMALGAMATOR_FILE_NOT_FOUND,
+                NULL,
                 NULL,
                 "unexpected behavior"
         );

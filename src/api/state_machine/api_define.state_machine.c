@@ -13,10 +13,12 @@ int  private_CAmalgamator_generate_amalgamation(
     const char*filename,
     CTextStack * final,
     DtwStringArray *already_included_sha_list,
-    short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
-    void *args,
     char **include_code_error,
-    const char *include_code
+    char **filename_errr,
+    const char *prev_file,
+    const char *include_code,
+    short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
+    void *args
 ){
     if(behavionr == CAMALGAMATOR_DONT_INCLUDE){
         return PRIVATE_CAMALGAMATOR_NO_ERRORS;
@@ -31,7 +33,10 @@ int  private_CAmalgamator_generate_amalgamation(
     char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
     UniversalGarbage_add_simple(garbage, content);
     if(content == NULL || is_binary){
-        *include_code_error = strdup(include_code);
+        if(include_code){
+            *include_code_error = strdup(include_code);
+        }
+        *filename_errr = strdup(prev_file);
         UniversalGarbage_free(garbage);
         return CAMALGAMATOR_FILE_NOT_FOUND;
     }
@@ -170,10 +175,12 @@ int  private_CAmalgamator_generate_amalgamation(
                     new_path,
                     final,
                     already_included_sha_list,
-                    generator_handler,
-                    args,
                     include_code_error,
-                    new_include_code->rendered_text
+                    filename_errr,
+                    filename, // its the prev filename
+                    new_include_code->rendered_text,
+                    generator_handler,
+                    args
                 );
                 if(error){
                         UniversalGarbage_free(garbage);

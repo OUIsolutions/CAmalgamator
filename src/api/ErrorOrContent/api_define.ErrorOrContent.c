@@ -4,7 +4,7 @@
 #include "../../imports/imports.api_declare.h"
 //silver_chain_scope_end
 
-CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int error_code,char *import_name,const char *error_msg,...){
+CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int error_code,char *include_name,char *filename, const char *error_msg,...){
     CAmalgamatorErrorOrContent *self = (CAmalgamatorErrorOrContent*)malloc(sizeof(CAmalgamatorErrorOrContent));
     *self = (CAmalgamatorErrorOrContent){0};
     self->error = error_code;
@@ -12,7 +12,8 @@ CAmalgamatorErrorOrContent * Private_new_CAmalgamatorErrorOrString_as_error(int 
     va_start(args, error_msg);
     self->error_msg = private_dtw_format_vaarg(error_msg,args);
     va_end(args);
-    self->include_name = import_name;
+    self->include_name = include_name;
+    self->filename = filename;
     return  self;
 }
 
@@ -33,6 +34,9 @@ void CAmalgamatorErrorOrString_free(CAmalgamatorErrorOrContent *self){
     }
     if(self->error_msg){
         free(self->error_msg);
+    }
+    if(self->filename){
+        free(self->filename);
     }
 
     free(self);
