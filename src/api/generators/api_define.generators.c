@@ -104,10 +104,11 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
                 size - max_content_size
             );
         }
+
         return Private_new_CAmalgamatorErrorOrString_as_error(
                 CAMALGAMATOR_UNEXPECTED_ERROR,
-                NULL,
-                NULL,
+                include_error_name,
+                filename_error,
                 "unexpected behavior"
         );
 
