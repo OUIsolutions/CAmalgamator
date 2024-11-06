@@ -5,7 +5,9 @@
 //silver_chain_scope_end
 CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
     const char*filename,
-    short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
+    long max_content_size,
+    short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
     void *args
 );
-CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename);
+
+CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename,long max_content_size);

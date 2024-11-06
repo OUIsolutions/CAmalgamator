@@ -5,7 +5,6 @@
 //silver_chain_scope_end
 
 
-int total_calls = 0;
 
 
 int  private_CAmalgamator_generate_amalgamation(
@@ -15,18 +14,20 @@ int  private_CAmalgamator_generate_amalgamation(
     DtwStringArray *already_included,
     char **include_code_error,
     char **filename_errr,
+    long max_content_size,
     const char *prev_file,
     const char *include_code,
     short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
     void *args
 ){
 
-    if(total_calls > 2000){
-        DtwStringArray_represent(already_included);
-
-        return CAMALGAMATOR_UNEXPECTED_ERROR;
+    if(final->size >= max_content_size ){
+        if(prev_file){
+            *include_code_error = strdup(include_code);
+            *filename_errr = dtw_get_absolute_path(prev_file);
+        }
+        return CAMALGAMATOR_MAX_CONTENT_SIZE;
     }
-    total_calls+=1;
 
     if(behavior == CAMALGAMATOR_DONT_INCLUDE){
         return PRIVATE_CAMALGAMATOR_NO_ERRORS;

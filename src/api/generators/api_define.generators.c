@@ -8,6 +8,7 @@
 
 CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
     const char*filename,
+    long max_content_size,
     short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
     void *args
 ){
@@ -22,11 +23,13 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
         already_included,
         &include_error_name,
         &filename_error,
+        max_content_size,
         NULL, //filename
         NULL, //include code
         generator_handler,
         args
     );
+    DtwStringArray_represent(already_included);
 
     DtwStringArray_free(already_included);
     if(error){
@@ -51,8 +54,26 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
             );
         }
 
+        if(error == CAMALGAMATOR_MAX_CONTENT_SIZE && filename_error){
+            return Private_new_CAmalgamatorErrorOrString_as_error(
+                CAMALGAMATOR_MAX_CONTENT_SIZE,
+                include_error_name,
+                filename_error,
+                "reached the max content size of %ld bytes in file '%s'",
+                max_content_size,
+                filename_error
+            );
+        }
 
-
+        if(error == CAMALGAMATOR_MAX_CONTENT_SIZE){
+            return Private_new_CAmalgamatorErrorOrString_as_error(
+                CAMALGAMATOR_MAX_CONTENT_SIZE,
+                include_error_name,
+                filename_error,
+                "reached the max content size of %ld bytes",
+                max_content_size
+            );
+        }
         return Private_new_CAmalgamatorErrorOrString_as_error(
                 CAMALGAMATOR_UNEXPECTED_ERROR,
                 NULL,
@@ -65,6 +86,6 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
     return Private_new_CAmalgamatorErrorOrString_as_ok(content);
 }
 
-CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename){
+CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename,long max_content_size){
     return CAmalgamator_generate_amalgamation(filename,NULL,NULL);
 }

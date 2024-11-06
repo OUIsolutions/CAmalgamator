@@ -41,6 +41,27 @@ int main(int argc, char *argv[]){
         UniversalGarbage_free(garbage);
         return 1;
     }
+    long max_size  = amalgamator.ONE_MB * 10;
+    CliFlag *max_bytes = cli.entry.get_flag(entry,"maxbyte",CLI_NOT_CASE_SENSITIVE);
+    if(max_bytes->size > 0){
+        max_size = cli.flag.get_long(max_bytes,0);
+    }
+    if(max_size == -1){
+        printf("max bytes its not a number\n");
+        UniversalGarbage_free(garbage);
+        return 1;
+    }
+
+    CliFlag *max_mega = cli.entry.get_flag(entry,"maxmega",CLI_NOT_CASE_SENSITIVE);
+    if(max_mega->size > 0){
+        max_size = cli.flag.get_long(max_mega,0);
+    }
+    if(max_size == -1){
+        printf("max mega its not a number\n");
+        UniversalGarbage_free(garbage);
+        return 1;
+    }
+
     char *output_file = cli.flag.get_str(output_flag,0,CLI_NOT_CASE_SENSITIVE);
 
     Behaviors  behaviors = {0};
@@ -69,6 +90,7 @@ int main(int argc, char *argv[]){
       clock_gettime(CLOCK_MONOTONIC, &inicio);
       CAmalgamatorErrorOrContent *error_or_content = amalgamator.generate_amalgamation(
           filename,
+          max_size,
           generator_handler,
           (void*)&behaviors
       );
