@@ -9,10 +9,11 @@ struct CAmalgamatorNamesapce{
     CAmalgamatorErrorOrContent * (*generate_amalgamation)(
         const char*filename,
         long max_content_size,
+        int max_recursion,
         short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
         void *args
     );
-    CAmalgamatorErrorOrContent * (*generate_amalgamation_simple)(const char*filename, long maxcontent_size);
+    CAmalgamatorErrorOrContent * (*generate_amalgamation_simple)(const char*filename, long maxcontent_size, int max_recursion);
 
     short DONT_INCLUDE;
     short DONT_CHANGE;

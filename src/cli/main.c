@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
         UniversalGarbage_free(garbage);
         return 1;
     }
-    long max_size  = amalgamator.ONE_MB ;
+    long max_size  = amalgamator.ONE_MB * 100;
     CliFlag *max_bytes = cli.entry.get_flag(entry,"maxbyte",CLI_NOT_CASE_SENSITIVE);
     if(max_bytes->size > 0){
         max_size = cli.flag.get_long(max_bytes,0);
@@ -60,6 +60,19 @@ int main(int argc, char *argv[]){
         UniversalGarbage_free(garbage);
         return 1;
     }
+
+    int max_recursion = 1000;
+    CliFlag * max_recursion_flag = cli.entry.get_flag(entry,"maxreq",CLI_NOT_CASE_SENSITIVE);
+    if(max_recursion_flag->size > 0){
+        max_recursion = cli.flag.get_long(max_recursion_flag,0);
+    }
+
+    if(max_recursion == -1){
+        printf("max recursin its not a number\n");
+        UniversalGarbage_free(garbage);
+        return 1;
+    }
+
 
     char *output_file = cli.flag.get_str(output_flag,0,CLI_NOT_CASE_SENSITIVE);
 
@@ -89,6 +102,7 @@ int main(int argc, char *argv[]){
     CAmalgamatorErrorOrContent *error_or_content = amalgamator.generate_amalgamation(
           filename,
           max_size,
+          max_recursion,
           generator_handler,
           (void*)&behaviors
       );

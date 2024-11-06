@@ -6,8 +6,9 @@
 CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
     const char*filename,
     long max_content_size,
+    int max_recursion,
     short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
     void *args
 );
 
-CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename,long max_content_size);
+CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename,long max_content_size,    int max_recursion);

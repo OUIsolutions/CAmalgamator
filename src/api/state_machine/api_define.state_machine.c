@@ -4,7 +4,6 @@
 #include "../../imports/imports.api_declare.h"
 //silver_chain_scope_end
 
-
 #define COLLECT_ERROR_ATTIBUTES \
 if(prev_file == NULL){\
     *filename_errr = strdup(filename);\
@@ -23,13 +22,15 @@ int  private_CAmalgamator_generate_amalgamation(
     char **filename_errr,
     long max_content_size,
     int recursion_call,
+    int max_recursion,
     const char *prev_file,
     const char *include_code,
     short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
     void *args
 ){
 
-    if(recursion_call >= CAMALGAMATOR_MAX_RECURSION){
+    if(recursion_call >= max_recursion){
+      COLLECT_ERROR_ATTIBUTES
         return CAMALGAMATOR_MAX_RECURSION_CALL;
     }
 
@@ -209,6 +210,7 @@ int  private_CAmalgamator_generate_amalgamation(
                     filename_errr,
                     max_content_size,
                     recursion_call+1,
+                    max_recursion,
                     filename, // its the prev filename
                     new_include_code->rendered_text,
                     generator_handler,

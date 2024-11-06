@@ -9,6 +9,7 @@
 CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
     const char*filename,
     long max_content_size,
+    int max_recursion,
     short (*generator_handler)(const char *filename,const  char *path, void *extra_args),
     void *args
 ){
@@ -25,12 +26,12 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
         &filename_error,
         max_content_size,
         0, //recursion size
+        max_recursion,
         NULL, //filename
         NULL, //include code
         generator_handler,
         args
     );
-
     DtwStringArray_free(already_included);
     if(error){
         long size = final->size;
@@ -61,8 +62,10 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
                 CAMALGAMATOR_MAX_RECURSION_CALL,
                 include_error_name,
                 filename_error,
-                "mex recursion call of: %d at file '%s'",
-                CAMALGAMATOR_MAX_RECURSION,
+                "mex recursion call of: %d  reached at file '%s'\n"
+                "if these its not a recursion problem on your files, increase the limit by"
+                "typing --maxreq <your_limit>",
+                max_recursion,
                 filename_error
             );
         }
@@ -72,8 +75,10 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
                 CAMALGAMATOR_MAX_RECURSION_CALL,
                 include_error_name,
                 filename_error,
-                "mex recursion call of:%d",
-                CAMALGAMATOR_MAX_RECURSION
+                "mex recursion call of: %d  reached \n"
+                "if these its not a problem on your files, increase the limit by"
+                "typing --maxreq <your_limit>",
+                max_recursion
             );
         }
 
@@ -111,6 +116,6 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
     return Private_new_CAmalgamatorErrorOrString_as_ok(content);
 }
 
-CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename,long max_content_size){
-    return CAmalgamator_generate_amalgamation(filename,max_content_size,NULL,NULL);
+CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename,long max_content_size,int max_recursion){
+    return CAmalgamator_generate_amalgamation(filename,max_content_size,max_recursion,NULL,NULL);
 }
