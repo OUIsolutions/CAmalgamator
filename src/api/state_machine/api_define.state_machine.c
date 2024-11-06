@@ -5,7 +5,14 @@
 //silver_chain_scope_end
 
 
-
+#define COLLECT_ERROR_ATTIBUTES \
+if(prev_file == NULL){\
+    *filename_errr = strdup(filename);\
+}\
+if(prev_file){\
+    *include_code_error = strdup(include_code);\
+    *filename_errr = dtw_get_absolute_path(prev_file);\
+}
 
 int  private_CAmalgamator_generate_amalgamation(
     short behavior,
@@ -22,10 +29,7 @@ int  private_CAmalgamator_generate_amalgamation(
 ){
 
     if(final->size >= max_content_size ){
-        if(prev_file){
-            *include_code_error = strdup(include_code);
-            *filename_errr = dtw_get_absolute_path(prev_file);
-        }
+        COLLECT_ERROR_ATTIBUTES
         return CAMALGAMATOR_MAX_CONTENT_SIZE;
     }
 
@@ -185,6 +189,7 @@ int  private_CAmalgamator_generate_amalgamation(
                      current_behavior  = generator_handler(new_path,new_include_code->rendered_text, args);
                 }
                 if(current_behavior < 0) {
+                    COLLECT_ERROR_ATTIBUTES
                     free(new_path);
                     UniversalGarbage_free(garbage);
                     return current_behavior;
