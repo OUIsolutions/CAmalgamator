@@ -52,16 +52,7 @@ int  private_CAmalgamator_generate_amalgamation(
     char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
     UniversalGarbage_add_simple(garbage, content);
     if(content == NULL || is_binary){
-
-        if(prev_file){
-            *include_code_error = strdup(include_code);
-            *filename_errr = dtw_get_absolute_path(prev_file);
-        }
-
-        //means its the first include
-        if(!prev_file){
-            *filename_errr = strdup(filename);
-        }
+        COLLECT_ERROR_ATTIBUTES
         UniversalGarbage_free(garbage);
         return CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED;
     }
@@ -195,7 +186,6 @@ int  private_CAmalgamator_generate_amalgamation(
                      current_behavior  = generator_handler(new_path,new_include_code->rendered_text, args);
                 }
                 if(current_behavior < 0) {
-                    COLLECT_ERROR_ATTIBUTES
                     free(new_path);
                     UniversalGarbage_free(garbage);
                     return current_behavior;
