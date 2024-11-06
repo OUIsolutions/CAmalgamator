@@ -1,5 +1,6 @@
 # Prerequisites
 *.d
+release
 amalgamation_plotage
 dependencies
 doTheWorld_test
