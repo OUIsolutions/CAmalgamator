@@ -17,8 +17,8 @@ int main(int argc, char *argv[]){
 
     CliFlag *file = cli.entry.get_flag(entry,"f | file",CLI_NOT_CASE_SENSITIVE);
 
-    if(file->exist == false){
-          printf("you didint passed the entrie file\n");
+    if(!file->exist){
+          printf(" entrie  file not provided \n");
           UniversalGarbage_free(garbage);
           return 1;
     }
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]){
     }
     char *filename =  cli.flag.get_str(file,0,CLI_NOT_CASE_SENSITIVE);
     CliFlag *output_flag = cli.entry.get_flag(entry,"o | out | output",CLI_NOT_CASE_SENSITIVE);
-    if(output_flag->exist){
+    if(!output_flag->exist){
         printf("you didint passed the output file\n");
         UniversalGarbage_free(garbage);
         return 1;
