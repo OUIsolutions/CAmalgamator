@@ -5,7 +5,7 @@
 //silver_chain_scope_end
 
 
-
+int total_calls = 0;
 
 
 int  private_CAmalgamator_generate_amalgamation(
@@ -20,6 +20,14 @@ int  private_CAmalgamator_generate_amalgamation(
     short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
     void *args
 ){
+
+    if(total_calls > 2000){
+        DtwStringArray_represent(already_included);
+
+        return CAMALGAMATOR_UNEXPECTED_ERROR;
+    }
+    total_calls+=1;
+
     if(behavior == CAMALGAMATOR_DONT_INCLUDE){
         return PRIVATE_CAMALGAMATOR_NO_ERRORS;
     }
@@ -52,7 +60,7 @@ int  private_CAmalgamator_generate_amalgamation(
         UniversalGarbage_add_simple(garbage, absolute);
         bool is_already_included =DtwStringArray_find_position(already_included,absolute) != -1;
         if(is_already_included){
-                UniversalGarbage_free(garbage);
+               UniversalGarbage_free(garbage);
                 return PRIVATE_CAMALGAMATOR_NO_ERRORS;
         }
         DtwStringArray_append(already_included, absolute);

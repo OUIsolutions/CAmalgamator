@@ -2,7 +2,6 @@
 //silver_chain_scope_start
 //mannaged by silver chain
 #include "../imports/imports.cli_declare.h"
-#include <time.h>
 //silver_chain_scope_end
 
 bool is_inside(const char *file,DtwStringArray *source){
