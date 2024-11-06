@@ -21,7 +21,7 @@ struct CAmalgamatorNamesapce{
     short FILE_NOT_FOUND;
     short UNEXPECTED_ERROR;
     short NO_ERRORS;
-    int ONE_BYTE;
+    int ONE_KBYTE;
     int  ONE_MB;
 
     void (*free_error_or_string)(CAmalgamatorErrorOrContent *self);

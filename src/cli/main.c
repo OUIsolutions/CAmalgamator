@@ -5,7 +5,6 @@
 #include "../imports/imports.cli_define.h"
 //silver_chain_scope_end
 
-#include <time.h>
 
 
 int main(int argc, char *argv[]){
@@ -41,7 +40,7 @@ int main(int argc, char *argv[]){
         UniversalGarbage_free(garbage);
         return 1;
     }
-    long max_size  = amalgamator.ONE_MB * 10;
+    long max_size  = amalgamator.ONE_MB;
     CliFlag *max_bytes = cli.entry.get_flag(entry,"maxbyte",CLI_NOT_CASE_SENSITIVE);
     if(max_bytes->size > 0){
         max_size = cli.flag.get_long(max_bytes,0);
@@ -86,19 +85,13 @@ int main(int argc, char *argv[]){
         UniversalGarbage_free(garbage);
         return 1;
     }
-      struct timespec inicio, fim;
-      clock_gettime(CLOCK_MONOTONIC, &inicio);
-      CAmalgamatorErrorOrContent *error_or_content = amalgamator.generate_amalgamation(
+
+    CAmalgamatorErrorOrContent *error_or_content = amalgamator.generate_amalgamation(
           filename,
           max_size,
           generator_handler,
           (void*)&behaviors
       );
-      clock_gettime(CLOCK_MONOTONIC, &fim);
-      // Calcula o tempo decorrido em nanosegundos
-      long tempo_gasto = (fim.tv_sec - inicio.tv_sec) * 1000000000L + (fim.tv_nsec - inicio.tv_nsec);
-      printf("Tempo gasto: %ld ns\n", tempo_gasto);
-
 
     UniversalGarbage_add(garbage,amalgamator.free_error_or_string,error_or_content);
     if(error_or_content->error){

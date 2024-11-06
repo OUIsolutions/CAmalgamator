@@ -29,10 +29,10 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
         generator_handler,
         args
     );
-    DtwStringArray_represent(already_included);
 
     DtwStringArray_free(already_included);
     if(error){
+        long size = final->size;
         CTextStack_free(final);
         if(error == CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED && include_error_name){
             return Private_new_CAmalgamatorErrorOrString_as_error(
@@ -59,8 +59,9 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
                 CAMALGAMATOR_MAX_CONTENT_SIZE,
                 include_error_name,
                 filename_error,
-                "reached the max content size of %ld bytes in file '%s'",
+                "reached the max content size of %ld bytes in %ld bytes in file '%s'",
                 max_content_size,
+                size - max_content_size,
                 filename_error
             );
         }
@@ -70,8 +71,9 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
                 CAMALGAMATOR_MAX_CONTENT_SIZE,
                 include_error_name,
                 filename_error,
-                "reached the max content size of %ld bytes",
-                max_content_size
+                "reached the max content size of %ld bytes in %ld bytes",
+                max_content_size,
+                size - max_content_size
             );
         }
         return Private_new_CAmalgamatorErrorOrString_as_error(
@@ -87,5 +89,5 @@ CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation(
 }
 
 CAmalgamatorErrorOrContent * CAmalgamator_generate_amalgamation_simple(const char*filename,long max_content_size){
-    return CAmalgamator_generate_amalgamation(filename,NULL,NULL);
+    return CAmalgamator_generate_amalgamation(filename,max_content_size,NULL,NULL);
 }

@@ -197,6 +197,7 @@ int  private_CAmalgamator_generate_amalgamation(
                     already_included,
                     include_code_error,
                     filename_errr,
+                    max_content_size,
                     filename, // its the prev filename
                     new_include_code->rendered_text,
                     generator_handler,
