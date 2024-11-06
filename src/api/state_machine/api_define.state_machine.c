@@ -9,7 +9,7 @@
 
 
 int  private_CAmalgamator_generate_amalgamation(
-    short behavionr,
+    short behavior,
     const char*filename,
     CTextStack * final,
     DtwStringArray *already_included_sha_list,
@@ -20,10 +20,10 @@ int  private_CAmalgamator_generate_amalgamation(
     short (*generator_handler)(const char *filename,const  char *import_name, void *extra_args),
     void *args
 ){
-    if(behavionr == CAMALGAMATOR_DONT_INCLUDE){
+    if(behavior == CAMALGAMATOR_DONT_INCLUDE){
         return PRIVATE_CAMALGAMATOR_NO_ERRORS;
     }
-    if(behavionr == CAMALGAMATOR_DONT_CHANGE){
+    if(behavior == CAMALGAMATOR_DONT_CHANGE){
         CTextStack_format(final,"$include \"%s\"\n", include_code);
         return PRIVATE_CAMALGAMATOR_NO_ERRORS;
     }
@@ -47,7 +47,7 @@ int  private_CAmalgamator_generate_amalgamation(
         return CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED;
     }
 
-    if(behavionr == CAMALGAMATOR_INCLUDE_ONCE){
+    if(behavior == CAMALGAMATOR_INCLUDE_ONCE){
         char *sha_content = dtw_generate_sha_from_any(content,size);
         UniversalGarbage_add_simple(garbage, sha_content);
         bool is_already_included =DtwStringArray_find_position(already_included_sha_list,sha_content) != -1;
@@ -170,14 +170,19 @@ int  private_CAmalgamator_generate_amalgamation(
             // new_include_code->rendered_text
             if(current_char == '"'){
                 //default behavior its include only once
-                int behavior = CAMALGAMATOR_INCLUDE_ONCE;
+                int current_behavior = CAMALGAMATOR_INCLUDE_ONCE;
                 char *new_path = dtw_concat_path(dir, new_include_code->rendered_text);
                 if(generator_handler){
-                    int behavior  = generator_handler(new_path,new_include_code->rendered_text, args);
+                     current_behavior  = generator_handler(new_path,new_include_code->rendered_text, args);
+                }
+                if(current_behavior < 0) {
+                    free(new_path);
+                    UniversalGarbage_free(garbage);
+                    return current_behavior;
                 }
 
                 int error = private_CAmalgamator_generate_amalgamation(
-                    behavionr,
+                    current_behavior,
                     new_path,
                     final,
                     already_included_sha_list,
