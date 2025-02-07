@@ -7,7 +7,7 @@ and also provide a api for you to use in your building programs
 ## Install
 to use the  cli, just clone the amalgamated c code
 ```shell
-curl -L https://github.com/OUIsolutions/CAmalgamator/releases/download/0.001/CAmalgamator.c  -o CAmalgamator.c
+curl -L https://github.com/OUIsolutions/CAmalgamator/releases/download/0.002/CAmalgamator.c  -o CAmalgamator.c
 ```
 then compile the c file with
 ```shell
@@ -43,7 +43,7 @@ note that you can pass any  files or dirs  you want in (--noinclude , --nochange
 you also can use the code into your build programs, using the public api,
 for downloading it, just type
 ```shel
-curl -L https://github.com/OUIsolutions/CAmalgamator/releases/download/0.001/CAmalgamatorApiOne.h  -o CAmalgamatorApiOne.h
+curl -L https://github.com/OUIsolutions/CAmalgamator/releases/download/0.002/CAmalgamatorApiOne.h  -o CAmalgamatorApiOne.h
 
 ```
 
