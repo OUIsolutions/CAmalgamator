@@ -77,7 +77,7 @@ int  private_CAmalgamator_generate_amalgamation(
         return PRIVATE_CAMALGAMATOR_NO_ERRORS;
     }
     if(behavior == CAMALGAMATOR_DONT_CHANGE){
-        CTextStack_format(final,"$include \"%s\"\n", include_code);
+        CTextStack_format(final,"#include \"%s\"\n", include_code);
         return PRIVATE_CAMALGAMATOR_NO_ERRORS;
     }
 
@@ -129,6 +129,7 @@ int  private_CAmalgamator_generate_amalgamation(
             bool is_include = private_CAmalgamator_is_include_at_point(content,size,i);
             if(is_include){
                 state =PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START;
+                i+=sizeof("#include")-1;
                 continue; // we dont format include here
             }
             CTextStack_format(final,"%c",current_char);
@@ -183,16 +184,17 @@ int  private_CAmalgamator_generate_amalgamation(
         if(state == PRIVATE_CAMALGAMATOR_WATING_FILENAME_STRING_START){
             if (current_char == '"'){
                 state = PRIVATE_CAMALGAMATOR_COLLECTING_FILENAME;
+            continue;
+
             }
-            if ( current_char == ' '){
-                continue;
+
+            if(current_char == ' '){
+            continue;
+
             }
-            
             state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
             //aborts inclusion
-            CTextStack_format(final,"#include %c",current_char;
-        
-            continue;
+            CTextStack_format(final,"#include %c",current_char);
         }
 
         if(state == PRIVATE_CAMALGAMATOR_COLLECTING_FILENAME){
