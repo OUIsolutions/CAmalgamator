@@ -1,6 +1,8 @@
 # Prerequisites
 *.d
 release
+
+CAmalgamator00*
 CAmalgamator.c
 amalgamation_plotage
 dependencies

@@ -184,12 +184,14 @@ int  private_CAmalgamator_generate_amalgamation(
             if (current_char == '"'){
                 state = PRIVATE_CAMALGAMATOR_COLLECTING_FILENAME;
             }
-
-            if(current_char == '<'){
-                state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
-                //aborts inclusion
-                CTextStack_text(final,"#include <");
+            if ( current_char == ' '){
+                continue;
             }
+            
+            state = PRIVATE_CAMALGAMATOR_NORMAL_STATE;
+            //aborts inclusion
+            CTextStack_format(final,"#include %c",current_char;
+        
             continue;
         }
 
