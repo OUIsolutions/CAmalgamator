@@ -15,25 +15,27 @@ bool is_inside(const char *file,DtwStringArray *source){
     return  false;
 }
 short generator_handler(const char *filename,const  char *import_name, void *extra_args){
-    Behaviors * behavior = (Behaviors*)extra_args;
-    char *absolute_file  = dtw.get_absolute_path(filename);
-    if(absolute_file == NULL){
-        return amalgamator.UNEXPECTED_ERROR;
+    printf(" filename:%s  import %s\n",filename,import_name);
+    
+
+    if(filename == NULL ){
+        return  amalgamator.UNEXPECTED_ERROR;
     }
 
-    if(is_inside(absolute_file,behavior->dont_change)){
-        free(absolute_file);
-        return  amalgamator.DONT_CHANGE;
+    // printf(" filename:%s  import %s\n",filename,import_name); 
+    Behaviors * behavior = (Behaviors*)extra_args;
+
+
+    if(is_inside(filename,behavior->dont_change)){
+
+       return  amalgamator.DONT_CHANGE;
     }
-    if(is_inside(absolute_file, behavior->dont_include)){
-        free(absolute_file);
+    if(is_inside(filename, behavior->dont_include)){
         return  amalgamator.DONT_INCLUDE;
     }
-    if(is_inside(absolute_file, behavior->include_perpetual)){
-        free(absolute_file);
+    if(is_inside(filename, behavior->include_perpetual)){
         return amalgamator.INCLUDE_PERPETUAL;
     }
-    free(absolute_file);
     return  amalgamator.INCLUDE_ONCE;
 }
 

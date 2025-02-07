@@ -51,19 +51,7 @@ int  private_CAmalgamator_generate_amalgamation(
         UniversalGarbage_add_simple(garbage,filename);
     }
 
-    bool is_binary;
-    long size;
-    char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
-    UniversalGarbage_add_simple(garbage, content);
-    if(content == NULL || is_binary){
-
-
-        COLLECT_ERROR_ATTIBUTES
-        UniversalGarbage_free(garbage);
-        return CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED;
-    }
-
-    if(generator_handler && include_code){
+   if(generator_handler && include_code){
          behavior  = generator_handler(filename,include_code, args);
     }
 
@@ -80,6 +68,20 @@ int  private_CAmalgamator_generate_amalgamation(
         CTextStack_format(final,"#include \"%s\"\n", include_code);
         return PRIVATE_CAMALGAMATOR_NO_ERRORS;
     }
+
+    bool is_binary;
+    long size;
+    char *content = (char*)dtw_load_any_content(filename,&size,&is_binary);
+    UniversalGarbage_add_simple(garbage, content);
+    if(content == NULL || is_binary){
+
+
+        COLLECT_ERROR_ATTIBUTES
+        UniversalGarbage_free(garbage);
+        return CAMALGAMATOR_FILE_NOT_FOUND_OR_ITS_NOT_CORRECTED_FORMATED;
+    }
+
+ 
 
 
     if(behavior == CAMALGAMATOR_INCLUDE_ONCE){
