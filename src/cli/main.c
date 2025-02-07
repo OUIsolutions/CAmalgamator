@@ -80,24 +80,15 @@ int main(int argc, char *argv[]){
 
     behaviors.dont_change = newDtwStringArray();
     UniversalGarbage_add(garbage, dtw.string_array.free,  behaviors.dont_change );
-    if(collect_flag(cli.entry.get_flag(entry,"nochange | nc",CLI_NOT_CASE_SENSITIVE), behaviors.dont_change)){
-            UniversalGarbage_free(garbage);
-            return 1;
-    }
-
+    collect_flag(cli.entry.get_flag(entry,"nochange | nc",CLI_NOT_CASE_SENSITIVE), behaviors.dont_change);
+    
     behaviors.dont_include = newDtwStringArray();
     UniversalGarbage_add(garbage, dtw.string_array.free,   behaviors.dont_include);
-    if(collect_flag(cli.entry.get_flag(entry,"noinclude | ni",CLI_NOT_CASE_SENSITIVE), behaviors.dont_include)){
-        UniversalGarbage_free(garbage);
-        return 1;
-    }
-
+    collect_flag(cli.entry.get_flag(entry,"noinclude | ni",CLI_NOT_CASE_SENSITIVE), behaviors.dont_include);
     behaviors.include_perpetual = newDtwStringArray();
     UniversalGarbage_add(garbage, dtw.string_array.free,   behaviors.include_perpetual);
-    if(collect_flag(cli.entry.get_flag(entry,"perpetual | p",false), behaviors.include_perpetual)){
-        UniversalGarbage_free(garbage);
-        return 1;
-    }
+    collect_flag(cli.entry.get_flag(entry,"perpetual | p",false), behaviors.include_perpetual);
+
 
     CAmalgamatorErrorOrContent *error_or_content = amalgamator.generate_amalgamation(
           filename,

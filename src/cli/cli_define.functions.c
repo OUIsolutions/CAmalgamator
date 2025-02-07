@@ -15,7 +15,7 @@ bool is_inside(const char *file,DtwStringArray *source){
     return  false;
 }
 short generator_handler(const char *filename,const  char *import_name, void *extra_args){
-    printf(" filename:%s  import %s\n",filename,import_name);
+    //printf(" filename:%s  import %s\n",filename,import_name);
     
 
     if(filename == NULL ){
@@ -39,18 +39,12 @@ short generator_handler(const char *filename,const  char *import_name, void *ext
     return  amalgamator.INCLUDE_ONCE;
 }
 
-int  collect_flag(CliFlag *flag,DtwStringArray *source){
+void  collect_flag(CliFlag *flag,DtwStringArray *source){
     if(flag->exist == false){
-        return amalgamator.NO_ERRORS;
+        return ;
     }
     for(int i = 0; i < flag->size;i++){
         char *current = cli.flag.get_str(flag,i,false);
-        char *current_absolute = dtw.get_absolute_path(current);
-        if(current_absolute == NULL){
-            return amalgamator.UNEXPECTED_ERROR;
-        }
-        dtw.string_array.append(source,current_absolute);
-        free(current_absolute);
+        dtw.string_array.append(source,current);
     }
-    return  amalgamator.NO_ERRORS;
 }
