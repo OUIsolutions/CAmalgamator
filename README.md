@@ -3,16 +3,30 @@ A C amalgamator cli to join all files in one, build to be rich in features
 and also provide a api for you to use in your building programs
 
 
-# Cli Usage
-## Install
-to use the  cli, just clone the amalgamated c code
-```shell
-curl -L https://github.com/OUIsolutions/CAmalgamator/releases/download/0.002/CAmalgamator.c  -o CAmalgamator.c
+## Releases
+| item          | plataform |
+|-------        |-----------|
+| [CAmalgamator.c](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator.c)| Source  |
+| [CAmalgamatorApiOne.h](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamatorApiOne.h)| Source of The Lib  |
+| [CAmalgamatorApiNoDependenciesIncluded.h](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamatorApiNoDependenciesIncluded.h)| Lib without dependenies  |
+| [CAmalgamator.out](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator.out)| Linux Binary |
+| [CAmalgamator64.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator64.exe)| Windows 64 Binary |
+| [CAmalgamatori32.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamatori32.exe)| Windows i32 Binary |
+| [CAmalgamatori32.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamatori32.exe)| Windows i32 Binary |
+| [rpm_static_build.rpm](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/rpm_static_build.rpm)| fedora/rehl/centos package |
+| [debian_static.deb](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/debian_static.deb)| debian/ubuntu package |
+
+
+## Building from Scratch
+if you want to build the code from scracth  you need to have [Darwin](https://github.com/OUIsolutions/Darwin) 
+installed on versio **0.020** and **Docker** our **Podman** installed on your machine.
+After install all dependecies,clone the repo on your machine , than run:
+```shel
+ darwin run_blueprint build/ --mode folder amalgamation_build alpine_static_build windowsi32_build windowsi64_build rpm_static_build debian_static_build
 ```
-then compile the c file with
-```shell
-gcc CAmalgamator.c -o CAmalgamator.o
-```
+
+## Cli Usage
+
 ## Run
 than you can run the cli , by:
 ```shel
