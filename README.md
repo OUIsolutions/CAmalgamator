@@ -135,16 +135,7 @@ the code return can be betwen
 |amalgamator.INCLUDE_ONCE | CAMALGAMATOR_INCLUDE_ONCE| include the content once |
 |amalgamator.INCLUDE_PERPETUAL | CAMALGAMATOR_INCLUDE_PERPETUAL| include the content, every time it founds it  |
 
-# Building from scratch
-if you want to build the code from scracth clone ,the repo on your machine , than run
-```shel
-sh install_dependencies.sh
-```
-than you can build the project with:
-```shel
-sh build.sh
-```
-these will generate the releases in the **release** folder
+
 
 ## SilverChain Usage
 These project uses CilverChain as dependencie to organize the files,
