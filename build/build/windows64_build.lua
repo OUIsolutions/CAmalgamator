@@ -14,8 +14,9 @@ function windowsi64_build()
     image.start({
         volumes = {
             { "./release", "/release" },
-            { "./src",     "/src" }
+            { "./src",     "/src" },
+            { "./dependencies",     "/dependencies" }
         },
-        command = "x86_64-w64-mingw32-gcc --static /src/main.c -o /release/windows64.exe"
+        command = "x86_64-w64-mingw32-gcc --static /src/cli/main.c -o /release/windows64.exe"
     })
 end
