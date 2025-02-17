@@ -4,7 +4,46 @@ function amalgamation_build()
         return
     end
     alreay_amalamated_done = true
+    
+    darwin.silverchain.generate({
+        src = "src",
+        project_short_cut = "CAmalgamator",
+        tags = { 
+            "api_dependencies",
+        "api_const",
+        "api_type",
+        "api_declare",
+        "api_define",
+        "cli_dependencies",
+        "cli_type",
+        "cli_globals",
+        "cli_declare",
+        "cli_define"
+    }})
 
-    local amalgamation_result = darwin.camalgamator.generate_amalgamation("src/main.c")
-    darwin.dtw.write_file("release/amalgamation.c", amalgamation_result)
+    local runtime = darwin.camalgamator.generate_amalgamation("src/cli/main.c")
+    
+  
+    darwin.dtw.write_file("release/CAmalgamator.c", runtime)
+
+    local api_one = darwin.camalgamator.generate_amalgamation("src/imports/imports.api_define.h")
+    darwin.dtw.write_file("release/CAmalgamatorApiOne.h", api_one)
+
+    local max_content = darwin.camalgamator.ONE_MB * 10
+    local max_recursion = 100
+
+    local dependencie_not_included = darwin.camalgamator.generate_amalgamation_with_callback(
+        "src/imports/imports.api_define.h",
+    function(import, path)
+        if darwin.dtw.ends_with(import,"dependencies.h") then
+            return "dont-include"
+        end
+        return "include-once"
+    end,
+    max_content,
+    max_recursion
+    )    
+    darwin.dtw.write_file("release/CAmalgamatorApiNoDependenciesIncluded.h ", dependencie_not_included)
+
+
 end

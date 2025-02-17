@@ -1,6 +1,6 @@
 #include "imports.api_declare.h"
-#ifndef camalgamator_api_define
-#define camalgamator_api_define
+#ifndef CAmalgamator_api_define
+#define CAmalgamator_api_define
 #include "../api/ErrorOrContent/api_define.ErrorOrContent.c"
 #include "../api/generators/api_define.generators.c"
 #include "../api/namespace/api_define.namespace.c"
