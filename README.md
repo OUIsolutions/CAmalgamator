@@ -6,15 +6,15 @@ and also provide a api for you to use in your building programs
 ## Releases
 | item          | plataform |
 |-------        |-----------|
-| [CAmalgamator.c](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator.c)| Source  |
-| [CAmalgamatorApiOne.h](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamatorApiOne.h)| Source of The Lib  |
-| [CAmalgamatorApiNoDependenciesIncluded.h](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamatorApiNoDependenciesIncluded.h)| Lib without dependenies  |
-| [CAmalgamator.out](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator.out)| Linux Binary |
-| [CAmalgamator64.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator64.exe)| Windows 64 Binary |
-| [CAmalgamatori32.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamatori32.exe)| Windows i32 Binary |
-| [CAmalgamatori32.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamatori32.exe)| Windows i32 Binary |
-| [CAmalgamator.rpm](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator.rpm)| fedora/rehl/centos package |
-| [CAmalgamator.deb](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator.deb)| debian/ubuntu package |
+| [CAmalgamator.c](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamator.c)| Source  |
+| [CAmalgamatorApiOne.h](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamatorApiOne.h)| Source of The Lib  |
+| [CAmalgamatorApiNoDependenciesIncluded.h](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamatorApiNoDependenciesIncluded.h)| Lib without dependenies  |
+| [CAmalgamator.out](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamator.out)| Linux Binary |
+| [CAmalgamator64.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamator64.exe)| Windows 64 Binary |
+| [CAmalgamatori32.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamatori32.exe)| Windows i32 Binary |
+| [CAmalgamatori32.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamatori32.exe)| Windows i32 Binary |
+| [CAmalgamator.rpm](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamator.rpm)| fedora/rehl/centos package |
+| [CAmalgamator.deb](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamator.deb)| debian/ubuntu package |
 
 
 ## Building from Scratch
