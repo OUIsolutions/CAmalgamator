@@ -4,22 +4,8 @@ function amalgamation_build()
         return
     end
     alreay_amalamated_done = true
-    
-    darwin.silverchain.generate({
-        src = "src",
-        project_short_cut = "CAmalgamator",
-        tags = { 
-            "api_dependencies",
-        "api_const",
-        "api_type",
-        "api_declare",
-        "api_define",
-        "cli_dependencies",
-        "cli_type",
-        "cli_globals",
-        "cli_declare",
-        "cli_define"
-    }})
+    silver_chain_organize()
+
 
     local runtime = darwin.camalgamator.generate_amalgamation("src/cli/main.c")
     

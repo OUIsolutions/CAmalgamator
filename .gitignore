@@ -2,6 +2,7 @@
 *.d
 release
 .cache
+src/imports
 CAmalgamator00*
 CAmalgamator.c
 amalgamation_plotage

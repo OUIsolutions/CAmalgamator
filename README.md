@@ -137,13 +137,7 @@ the code return can be betwen
 
 
 
-## SilverChain Usage
-These project uses CilverChain as dependencie to organize the files,
-to use it , download [Silverchain](https://github.com/OUIsolutions/SilverChain) and
-run
-```shel
-sh watch.sh
-```
+
 
 # Dependencies
 

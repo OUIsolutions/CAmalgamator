@@ -4,6 +4,8 @@ function windowsi64_build()
         return
     end
     windows_build_done = true
+    silver_chain_organize()
+
     os.execute("mkdir -p release")
 
     local image = darwin.ship.create_machine("debian:latest")
