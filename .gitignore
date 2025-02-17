@@ -1,7 +1,7 @@
 # Prerequisites
 *.d
 release
-
+.cache
 CAmalgamator00*
 CAmalgamator.c
 amalgamation_plotage

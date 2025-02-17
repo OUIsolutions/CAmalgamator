@@ -41,4 +41,11 @@ function main()
             i = i + 1
         end
     end
+
+    darwin.dtw.move_any_overwriting("release/alpine_static_bin.out","release/CAmalgamator.out")
+    darwin.dtw.move_any_overwriting("release/windows64.exe","release/CAmalgamator64.exe")
+    darwin.dtw.move_any_overwriting("release/windowsi32.exe","release/CAmalgamatori32.exe")
+    darwin.dtw.move_any_overwriting("debian_static.deb","release/CAmalgamator.deb")
+    darwin.dtw.move_any_overwriting("rpm_static_build.rpm","release/CAmalgamator.rpm")
+
 end
