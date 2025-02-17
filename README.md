@@ -12,7 +12,6 @@ and also provide a api for you to use in your building programs
 | [CAmalgamator.out](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamator.out)| Linux Binary |
 | [CAmalgamator64.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamator64.exe)| Windows 64 Binary |
 | [CAmalgamatori32.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamatori32.exe)| Windows i32 Binary |
-| [CAmalgamatori32.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamatori32.exe)| Windows i32 Binary |
 | [CAmalgamator.rpm](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamator.rpm)| fedora/rehl/centos package |
 | [CAmalgamator.deb](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamator.deb)| debian/ubuntu package |
 
