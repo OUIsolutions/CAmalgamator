@@ -13,8 +13,8 @@ and also provide a api for you to use in your building programs
 | [CAmalgamator64.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator64.exe)| Windows 64 Binary |
 | [CAmalgamatori32.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamatori32.exe)| Windows i32 Binary |
 | [CAmalgamatori32.exe](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamatori32.exe)| Windows i32 Binary |
-| [rpm_static_build.rpm](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/rpm_static_build.rpm)| fedora/rehl/centos package |
-| [debian_static.deb](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/debian_static.deb)| debian/ubuntu package |
+| [CAmalgamator.rpm](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator.rpm)| fedora/rehl/centos package |
+| [CAmalgamator.deb](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.3/CAmalgamator.deb)| debian/ubuntu package |
 
 
 ## Building from Scratch
