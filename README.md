@@ -16,14 +16,6 @@ and also provide a api for you to use in your building programs
 | [CAmalgamator.deb](https://github.com/OUIsolutions/CAmalgamator/releases/download/0.0.4/CAmalgamator.deb)| debian/ubuntu package |
 
 
-## Building from Scratch
-if you want to build the code from scracth  you need to have [Darwin](https://github.com/OUIsolutions/Darwin) 
-installed on versio **0.020** and **Docker** our **Podman** installed on your machine.
-After install all dependecies,clone the repo on your machine , than run:
-```shel
- darwin run_blueprint build/ --mode folder amalgamation_build alpine_static_build windowsi32_build windowsi64_build rpm_static_build debian_static_build
-```
-
 ## Cli Usage
 
 ## Run
@@ -136,4 +128,10 @@ the code return can be betwen
 |amalgamator.INCLUDE_PERPETUAL | CAMALGAMATOR_INCLUDE_PERPETUAL| include the content, every time it founds it  |
 
 
-
+## Building from Scratch
+if you want to build the code from scracth  you need to have [Darwin](https://github.com/OUIsolutions/Darwin) 
+installed on versio **0.020** and **Docker** our **Podman** installed on your machine.
+After install all dependecies,clone the repo on your machine , than run:
+```shel
+ darwin run_blueprint build/ --mode folder amalgamation_build alpine_static_build windowsi32_build windowsi64_build rpm_static_build debian_static_build
+```
